@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DomoticPi", "DomoticPi\DomoticPi.vcxproj", "{0486C138-1E22-4D00-B7FB-5AB48E1E6C61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0486C138-1E22-4D00-B7FB-5AB48E1E6C61}.Debug|ARM.ActiveCfg = Debug|ARM
+		{0486C138-1E22-4D00-B7FB-5AB48E1E6C61}.Debug|ARM.Build.0 = Debug|ARM
+		{0486C138-1E22-4D00-B7FB-5AB48E1E6C61}.Release|ARM.ActiveCfg = Release|ARM
+		{0486C138-1E22-4D00-B7FB-5AB48E1E6C61}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1A549BF-CE05-4F21-ADE9-CFD21636B4B5}
+	EndGlobalSection
+EndGlobal
