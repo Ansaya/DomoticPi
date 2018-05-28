@@ -1,0 +1,9 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "syspath",
+  "description": "Linux system path string",
+  "type": "string",
+  "pattern": "^(/[^/ ]*)+/?$"
+}
+)"

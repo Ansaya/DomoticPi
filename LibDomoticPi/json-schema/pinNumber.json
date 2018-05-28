@@ -1,0 +1,10 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "pinNumber",
+  "description": "Pin number referred to wiringPi convention. Check your board with 'gpio readall'.",
+  "type": "integer",
+  "minimum": 0,
+  "maximum": 63
+}
+)"

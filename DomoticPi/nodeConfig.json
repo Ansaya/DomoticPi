@@ -1,0 +1,29 @@
+{
+  "id": "node57",
+  "name": "House",
+  "inputs": [
+    {
+      "id": "001",
+      "name": "test1",
+      "type": "digital",
+      "pin": 0,
+      "pud": 1
+    }
+  ],
+  "outputs": [
+    {
+      "id": "001",
+      "name": "testOut",
+      "type": "digital",
+      "pin": 1
+    }
+  ],
+  "bindings": [
+    {
+      "inputId": "001",
+      "outputId": "001",
+      "inputState": 2,
+      "outputAction": 2
+    }
+  ]
+}

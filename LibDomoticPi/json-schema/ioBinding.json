@@ -1,0 +1,30 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "IOBinding",
+  "description": "Binding between an input and an output: when the input is in given state, the output will be set as specified.",
+  "properties": {
+    "inputId": {
+      "description": "Id of controlling input",
+      "type": "string"
+    },
+    "outputId": {
+      "description": "Id of controlled output",
+      "type": "string"
+    },
+    "inputState": {
+      "description": "Input state which will trigger output action\n0 - Off\n1 - On\n2 - Toggle",
+      "type": "integer",
+      "enum": [ 0, 1, 2 ]
+    },
+    "outputAction": {
+      "description": "Output state to set on input trigger\n0 - Off\n1 - On\n2 - Toggle",
+      "type": "integer",
+      "enum": [ 0, 1, 2 ]
+    }
+  },
+  "required": [ "inputId", "outputId", "inputState", "outputAction" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"

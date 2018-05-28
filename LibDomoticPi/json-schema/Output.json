@@ -1,0 +1,58 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Output",
+  "description": "Output module object",
+  "properties": {
+    "id": {
+      "description": "Unique identifier for this output module",
+      "type": "string"
+    },
+    "name": {
+      "description": "Module name",
+      "type": "string"
+    },
+    "pin": { "$ref": "pinNumber.json" },
+    "type": {
+      "description": "Output module type",
+      "enum": [ "digital", "serial" ]
+    },
+    "range_min": {
+      "description": "Minimum output value",
+      "type": "integer"
+    },
+    "range_max": {
+      "description": "Maximum output value",
+      "type": "integer"
+    },
+    "serialInterface": {
+      "description": "Serial interface to use in case this is a SerialOutput",
+      "oneOf": [
+        {
+          "$ref": "SerialInterface.json"
+        },
+        {
+          "$ref": "syspath.json"
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "type": { "enum": [ "digital" ] }
+      },
+      "required": ["type"]
+    },
+    {
+      "properties": {
+        "type": { "enum": [ "serial" ] }
+      },
+      "required": [ "range_min", "range_max", "serialInterface" ]
+    }
+  ],
+  "required": [ "id", "type" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"

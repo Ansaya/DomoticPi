@@ -1,0 +1,56 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "DomoticNode",
+  "description": "",
+  "properties": {
+    "id": {
+      "description": "Unique identifier for this domotic node",
+      "type": "string"
+    },
+    "name": {
+      "description": "Node name",
+      "type": "string"
+    },
+    "inputs": {
+      "description": "Input modules associated to this node",
+      "type": "array",
+      "items": [
+        {
+          "$ref": "Input.json"
+        }
+      ]
+    },
+    "outputs": {
+      "description": "Output modules associated to this node",
+      "type": "array",
+      "items": [
+        {
+          "$ref": "Output.json"
+        }
+      ]
+    },
+    "serialInterfaces": {
+      "description": "Serial interfaces associated to this node",
+      "type": "array",
+      "items": [
+        {
+          "$ref": "SerialInterface.json"
+        }
+      ]
+    },
+    "bindings": {
+      "description": "Bind inputs to outputs to perform specific actions",
+      "type": "array",
+      "items": [
+        {
+          "ref$": "ioBinding.json"
+        }
+      ]
+    }
+  },
+  "required": [ "id" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"
