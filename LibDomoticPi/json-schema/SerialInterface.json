@@ -1,0 +1,28 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "SerialInterface",
+  "description": "",
+  "properties": {
+    "port": {
+      "description": "Device port to be used by this serial interface (ie. /dev/serial0) ",
+      "$ref": "syspath.json"
+    },
+    "baud": {
+      "description": "Serial port baud rate to use",
+      "type": "integer"
+    },
+    "txPin": {
+      "description": "Serial tx pin used",
+      "$ref": "pinNumber.json"
+    },
+    "rxPin": {
+      "description": "Serial rx pin used",
+      "$ref": "pinNumber.json"
+    }
+  },
+  "required": [ "port", "baud" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"

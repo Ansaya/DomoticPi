@@ -2,12 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Output.h" />
-    <ClInclude Include="Pin.h" />
-    <ClInclude Include="already_used_exception.h" />
+    <Filter Include="Headers">
+      <UniqueIdentifier>{ac948a19-a956-47e7-a06a-d0e989e237ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{d5600063-e8f1-4d4f-95c2-55df6a180405}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nodeConfig.json" />
   </ItemGroup>
 </Project>

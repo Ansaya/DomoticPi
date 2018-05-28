@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{094ff56c-7732-46f6-8483-474ee936b946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{3a535da5-1806-43bb-ac49-96b8f51431ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json-schema">
+      <UniqueIdentifier>{410bea80-2943-41c7-9300-53114f9f2be6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="domoticPi.h" />
+    <ClInclude Include="DigitalOutput.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Output.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Pin.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialInterface.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialOutput.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="exceptions.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DomoticNode.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DigitalInput.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="domoticPiDefine.h" />
+    <ClInclude Include="OutState.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LibDomoticPi.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DigitalOutput.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Output.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Pin.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialInterface.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialOutput.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="domoticPi.cpp" />
+    <ClCompile Include="DigitalInput.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DomoticNode.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="json-schema\Input.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\Output.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\pinNumber.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\SerialInterface.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\syspath.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\DomoticNode.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\ioBinding.json">
+      <Filter>json-schema</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+</Project>

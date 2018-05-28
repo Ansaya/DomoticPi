@@ -1,0 +1,68 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Input",
+  "description": "",
+  "properties": {
+    "id": {
+      "description": "Unique identifier for this input module.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Module name.",
+      "type": "string"
+    },
+    "isr_mode": {
+      "description": "When ISR actions should be triggered on this module.\n1 - Rising edge\n2 - Falling edge\n3 - Both edges\n4 - ISR disabled",
+      "type": "integer",
+      "enum": [ 1, 2, 3, 4 ]
+    },
+    "pin": { "$ref": "pinNumber.json" },
+    "pud": {
+      "description": "Specify if this pin needs a pull-up, a pull-down or nothing to be activated.\n0 - Nothing\n1 - Pull-down\n2 - Pull-up",
+      "type": "integer",
+      "enum": [ 0, 1, 2 ]
+    },
+    "type": {
+      "description": "Input module type",
+      "enum": [ "digital", "serial" ]
+    },
+    "range_min": {
+      "description": "Minimum input value",
+      "type": "integer"
+    },
+    "range_max": {
+      "description": "Maximum input value",
+      "type": "integer"
+    },
+    "serialInterface": {
+      "description": "Serial interface to use in case this is a SerialInput",
+      "oneOf": [
+        {
+          "$ref": "SerialInterface.json"
+        },
+        {
+          "$ref": "syspath.json"
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "type": { "enum": [ "digital" ] }
+      },
+      "required": [ "pin", "pud" ]
+    },
+    {
+      "properties": {
+        "type": { "enum": [ "serial" ] }
+      },
+      "required": [ "range_min", "range_max", "serialInterface" ]
+    }
+  ],
+  "required": [ "id", "type" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"
