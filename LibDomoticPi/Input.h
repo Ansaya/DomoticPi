@@ -2,17 +2,20 @@
 #define DOMOTIC_PI_INPUT
 
 #include "domoticPiDefine.h"
+#include "Module.h"
 #include "Pin.h"
 
 #include <functional>
 #include <memory>
+#ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
+#endif
 #include <rapidjson/document.h>
 #include <string>
 
 namespace domotic_pi {
 
-	class Input : public Pin {
+	class Input : public Pin, public Module<Input> {
 
 	public:
 
@@ -67,13 +70,7 @@ namespace domotic_pi {
 		static Input_ptr from_json(const std::string& jsonConfig,
 								  DomoticNode_ptr parentNode);
 
-		const std::string& getID() const;
-
-		const std::string& getName() const;
-
 		virtual int getValue() const = 0;
-
-		void setName(const std::string name);
 
 		/**
 		 *	@brief Register a callback to be triggered on given ISR mode.
@@ -103,16 +100,6 @@ namespace domotic_pi {
 		 *	@return json document representation for current object
 		 */
 		virtual rapidjson::Document to_json() const;
-
-	protected:
-		const std::string _id;
-
-	private:
-		std::string _name;
-
-#ifdef DOMOTIC_PI_THREAD_SAFE
-		std::mutex _nameLock;
-#endif // DOMOTIC_PI_THREAD_SAFE
 
 	};
 

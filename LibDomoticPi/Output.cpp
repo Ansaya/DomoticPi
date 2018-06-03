@@ -12,7 +12,7 @@
 using namespace domotic_pi;
 
 Output::Output(const std::string& id, int pinNumber) : 
-	Pin(pinNumber), _id(id), _name("")
+	Pin(pinNumber), Module(id)
 {
 }
 
@@ -94,47 +94,7 @@ Output_ptr Output::from_json(const std::string& jsonConfig, DomoticNode_ptr pare
 	return Output::from_json(config, parentNode, true);
 }
 
-const std::string & Output::getID() const
-{
-	return _id;
-}
-
-const std::string & Output::getName() const
-{
-	return _name;
-}
-
 int Output::getValue() const 
 {
 	return _value;
-}
-
-void Output::setName(const std::string& name)
-{
-#ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lck(_nameLock);
-#endif
-
-	console->info("Output::setName : name changed for output '%s' from '%s' to '%s'.",
-		_id, _name.c_str(), name.c_str());
-
-	_name.assign(name);
-}
-
-rapidjson::Document Output::to_json() const
-{
-	console->debug("Output::to_json : serializing output '%s'.", _id.c_str());
-
-	rapidjson::Document output(rapidjson::kObjectType);
-
-	// Set input id
-	rapidjson::Value id;
-	id.SetString(_id.c_str(), output.GetAllocator());
-	output.AddMember("id", id, output.GetAllocator());
-
-	rapidjson::Value name;
-	name.SetString(_name.c_str(), output.GetAllocator());
-	output.AddMember("name", name, output.GetAllocator());
-
-	return output;
 }

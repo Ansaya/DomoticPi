@@ -2,17 +2,22 @@
 #define DOMOTIC_PI_OUTPUT
 
 #include "domoticPiDefine.h"
+#include "Module.h"
 #include "OutState.h"
 #include "Pin.h"
 
-#include <memory>
+#ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
+#endif // DOMOTIC_PI_THREAD_SAFE
 #include <rapidjson/document.h>
 #include <string>
 
 namespace domotic_pi {
 
-	class Output : public Pin {
+	class Output : 
+		public Pin,
+		public Module<Output>
+	{
 
 	public:
 		Output(const std::string& id, int pinNumber);
@@ -55,31 +60,16 @@ namespace domotic_pi {
 		static Output_ptr from_json(const std::string& jsonConfig,
 									DomoticNode_ptr parentNode);
 
-		const std::string& getID() const;
-
-		const std::string& getName() const;
-
 		int getValue() const;
-
-		void setName(const std::string& name);
 
 		virtual void setState(OutState newState) = 0;
 
 		virtual void setValue(int newValue) = 0;
 
-		virtual rapidjson::Document to_json() const;
-
 	protected:
-		const std::string _id;
 		int _value;
 #ifdef DOMOTIC_PI_THREAD_SAFE
 		std::mutex _valueLock;
-#endif // DOMOTIC_PI_THREAD_SAFE
-
-	private:
-		std::string _name;
-#ifdef DOMOTIC_PI_THREAD_SAFE
-		std::mutex _nameLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	};

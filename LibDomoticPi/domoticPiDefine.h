@@ -7,6 +7,15 @@
 // Enables mutex lock in setter functions
 #define DOMOTIC_PI_THREAD_SAFE
 
+#define DOMOTIC_PI_APPLE_HOMEKIT
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+#ifndef DOMOTIC_PI_THREAD_SAFE
+#define DOMOTIC_PI_THREAD_SAFE
+#endif
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
+
+
 // Highest valid pin number
 #ifndef DOMOTIC_PI_MAX_PIN
 #define DOMOTIC_PI_MAX_PIN 63

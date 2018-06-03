@@ -45,6 +45,16 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="LibDomoticPi.h" />
+    <ClInclude Include="DomoticAPI.h" />
+    <ClInclude Include="HasHAPAccessory.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Serializable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DigitalOutput.cpp">

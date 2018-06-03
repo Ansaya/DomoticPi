@@ -70,7 +70,7 @@
     <RemoteCleanCommandLine>cd $(Configuration); make clean</RemoteCleanCommandLine>
     <RemoteBuildOutputs>$(Configuration)/libdomoticPi.so</RemoteBuildOutputs>
     <NMakeIncludeSearchPath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6</NMakeIncludeSearchPath>
-    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6</IncludePath>
+    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;../../LibHAP</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
     <RemotePreBuildEventUseInBuild>true</RemotePreBuildEventUseInBuild>
   </PropertyGroup>
@@ -82,22 +82,26 @@
     <RemoteCleanCommandLine>cd $(Configuration); make clean</RemoteCleanCommandLine>
     <RemoteBuildOutputs>$(Configuration)/libdomoticPi.so</RemoteBuildOutputs>
     <NMakeIncludeSearchPath>$(VisualStudioDir)\Projects\wiringPi\wiringPi;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6</IncludePath>
+    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;../../LibHAP</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="DigitalInput.h" />
     <ClInclude Include="DomoticNode.h" />
     <ClInclude Include="domoticPiDefine.h" />
+    <ClInclude Include="DomoticAPI.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="DigitalOutput.h" />
     <ClInclude Include="domoticPi.h" />
+    <ClInclude Include="HasHAPAccessory.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LibDomoticPi.h" />
+    <ClInclude Include="Module.h" />
     <ClInclude Include="Output.h" />
     <ClInclude Include="OutState.h" />
     <ClInclude Include="Pin.h" />
     <ClInclude Include="SerialInterface.h" />
+    <ClInclude Include="Serializable.h" />
     <ClInclude Include="SerialOutput.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +127,11 @@
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LibHAP\LibHAP.vcxproj">
+      <Project>{3cccc52f-0acc-4e2a-a1c7-7015dd7d612a}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemotePreBuildEvent>
       <Command>
@@ -141,7 +150,7 @@
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>wiringPi;pthread</LibraryDependencies>
+      <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -158,7 +167,7 @@
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>wiringPi;pthread</LibraryDependencies>
+      <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
