@@ -1,8 +1,6 @@
 #ifndef DOMOTIC_PI_LIB
 #define DOMOTIC_PI_LIB
 
-#include <wiringPi.h>
-
 #include "domoticPiDefine.h"
 #include "domoticPi.h"
 
@@ -10,6 +8,11 @@
 #include "OutState.h"
 
 #include "Pin.h"
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+#include "HasHAPAccessory.h"
+#endif
+#include "Module.h"
+#include "Serializable.h"
 
 #include "Input.h"
 #include "DigitalInput.h"

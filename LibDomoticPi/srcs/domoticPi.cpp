@@ -1,6 +1,6 @@
-#include "domoticPi.h"
+#include <domoticPi.h>
 
-#include "domoticPiDefine.h"
+#include <domoticPiDefine.h>
 
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
@@ -13,7 +13,7 @@ void domotic_pi::setConsole(std::shared_ptr<spdlog::logger> console)
 	domotic_pi::console = console;
 }
 
-int domotic_pi::domoticPiInit(int pin_mode)
+int domotic_pi::domoticPiInit()
 {
 	int retval = domotic_pi::json::SchemaProvider::load();
 	if (retval) {
@@ -21,7 +21,7 @@ int domotic_pi::domoticPiInit(int pin_mode)
 		return retval;
 	}
 
-	retval = wiringPiSetup(pin_mode);
+	retval = wiringPiSetup(WPI_MODE_PINS);
 
 	if (retval)
 		console->error("domoticPiInit : wiringPiSetup returned %d code.", retval);
@@ -37,7 +37,7 @@ domotic_pi::json::SchemaProvider::_schemas;
 int domotic_pi::json::SchemaProvider::load()
 {
 	const char * syspath =
-#include "json-schema/syspath.json"
+#include "../json-schema/syspath.json"
 		;
 	rapidjson::Document syspathDoc;
 	if (syspathDoc.Parse(syspath).HasParseError()) {
@@ -48,7 +48,7 @@ int domotic_pi::json::SchemaProvider::load()
 	_schemas["syspath.json"] = std::make_shared<rapidjson::SchemaDocument>(syspathDoc);
 
 	const char * pinNumber =
-#include "json-schema/pinNumber.json"
+#include "../json-schema/pinNumber.json"
 		;
 	rapidjson::Document pinNumberDoc;
 	if (pinNumberDoc.Parse(pinNumber).HasParseError()) {
@@ -60,7 +60,7 @@ int domotic_pi::json::SchemaProvider::load()
 		std::make_shared<rapidjson::SchemaDocument>(pinNumberDoc);
 
 	const char * ioBinding =
-#include "json-schema/ioBinding.json"
+#include "../json-schema/ioBinding.json"
 		;
 	rapidjson::Document ioBindingDoc;
 	if (ioBindingDoc.Parse(ioBinding).HasParseError()) {
@@ -73,7 +73,7 @@ int domotic_pi::json::SchemaProvider::load()
 	domotic_pi::json::SchemaProvider provider;
 
 	const char * SerialInterface =
-#include "json-schema/SerialInterface.json"
+#include "../json-schema/SerialInterface.json"
 		;
 	rapidjson::Document SerialInterfaceDoc;
 	if (SerialInterfaceDoc.Parse(SerialInterface).HasParseError()) {
@@ -85,7 +85,7 @@ int domotic_pi::json::SchemaProvider::load()
 		std::make_shared<rapidjson::SchemaDocument>(SerialInterfaceDoc, nullptr, 0, &provider);
 
 	const char * Input =
-#include "json-schema/Input.json"
+#include "../json-schema/Input.json"
 		;
 	rapidjson::Document InputDoc;
 	if (InputDoc.Parse(Input).HasParseError()) {
@@ -97,7 +97,7 @@ int domotic_pi::json::SchemaProvider::load()
 		std::make_shared<rapidjson::SchemaDocument>(InputDoc, nullptr, 0, &provider);
 
 	const char * Output =
-#include "json-schema/Output.json"
+#include "../json-schema/Output.json"
 		;
 	rapidjson::Document OutputDoc;
 	if (OutputDoc.Parse(Output).HasParseError()) {
@@ -109,7 +109,7 @@ int domotic_pi::json::SchemaProvider::load()
 		std::make_shared<rapidjson::SchemaDocument>(OutputDoc, nullptr, 0, &provider);
 
 	const char * DomoticNode =
-#include "json-schema/DomoticNode.json"
+#include "../json-schema/DomoticNode.json"
 		;
 	rapidjson::Document DomoticNodeDoc;
 	if (DomoticNodeDoc.Parse(DomoticNode).HasParseError()) {

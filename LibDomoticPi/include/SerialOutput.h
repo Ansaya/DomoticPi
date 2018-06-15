@@ -26,6 +26,11 @@ namespace domotic_pi {
 		int _range_max;
 		int _value;
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		hap::BoolCharacteristics_ptr _stateInfo;
+		hap::IntCharacteristics_ptr _valueInfo;
+#endif
+
 	};
 
 }

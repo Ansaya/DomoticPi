@@ -3,10 +3,12 @@
 
 #include "domoticPi.h"
 #include "domoticPiDefine.h"
+#include "Serializable.h"
+
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 #include "HasHAPAccessory.h"
+#include <hap/libHAP.h>
 #endif
-#include "Serializable.h"
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
@@ -35,17 +37,17 @@ public:
 
 	virtual rapidjson::Document to_json() const override;
 
-	virtual hap::Accessory_ptr getHAPAccessory() const override;
-
 protected:
 	const std::string _id;
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	hap::StringCharacteristics_ptr _nameInfo;
+#endif
 
 private:
 	std::string _name;
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::mutex _nameLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
-
 };
 
 }
@@ -53,7 +55,15 @@ private:
 template<class T>
 domotic_pi::Module<T>::Module(const std::string& id) : _id(id), _name("")
 {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	_hapAccessory->addInfoService("Module", DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER, 
+		typeid(T).name(), _id, [](bool oldValue, bool newValue, void* sender) {});
 
+	_nameInfo = std::make_shared<hap::StringCharacteristics>(hap::char_serviceName, hap::permission_read);
+	_nameInfo->setValueChangeCB([this](std::string oldValue, std::string newValue, void* sender) {
+		setName(newValue);
+	});
+#endif
 }
 
 template<class T>
@@ -79,6 +89,10 @@ void domotic_pi::Module<T>::setName(const std::string& name)
 		_id, _name.c_str(), name.c_str());
 
 	_name.assign(name);
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	_nameInfo->Characteristics::setValue(_name);
+#endif
 }
 
 template<class T>

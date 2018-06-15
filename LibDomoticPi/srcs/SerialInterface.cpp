@@ -1,8 +1,8 @@
-#include "SerialInterface.h"
+#include <SerialInterface.h>
 
-#include "DomoticNode.h"
-#include "domoticPi.h"
-#include "exceptions.h"
+#include <DomoticNode.h>
+#include <domoticPi.h>
+#include <exceptions.h>
 
 #include <errno.h>
 #include <wiringSerial.h>

@@ -94,13 +94,6 @@ namespace domotic_pi {
 		 */
 		virtual void setISRMode(int isr_mode) = 0;
 
-		/**
-		 *	@brief Serialize current object to json document
-		 *
-		 *	@return json document representation for current object
-		 */
-		virtual rapidjson::Document to_json() const;
-
 	};
 
 }

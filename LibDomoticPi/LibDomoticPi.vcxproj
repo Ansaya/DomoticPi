@@ -70,7 +70,7 @@
     <RemoteCleanCommandLine>cd $(Configuration); make clean</RemoteCleanCommandLine>
     <RemoteBuildOutputs>$(Configuration)/libdomoticPi.so</RemoteBuildOutputs>
     <NMakeIncludeSearchPath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6</NMakeIncludeSearchPath>
-    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;../../LibHAP</IncludePath>
+    <IncludePath>include;$(IncludePath)</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
     <RemotePreBuildEventUseInBuild>true</RemotePreBuildEventUseInBuild>
   </PropertyGroup>
@@ -82,38 +82,27 @@
     <RemoteCleanCommandLine>cd $(Configuration); make clean</RemoteCleanCommandLine>
     <RemoteBuildOutputs>$(Configuration)/libdomoticPi.so</RemoteBuildOutputs>
     <NMakeIncludeSearchPath>$(VisualStudioDir)\Projects\wiringPi\wiringPi;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>$(DevEnvDir)VC\Linux\armv8-pi\usr\local\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;../../LibHAP</IncludePath>
+    <IncludePath>include;$(IncludePath)</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="DigitalInput.h" />
-    <ClInclude Include="DomoticNode.h" />
-    <ClInclude Include="domoticPiDefine.h" />
-    <ClInclude Include="DomoticAPI.h" />
-    <ClInclude Include="exceptions.h" />
-    <ClInclude Include="DigitalOutput.h" />
-    <ClInclude Include="domoticPi.h" />
-    <ClInclude Include="HasHAPAccessory.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="LibDomoticPi.h" />
-    <ClInclude Include="Module.h" />
-    <ClInclude Include="Output.h" />
-    <ClInclude Include="OutState.h" />
-    <ClInclude Include="Pin.h" />
-    <ClInclude Include="SerialInterface.h" />
-    <ClInclude Include="Serializable.h" />
-    <ClInclude Include="SerialOutput.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="DigitalInput.cpp" />
-    <ClCompile Include="DigitalOutput.cpp" />
-    <ClCompile Include="DomoticNode.cpp" />
-    <ClCompile Include="domoticPi.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Output.cpp" />
-    <ClCompile Include="Pin.cpp" />
-    <ClCompile Include="SerialInterface.cpp" />
-    <ClCompile Include="SerialOutput.cpp" />
+    <ClInclude Include="include\DigitalInput.h" />
+    <ClInclude Include="include\DigitalOutput.h" />
+    <ClInclude Include="include\DomoticAPI.h" />
+    <ClInclude Include="include\DomoticNode.h" />
+    <ClInclude Include="include\domoticPi.h" />
+    <ClInclude Include="include\domoticPiDefine.h" />
+    <ClInclude Include="include\exceptions.h" />
+    <ClInclude Include="include\HasHAPAccessory.h" />
+    <ClInclude Include="include\Input.h" />
+    <ClInclude Include="include\libDomoticPi.h" />
+    <ClInclude Include="include\Module.h" />
+    <ClInclude Include="include\Output.h" />
+    <ClInclude Include="include\OutState.h" />
+    <ClInclude Include="include\Pin.h" />
+    <ClInclude Include="include\SerialInterface.h" />
+    <ClInclude Include="include\Serializable.h" />
+    <ClInclude Include="include\SerialOutput.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\DomoticNode.json" />
@@ -128,9 +117,15 @@
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LibHAP\LibHAP.vcxproj">
-      <Project>{3cccc52f-0acc-4e2a-a1c7-7015dd7d612a}</Project>
-    </ProjectReference>
+    <ClCompile Include="srcs\DigitalInput.cpp" />
+    <ClCompile Include="srcs\DigitalOutput.cpp" />
+    <ClCompile Include="srcs\DomoticNode.cpp" />
+    <ClCompile Include="srcs\domoticPi.cpp" />
+    <ClCompile Include="srcs\Input.cpp" />
+    <ClCompile Include="srcs\Output.cpp" />
+    <ClCompile Include="srcs\Pin.cpp" />
+    <ClCompile Include="srcs\SerialInterface.cpp" />
+    <ClCompile Include="srcs\SerialOutput.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemotePreBuildEvent>
@@ -152,6 +147,12 @@
     <Link>
       <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
     </Link>
+    <RemotePostBuildEvent>
+      <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>
+    </RemotePostBuildEvent>
+    <RemotePostBuildEvent>
+      <Message>Create global library link</Message>
+    </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <RemotePreBuildEvent>
@@ -169,6 +170,12 @@
     <Link>
       <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
     </Link>
+    <RemotePostBuildEvent>
+      <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>
+    </RemotePostBuildEvent>
+    <RemotePostBuildEvent>
+      <Message>Create global library link</Message>
+    </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

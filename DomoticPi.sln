@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DomoticPi", "DomoticPi\Domo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibDomoticPi", "LibDomoticPi\LibDomoticPi.vcxproj", "{096704E3-B562-4031-8AC0-19BFA53FA242}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibHAP", "..\LibHAP\LibHAP.vcxproj", "{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -39,18 +37,6 @@ Global
 		{096704E3-B562-4031-8AC0-19BFA53FA242}.Release|x64.Build.0 = Release|x64
 		{096704E3-B562-4031-8AC0-19BFA53FA242}.Release|x86.ActiveCfg = Release|x86
 		{096704E3-B562-4031-8AC0-19BFA53FA242}.Release|x86.Build.0 = Release|x86
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|ARM.ActiveCfg = Debug|ARM
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|ARM.Build.0 = Debug|ARM
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|x64.ActiveCfg = Debug|x64
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|x64.Build.0 = Debug|x64
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|x86.ActiveCfg = Debug|x86
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Debug|x86.Build.0 = Debug|x86
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|ARM.ActiveCfg = Release|ARM
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|ARM.Build.0 = Release|ARM
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|x64.ActiveCfg = Release|x64
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|x64.Build.0 = Release|x64
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|x86.ActiveCfg = Release|x86
-		{3CCCC52F-0ACC-4E2A-A1C7-7015DD7D612A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

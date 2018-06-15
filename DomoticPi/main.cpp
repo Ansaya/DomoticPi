@@ -1,5 +1,5 @@
-#include "../LibDomoticPi/LibDomoticPi.h"
 #include <cstdio>
+#include <domoticPi/libDomoticPi.h>
 #include <rapidjson/filereadstream.h>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
 	console->info("Hello from domotic pi main.");
 
-	int retval = domoticPiInit(WPI_MODE_PINS);
+	int retval = domoticPiInit();
 	if (retval) {
 		console->critical("DomoticPi setup went wrong.");
 		return -1;
@@ -57,6 +57,8 @@ int main(int argc, char** argv)
 
 	console->info("Domotic node loaded succesfully.");
 
+	localNode->enableHAP();
+
 	/*rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
 	rapidjson::Document localNodeJson = localNode->to_json();
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
 
 	console->info("Loaded domotic node json configuration: \n%s", sb.GetString());*/
 
-	printf("Press a key to exit...");
+	printf("Press a key to exit...\n");
 	getchar();
 
 	return 0;

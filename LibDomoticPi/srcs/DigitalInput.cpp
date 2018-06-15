@@ -1,7 +1,7 @@
-#include "DigitalInput.h"
+#include <DigitalInput.h>
 
-#include "domoticPi.h"
-#include "exceptions.h"
+#include <domoticPi.h>
+#include <exceptions.h>
 
 #include <stdexcept>
 #include <wiringPi.h>
@@ -17,6 +17,19 @@ DigitalInput::DigitalInput(const std::string& id, int pinNumber, int pud) :
 
 	console->info("DigitalInput::ctor : pin %d set as digital input with pud '%d'.", 
 		pinNumber, pud);
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+
+	hap::Service_ptr switchService = std::make_shared<hap::Service>(hap::service_switch);
+	_hapAccessory->addService(switchService);
+
+	switchService->addCharacteristic(_nameInfo);
+
+	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_read);
+	_stateInfo->Characteristics::setValue(std::to_string(getValue()));
+	switchService->addCharacteristic(_stateInfo);
+
+#endif
 }
 
 DigitalInput::~DigitalInput()
@@ -38,6 +51,10 @@ void DigitalInput::input_ISR()
 
 	if (_isr_mode == INT_EDGE_NONE)
 		return;
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	_stateInfo->hap::Characteristics::setValue(std::to_string(getValue()));
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 	// TODO: it could happen that a write to _isrActions happen during for iteration,
 	//		 because no lock on _isrMode is acquired here. This is because it could 

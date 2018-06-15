@@ -1,13 +1,37 @@
-#include "SerialOutput.h"
+#include <SerialOutput.h>
 
-#include "domoticPi.h"
-#include "SerialInterface.h"
+#include <domoticPi.h>
+#include <SerialInterface.h>
 
 using namespace domotic_pi;
 
 SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range) : 
 	Output(id, -1), _serial(serial), _range_min(min_range), _range_max(max_range), _value(min_range)
 {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
+	_hapAccessory->addService(lightService);
+
+	lightService->addCharacteristic(_nameInfo);
+
+	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_all);
+	_stateInfo->Characteristics::setValue(std::to_string(false));
+	_stateInfo->setValueChangeCB([this](bool oldValue, bool newValue, void* sender) {
+		if (oldValue != newValue)
+			setState(newValue ? ON : OFF);
+	});
+	lightService->addCharacteristic(_stateInfo);
+
+	_valueInfo = std::make_shared<hap::IntCharacteristics>(hap::char_brightness, hap::permission_all, 
+		_range_min, _range_max, 1, hap::unit_percentage);
+	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+	_valueInfo->setValueChangeCB([this](int oldValue, int newValue, void* sender) {
+		if (oldValue != newValue)
+			setValue(newValue);
+	});
+	lightService->addCharacteristic(_valueInfo);
+
+#endif
 }
 
 SerialOutput::~SerialOutput()
@@ -56,6 +80,11 @@ void SerialOutput::setValue(int newValue)
 	_serial->write(cmd);
 
 	_value = newValue;
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
+	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+#endif
 
 	console->info("SerialOutput::setValue : output '%s' set to '%d'.", getID(), _value);
 }

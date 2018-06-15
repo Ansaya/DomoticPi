@@ -1,11 +1,11 @@
-#include "Output.h"
+#include <Output.h>
 
-#include "DigitalOutput.h"
-#include "DomoticNode.h"
-#include "domoticPi.h"
-#include "exceptions.h"
-#include "SerialInterface.h"
-#include "SerialOutput.h"
+#include <DigitalOutput.h>
+#include <DomoticNode.h>
+#include <domoticPi.h>
+#include <exceptions.h>
+#include <SerialInterface.h>
+#include <SerialOutput.h>
 
 #include <wiringPi.h>
 

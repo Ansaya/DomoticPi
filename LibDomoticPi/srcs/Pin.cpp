@@ -1,7 +1,7 @@
-#include "Pin.h"
+#include <Pin.h>
 
-#include "domoticPi.h"
-#include "exceptions.h"
+#include <domoticPi.h>
+#include <exceptions.h>
 
 #include <stdexcept>
 #include <wiringPi.h>

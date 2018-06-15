@@ -72,6 +72,11 @@ namespace domotic_pi {
 		std::mutex _isrMode;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		hap::BoolCharacteristics_ptr _stateInfo;
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
+
+
 		void _setISRMode(int isr_mode);
 
 		/**

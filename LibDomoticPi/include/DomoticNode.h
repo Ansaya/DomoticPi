@@ -3,12 +3,6 @@
 
 #include "domoticPiDefine.h"
 
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-#include <PHKAccessory.h>
-#include <PHKNetworkIP.h>
-#endif // DOMOTIC_PI_APPLE_HOMEKIT
-
-
 #include <memory>
 #ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
@@ -137,6 +131,8 @@ namespace domotic_pi {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 		bool enableHAP();
 
+		void disableHAP();
+
 		bool isHAPEnabled() const;
 #endif
 
@@ -155,10 +151,8 @@ namespace domotic_pi {
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		std::shared_ptr<AccessorySet> _accessoryNode;
-		std::shared_ptr<PHKNetworkIP> _hapHandler;
+		
 #endif
-
 
 	};
 

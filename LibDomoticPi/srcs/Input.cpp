@@ -1,10 +1,10 @@
-#include "Input.h"
+#include <Input.h>
 
-#include "DigitalInput.h"
-#include "DomoticNode.h"
-#include "domoticPi.h"
-#include "exceptions.h"
-#include "SerialInterface.h"
+#include <DigitalInput.h>
+#include <DomoticNode.h>
+#include <domoticPi.h>
+#include <exceptions.h>
+#include <SerialInterface.h>
 
 #include <stdexcept>
 #include <wiringPi.h>
@@ -12,7 +12,7 @@
 using namespace domotic_pi;
 
 Input::Input(const std::string& id, int pinNumber) : 
-	Pin(pinNumber), _id(id), _name("")
+	Pin(pinNumber), Module(id)
 {
 	if (pinNumber >= 0) {
 		pinMode(pinNumber, INPUT);
@@ -98,44 +98,4 @@ Input_ptr Input::from_json(const std::string& jsonConfig, DomoticNode_ptr parent
 
 	// Call standard parser asking for a schema check too
 	return Input::from_json(config, parentNode, true);
-}
-
-const std::string & Input::getID() const
-{
-	return _id;
-}
-
-const std::string & Input::getName() const
-{
-	return _name;
-}
-
-void Input::setName(const std::string name)
-{
-#ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lck(_nameLock);
-#endif
-
-	console->info("Input::setName : name changed for input '%s' from '%s' to '%s'.", 
-			_id, _name.c_str(), name.c_str());
-
-	_name.assign(name);
-}
-
-rapidjson::Document Input::to_json() const
-{
-	console->debug("Input::to_json : serializing input '%s'.", _id.c_str());
-
-	rapidjson::Document input(rapidjson::kObjectType);
-
-	// Set input id
-	rapidjson::Value id;
-	id.SetString(_id.c_str(), input.GetAllocator());
-	input.AddMember("id", id, input.GetAllocator());
-
-	rapidjson::Value name;
-	name.SetString(_name.c_str(), input.GetAllocator());
-	input.AddMember("name", name, input.GetAllocator());
-
-	return input;
 }

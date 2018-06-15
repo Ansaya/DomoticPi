@@ -21,11 +21,9 @@ namespace domotic_pi {
 	/**
 	 *	@brief Initialize all needed stuff to run domoticPi library properly
 	 *
-	 *	@param pin_mode pin numeration mode
-	 *
 	 *	@return 0 on success, non-zero on error
 	 */
-	int domoticPiInit(int pin_mode);
+	int domoticPiInit();
 
 	namespace json {
 

@@ -1,12 +1,15 @@
-#include "DomoticNode.h"
+#include <DomoticNode.h>
 
-#include "domoticPi.h"
-#include "exceptions.h"
-#include "Input.h"
-#include "Output.h"
-#include "SerialInterface.h"
+#include <domoticPi.h>
+#include <exceptions.h>
+#include <Input.h>
+#include <Output.h>
+#include <SerialInterface.h>
 
 #include <algorithm>
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+#include <hap/libHAP.h>
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 using namespace domotic_pi;
 
@@ -16,6 +19,10 @@ DomoticNode::DomoticNode(const std::string& id) : _id(id)
 
 DomoticNode::~DomoticNode()
 {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	if (isHAPEnabled())
+		disableHAP();
+#endif
 }
 
 DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool checkSchema)
@@ -45,7 +52,12 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& inputs = config["inputs"].GetArray();
 		for (auto& it : inputs) {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+			Input_ptr newInput = Input::from_json(it, domoticNode);
+			//hap::AccessorySet::getInstance().addAccessory(newInput->getHAPAccessory());
+#else
 			Input::from_json(it, domoticNode);
+#endif
 		}
 	}
 
@@ -56,7 +68,12 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& outputs = config["outputs"].GetArray();
 		for (auto& it : outputs) {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+			Output_ptr newOutput = Output::from_json(it, domoticNode);
+			hap::AccessorySet::getInstance().addAccessory(newOutput->getHAPAccessory());
+#else
 			Output::from_json(it, domoticNode);
+#endif
 		}
 	}
 
@@ -169,6 +186,10 @@ bool DomoticNode::addInput(Input_ptr input)
 
 	_inputs.push_back(input);
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	hap::AccessorySet::getInstance().addAccessory(input->getHAPAccessory());
+#endif
+
 	return true;
 }
 
@@ -177,6 +198,10 @@ void DomoticNode::removeInput(const std::string & inputId)
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::unique_lock<std::mutex> lock(_inputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	// TODO: remove input from AccessorySet
+#endif
 
 	std::remove_if(_inputs.begin(), _inputs.end(), 
 		[inputId](const Input_ptr& i) { return inputId == i->getID(); });
@@ -212,6 +237,10 @@ bool DomoticNode::addOutput(Output_ptr output)
 
 	_outputs.push_back(output);
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	hap::AccessorySet::getInstance().addAccessory(output->getHAPAccessory());
+#endif
+
 	return true;
 }
 
@@ -220,6 +249,10 @@ void DomoticNode::removeOutput(const std::string & outputId)
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::unique_lock<std::mutex> lock(_outputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	// TODO: remove output from AccessorySet
+#endif
 
 	std::remove_if(_outputs.begin(), _outputs.end(),
 		[outputId](const Output_ptr& o) { return outputId == o->getID(); });
@@ -308,3 +341,23 @@ rapidjson::Document DomoticNode::to_json() const
 
 	return domoticNode;
 }
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+
+bool DomoticNode::enableHAP()
+{
+	return hap::net::HAPService::getInstance()
+		.setupAndListen(hap::deviceType_bridge);
+}
+
+void DomoticNode::disableHAP()
+{
+	hap::net::HAPService::getInstance().stop();
+}
+
+bool DomoticNode::isHAPEnabled() const
+{
+	return hap::net::HAPService::getInstance().isRunning();
+}
+
+#endif

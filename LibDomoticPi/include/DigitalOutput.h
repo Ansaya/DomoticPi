@@ -19,6 +19,11 @@ namespace domotic_pi {
 
 		rapidjson::Document to_json() const override;
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	private:
+		hap::BoolCharacteristics_ptr _stateInfo;
+#endif
+
 	};
 
 }
