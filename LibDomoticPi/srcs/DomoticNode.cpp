@@ -52,12 +52,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& inputs = config["inputs"].GetArray();
 		for (auto& it : inputs) {
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-			Input_ptr newInput = Input::from_json(it, domoticNode);
-			//hap::AccessorySet::getInstance().addAccessory(newInput->getAHKAccessory());
-#else
 			Input::from_json(it, domoticNode);
-#endif
 		}
 	}
 
@@ -68,12 +63,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& outputs = config["outputs"].GetArray();
 		for (auto& it : outputs) {
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-			Output_ptr newOutput = Output::from_json(it, domoticNode);
-			hap::AccessorySet::getInstance().addAccessory(newOutput->getAHKAccessory());
-#else
 			Output::from_json(it, domoticNode);
-#endif
 		}
 	}
 
@@ -199,12 +189,16 @@ void DomoticNode::removeInput(const std::string & inputId)
 	std::unique_lock<std::mutex> lock(_inputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	auto input = std::find_if(_inputs.begin(), _inputs.end(),
+		[inputId](const Input_ptr& i) { return inputId == i->getID(); });
+
+	if (input != _inputs.end()) {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	// TODO: remove input from AccessorySet
+		hap::AccessorySet::getInstance().removeAccessory((*input)->getAHKAccessory());
 #endif
 
-	std::remove_if(_inputs.begin(), _inputs.end(), 
-		[inputId](const Input_ptr& i) { return inputId == i->getID(); });
+		_inputs.erase(input);
+	}
 }
 
 Output_ptr DomoticNode::getOutput(const std::string& id) const
@@ -250,12 +244,15 @@ void DomoticNode::removeOutput(const std::string & outputId)
 	std::unique_lock<std::mutex> lock(_outputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	// TODO: remove output from AccessorySet
-#endif
-
-	std::remove_if(_outputs.begin(), _outputs.end(),
+	auto output = std::find_if(_outputs.begin(), _outputs.end(),
 		[outputId](const Output_ptr& o) { return outputId == o->getID(); });
+
+	if (output != _outputs.end()) {
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		hap::AccessorySet::getInstance().removeAccessory((*output)->getAHKAccessory());
+#endif
+		_outputs.erase(output);
+	}
 }
 
 SerialInterface_ptr DomoticNode::getSerialInterface(const std::string& port) const
