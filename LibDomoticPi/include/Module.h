@@ -6,7 +6,7 @@
 #include "Serializable.h"
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-#include "HasHAPAccessory.h"
+#include "IAHKAccessory.h"
 #include <hap/libHAP.h>
 #endif
 
@@ -22,12 +22,13 @@ template<class T>
 class Module : 
 	public Serializable,
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	public HasHAPAccessory 
+	public IAHKAccessory 
 #endif
 {
 
 public:
 	Module(const std::string& id);
+	virtual ~Module();
 
 	const std::string& getID() const;
 
@@ -56,7 +57,9 @@ template<class T>
 domotic_pi::Module<T>::Module(const std::string& id) : _id(id), _name("")
 {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_hapAccessory->addInfoService("Module", DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER, 
+	_ahkAccessory = std::make_shared<hap::Accessory>();
+
+	_ahkAccessory->addInfoService("Module", DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER, 
 		typeid(T).name(), _id, [](bool oldValue, bool newValue, void* sender) {});
 
 	_nameInfo = std::make_shared<hap::StringCharacteristics>(hap::char_serviceName, hap::permission_read);
@@ -64,6 +67,11 @@ domotic_pi::Module<T>::Module(const std::string& id) : _id(id), _name("")
 		setName(newValue);
 	});
 #endif
+}
+
+template<class T>
+domotic_pi::Module<T>::~Module()
+{
 }
 
 template<class T>

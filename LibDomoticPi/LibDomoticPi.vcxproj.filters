@@ -33,9 +33,6 @@
     <ClInclude Include="include\exceptions.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\HasHAPAccessory.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\Input.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -61,6 +58,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\libDomoticPi.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IAHKAccessory.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

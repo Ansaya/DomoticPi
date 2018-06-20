@@ -93,7 +93,7 @@
     <ClInclude Include="include\domoticPi.h" />
     <ClInclude Include="include\domoticPiDefine.h" />
     <ClInclude Include="include\exceptions.h" />
-    <ClInclude Include="include\HasHAPAccessory.h" />
+    <ClInclude Include="include\IAHKAccessory.h" />
     <ClInclude Include="include\Input.h" />
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\Module.h" />

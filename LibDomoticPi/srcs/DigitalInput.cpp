@@ -19,16 +19,14 @@ DigitalInput::DigitalInput(const std::string& id, int pinNumber, int pud) :
 		pinNumber, pud);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-
 	hap::Service_ptr switchService = std::make_shared<hap::Service>(hap::service_switch);
-	_hapAccessory->addService(switchService);
+	_ahkAccessory->addService(switchService);
 
 	switchService->addCharacteristic(_nameInfo);
 
 	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_read);
 	_stateInfo->Characteristics::setValue(std::to_string(getValue()));
 	switchService->addCharacteristic(_stateInfo);
-
 #endif
 }
 

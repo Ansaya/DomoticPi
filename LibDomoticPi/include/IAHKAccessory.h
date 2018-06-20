@@ -8,18 +8,18 @@
 
 namespace domotic_pi {
 
-	class HasHAPAccessory {
+	class IAHKAccessory {
 
 	private:
-		hap::Accessory_ptr getHAPAccessory() const
+		const hap::Accessory_ptr getAHKAccessory() const
 		{
-			return _hapAccessory;
+			return _ahkAccessory;
 		}
 
 		friend class DomoticNode;
 
 	protected:
-		const hap::Accessory_ptr _hapAccessory = std::make_shared<hap::Accessory>();
+		hap::Accessory_ptr _ahkAccessory;
 
 	};
 

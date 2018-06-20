@@ -54,7 +54,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 		for (auto& it : inputs) {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 			Input_ptr newInput = Input::from_json(it, domoticNode);
-			//hap::AccessorySet::getInstance().addAccessory(newInput->getHAPAccessory());
+			//hap::AccessorySet::getInstance().addAccessory(newInput->getAHKAccessory());
 #else
 			Input::from_json(it, domoticNode);
 #endif
@@ -70,7 +70,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 		for (auto& it : outputs) {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 			Output_ptr newOutput = Output::from_json(it, domoticNode);
-			hap::AccessorySet::getInstance().addAccessory(newOutput->getHAPAccessory());
+			hap::AccessorySet::getInstance().addAccessory(newOutput->getAHKAccessory());
 #else
 			Output::from_json(it, domoticNode);
 #endif
@@ -187,7 +187,7 @@ bool DomoticNode::addInput(Input_ptr input)
 	_inputs.push_back(input);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::AccessorySet::getInstance().addAccessory(input->getHAPAccessory());
+	hap::AccessorySet::getInstance().addAccessory(input->getAHKAccessory());
 #endif
 
 	return true;
@@ -238,7 +238,7 @@ bool DomoticNode::addOutput(Output_ptr output)
 	_outputs.push_back(output);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::AccessorySet::getInstance().addAccessory(output->getHAPAccessory());
+	hap::AccessorySet::getInstance().addAccessory(output->getAHKAccessory());
 #endif
 
 	return true;

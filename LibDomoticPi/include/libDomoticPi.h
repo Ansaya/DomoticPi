@@ -9,7 +9,7 @@
 
 #include "Pin.h"
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-#include "HasHAPAccessory.h"
+#include "IAHKAccessory.h"
 #endif
 #include "Module.h"
 #include "Serializable.h"

@@ -18,9 +18,8 @@ DigitalOutput::DigitalOutput(const std::string& id, int pinNumber) : Output(id, 
 	console->info("DigitalOutput::ctor : pin %d set to OUTPUT mode.", pinNumber);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-
 	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
-	_hapAccessory->addService(lightService);
+	_ahkAccessory->addService(lightService);
 
 	lightService->addCharacteristic(_nameInfo);
 
@@ -31,7 +30,6 @@ DigitalOutput::DigitalOutput(const std::string& id, int pinNumber) : Output(id, 
 			setState(newValue ? ON : OFF);
 	});
 	lightService->addCharacteristic(_stateInfo);
-
 #endif
 }
 

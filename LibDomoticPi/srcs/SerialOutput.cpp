@@ -10,7 +10,7 @@ SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, in
 {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
-	_hapAccessory->addService(lightService);
+	_ahkAccessory->addService(lightService);
 
 	lightService->addCharacteristic(_nameInfo);
 
@@ -30,7 +30,6 @@ SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, in
 			setValue(newValue);
 	});
 	lightService->addCharacteristic(_valueInfo);
-
 #endif
 }
 
