@@ -13,10 +13,7 @@ R"(
       "type": "string"
     },
     "pin": { "$ref": "pinNumber.json" },
-    "type": {
-      "description": "Output module type",
-      "enum": [ "digital", "serial" ]
-    },
+    "type": { "$ref": "InterfaceType.json" },
     "range_min": {
       "description": "Minimum output value",
       "type": "integer"
@@ -42,7 +39,7 @@ R"(
       "properties": {
         "type": { "enum": [ "digital" ] }
       },
-      "required": ["type"]
+      "required": ["pin"]
     },
     {
       "properties": {

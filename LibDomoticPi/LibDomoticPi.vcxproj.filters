@@ -63,6 +63,15 @@
     <ClInclude Include="include\IAHKAccessory.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\InterfaceType.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttModule.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttSubscription.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -84,6 +93,9 @@
       <Filter>json-schema</Filter>
     </None>
     <None Include="json-schema\ioBinding.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\InterfaceType.json">
       <Filter>json-schema</Filter>
     </None>
   </ItemGroup>
@@ -116,6 +128,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\SerialOutput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttSubscription.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

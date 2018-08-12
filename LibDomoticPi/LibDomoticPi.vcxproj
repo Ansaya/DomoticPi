@@ -95,8 +95,11 @@
     <ClInclude Include="include\exceptions.h" />
     <ClInclude Include="include\IAHKAccessory.h" />
     <ClInclude Include="include\Input.h" />
+    <ClInclude Include="include\InterfaceType.h" />
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\Module.h" />
+    <ClInclude Include="include\MqttModule.h" />
+    <ClInclude Include="include\MqttSubscription.h" />
     <ClInclude Include="include\Output.h" />
     <ClInclude Include="include\OutState.h" />
     <ClInclude Include="include\Pin.h" />
@@ -107,6 +110,7 @@
   <ItemGroup>
     <None Include="json-schema\DomoticNode.json" />
     <None Include="json-schema\Input.json" />
+    <None Include="json-schema\InterfaceType.json" />
     <None Include="json-schema\ioBinding.json" />
     <None Include="json-schema\Output.json" />
     <None Include="json-schema\pinNumber.json" />
@@ -122,6 +126,7 @@
     <ClCompile Include="srcs\DomoticNode.cpp" />
     <ClCompile Include="srcs\domoticPi.cpp" />
     <ClCompile Include="srcs\Input.cpp" />
+    <ClCompile Include="srcs\MqttSubscription.cpp" />
     <ClCompile Include="srcs\Output.cpp" />
     <ClCompile Include="srcs\Pin.cpp" />
     <ClCompile Include="srcs\SerialInterface.cpp" />
@@ -145,7 +150,7 @@
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
+      <LibraryDependencies>hap;wiringPi;pthread;mosquitto</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
       <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>
@@ -168,7 +173,7 @@
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>hap;wiringPi;pthread</LibraryDependencies>
+      <LibraryDependencies>hap;wiringPi;pthread;mosquitto</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
       <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>

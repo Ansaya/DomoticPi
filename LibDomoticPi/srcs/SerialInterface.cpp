@@ -110,7 +110,7 @@ std::string SerialInterface::read()
 
 	// Read all available bytes and store them in buffer
 	for (int i = 0; i < bytes; i++)
-		buffer[i] = serialGetchar(_serial);
+		buffer[i] = (char)serialGetchar(_serial);
 
 	// Assign read buffer to message string
 	message.assign(buffer);

@@ -4,6 +4,7 @@
 #include <DomoticNode.h>
 #include <domoticPi.h>
 #include <exceptions.h>
+#include <InterfaceType.h>
 #include <SerialInterface.h>
 #include <SerialOutput.h>
 
@@ -36,19 +37,21 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 	}
 
 	std::string type = config["type"].GetString();
-	if (type == "digital") {
+	switch (type.front())
+	{
+	case Digital: {
 		output = std::make_shared<DigitalOutput>(
 			config["id"].GetString(),
 			config["pin"].GetInt());
 	}
+		break;
 
-	if (type == "serial") {
-
+	case Serial: {
 		// If serialInterface is an object, then the serial interface requested needs to be created
 		bool create = config["serialInterface"].IsObject();
 
 		SerialInterface_ptr si;
-		
+
 		if (create) {
 			si = SerialInterface::from_json(config["serialInterface"], parentNode, false);
 		}
@@ -70,6 +73,23 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 			si,
 			config["range_min"].GetInt(),
 			config["range_max"].GetInt());
+	}
+		break;
+
+	case Mqtt: {
+
+	}
+		break;
+
+	case I2c: {
+
+	}
+		break;
+
+	default: {
+		console->error("Output::from_json : output required '%s' interface which is not available.", type.c_str());
+		throw domotic_pi_exception("Required module interface not found.");
+	}
 	}
 
 	if (config.HasMember("name"))

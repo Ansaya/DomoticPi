@@ -6,7 +6,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <wiringPi.h>
 
-std::shared_ptr<spdlog::logger> domotic_pi::console = spdlog::stdout_color_mt("domoticPi");
+std::shared_ptr<spdlog::logger> domotic_pi::console = spdlog::stdout_logger_mt("domoticPi", true);
 
 void domotic_pi::setConsole(std::shared_ptr<spdlog::logger> console)
 {
@@ -58,6 +58,18 @@ int domotic_pi::json::SchemaProvider::load()
 	}
 	_schemas["pinNumber.json"] = 
 		std::make_shared<rapidjson::SchemaDocument>(pinNumberDoc);
+
+	const char * InterfaceType =
+#include "../json-schema/InterfaceType.json"
+		;
+	rapidjson::Document InterfaceTypeDoc;
+	if (InterfaceTypeDoc.Parse(InterfaceType).HasParseError()) {
+		console->error("json::SchemaProvider::load : error found while loading json "
+			"schema 'InterfaceType.json'.");
+		return -1;
+	}
+	_schemas["InterfaceType.json"] =
+		std::make_shared<rapidjson::SchemaDocument>(InterfaceTypeDoc);
 
 	const char * ioBinding =
 #include "../json-schema/ioBinding.json"
