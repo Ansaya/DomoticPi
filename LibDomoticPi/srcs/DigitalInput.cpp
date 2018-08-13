@@ -3,9 +3,10 @@
 #include <domoticPi.h>
 #include <exceptions.h>
 
+#include <exception>
+#include <rapidjson/stringbuffer.h>
 #include <stdexcept>
 #include <wiringPi.h>
-#include <rapidjson/stringbuffer.h>
 
 using namespace domotic_pi;
 
@@ -59,8 +60,14 @@ void DigitalInput::input_ISR()
 	//		 lead to deadlock while disablig ISR when this function has started, but
 	//		 has not yet acquired the lock.
 
-	for (auto& action : _isrActions)
-		action();
+	for (auto& action : _isrActions) {
+		try {
+			action();
+		}
+		catch (std::exception& e) {
+			console->warn("DigitalInput::input_ISR : isr call throw the following exception : {}", e.what());
+		}
+	}
 }
 
 void DigitalInput::addISRCall(std::function<void()> cb, int isr_mode)

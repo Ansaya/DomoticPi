@@ -5,6 +5,7 @@
 #include <domoticPi.h>
 #include <exceptions.h>
 #include <InterfaceType.h>
+#include <MqttInput.h>
 #include <SerialInterface.h>
 
 #include <stdexcept>
@@ -79,7 +80,24 @@ Input_ptr Input::from_json(const rapidjson::Value& config, DomoticNode_ptr paren
 		break;
 
 	case Mqtt: {
-		throw domotic_pi_exception("Mqtt input module not yet implemented.");
+		const rapidjson::Value& mqttInterface = config["mqttInterface"];
+
+		if (mqttInterface.HasMember("username")) {
+			input = std::make_shared<MqttInput>(
+				config["id"].GetString(),
+				mqttInterface["topic"].GetString(),
+				mqttInterface["broker"].GetString(),
+				mqttInterface["port"].GetInt(),
+				mqttInterface["username"].GetString(),
+				mqttInterface["password"].GetString());
+		}
+		else {
+			input = std::make_shared<MqttInput>(
+				config["id"].GetString(),
+				mqttInterface["topic"].GetString(),
+				mqttInterface["broker"].GetString(),
+				mqttInterface["port"].GetInt());
+		}
 	}
 		break;
 

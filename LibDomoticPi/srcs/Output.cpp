@@ -96,7 +96,6 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 				mqttInterface["broker"].GetString(),
 				mqttInterface["port"].GetInt());
 		}
-		
 	}
 		break;
 

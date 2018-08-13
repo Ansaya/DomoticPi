@@ -20,10 +20,9 @@ public:
 		const std::string& mqttUsername = "", 
 		const std::string& mqttPassword = "");
 
-	~MqttOutput();
-
 	MqttOutput(const MqttOutput&) = delete;
 	MqttOutput& operator= (const MqttOutput&) = delete;
+	~MqttOutput();
 
 	void setState(OutState newState) override;
 

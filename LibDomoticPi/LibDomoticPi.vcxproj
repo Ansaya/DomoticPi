@@ -99,6 +99,7 @@
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\Module.h" />
     <ClInclude Include="include\IMqtt.h" />
+    <ClInclude Include="include\MqttInput.h" />
     <ClInclude Include="include\MqttLib.h" />
     <ClInclude Include="include\MqttOutput.h" />
     <ClInclude Include="include\MqttSubscription.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="srcs\domoticPi.cpp" />
     <ClCompile Include="srcs\IMqtt.cpp" />
     <ClCompile Include="srcs\Input.cpp" />
+    <ClCompile Include="srcs\MqttInput.cpp" />
     <ClCompile Include="srcs\MqttLib.cpp" />
     <ClCompile Include="srcs\MqttOutput.cpp" />
     <ClCompile Include="srcs\MqttSubscription.cpp" />

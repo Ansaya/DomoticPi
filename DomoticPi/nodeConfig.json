@@ -8,34 +8,45 @@
       "type": "digital",
       "pin": 0,
       "pud": 1
-    }
-  ],
-  "outputs": [
-    {
-      "id": "001",
-      "name": "testOut",
-      "type": "digital",
-      "pin": 1
     },
     {
       "id": "002",
-      "name": "mqttTestOut",
+      "name": "mqttTestIn",
       "type": "mqtt",
       "mqttInterface": {
         "broker": "127.0.0.1",
         "port": 1883,
-        "topic": "tasmota-sonoff/POWER",
+        "topic": "button/POWER1",
         "username": "DEVS_USER",
         "password": "DEVS_PASS"
-      }
+      },
+
+      "outputs": [
+        {
+          "id": "001",
+          "name": "testOut",
+          "type": "digital",
+          "pin": 1
+        },
+        {
+          "id": "002",
+          "name": "mqttTestOut",
+          "type": "mqtt",
+          "mqttInterface": {
+            "broker": "127.0.0.1",
+            "port": 1883,
+            "topic": "tasmota-sonoff/POWER1",
+            "username": "DEVS_USER",
+            "password": "DEVS_PASS"
+          }
+        }
+      ],
+      "bindings": [
+        {
+          "inputId": "001",
+          "outputId": "001",
+          "inputState": 2,
+          "outputAction": 2
+        }
+      ]
     }
-  ],
-  "bindings": [
-    {
-      "inputId": "001",
-      "outputId": "001",
-      "inputState": 2,
-      "outputAction": 2
-    }
-  ]
-}
