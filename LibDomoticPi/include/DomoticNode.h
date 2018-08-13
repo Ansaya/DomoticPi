@@ -17,6 +17,9 @@ namespace domotic_pi {
 	public:
 		DomoticNode(const std::string& id);
 
+		DomoticNode(const DomoticNode&) = delete;
+		DomoticNode& operator= (const DomoticNode&) = delete;
+
 		virtual ~DomoticNode();
 
 		static DomoticNode_ptr from_json(const rapidjson::Value& config, 

@@ -28,6 +28,8 @@ class Module :
 
 public:
 	Module(const std::string& id);
+	Module(const Module&) = delete;
+	Module& operator= (const Module&) = delete;
 	virtual ~Module();
 
 	const std::string& getID() const;
@@ -93,7 +95,7 @@ void domotic_pi::Module<T>::setName(const std::string& name)
 	std::unique_lock<std::mutex> lck(_nameLock);
 #endif
 
-	domotic_pi::console->info("Module::setName : name changed for module '%s' from '%s' to '%s'.",
+	domotic_pi::console->info("Module::setName : name changed for module '{}' from '{}' to '{}'.",
 		_id, _name.c_str(), name.c_str());
 
 	_name.assign(name);
@@ -106,7 +108,7 @@ void domotic_pi::Module<T>::setName(const std::string& name)
 template<class T>
 rapidjson::Document domotic_pi::Module<T>::to_json() const
 {
-	domotic_pi::console->debug("Module::to_json : serializing module '%s'.", _id.c_str());
+	domotic_pi::console->debug("Module::to_json : serializing module '{}'.", _id.c_str());
 
 	rapidjson::Document moduleDoc(rapidjson::kObjectType);
 

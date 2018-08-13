@@ -16,6 +16,18 @@
       "name": "testOut",
       "type": "digital",
       "pin": 1
+    },
+    {
+      "id": "002",
+      "name": "mqttTestOut",
+      "type": "mqtt",
+      "mqttInterface": {
+        "broker": "127.0.0.1",
+        "port": 1883,
+        "topic": "tasmota-sonoff/POWER",
+        "username": "DEVS_USER",
+        "password": "DEVS_PASS"
+      }
     }
   ],
   "bindings": [

@@ -11,6 +11,8 @@ namespace domotic_pi {
 
 	public:
 		DigitalOutput(const std::string& id, int pinNumber);
+		DigitalOutput(const DigitalOutput&) = delete;
+		DigitalOutput& operator= (const DigitalOutput&) = delete;
 		virtual ~DigitalOutput();
 		
 		void setState(OutState newState) override;

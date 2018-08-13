@@ -4,9 +4,10 @@
 
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <wiringPi.h>
 
-std::shared_ptr<spdlog::logger> domotic_pi::console = spdlog::stdout_logger_mt("domoticPi", true);
+std::shared_ptr<spdlog::logger> domotic_pi::console = spdlog::stdout_color_mt("domoticPi");
 
 void domotic_pi::setConsole(std::shared_ptr<spdlog::logger> console)
 {
@@ -24,7 +25,7 @@ int domotic_pi::domoticPiInit()
 	retval = wiringPiSetup(WPI_MODE_PINS);
 
 	if (retval)
-		console->error("domoticPiInit : wiringPiSetup returned %d code.", retval);
+		console->error("domoticPiInit : wiringPiSetup returned {} code.", retval);
 	else
 		console->info("domoticPiInit : domoticPi initialization succesful.");
 
@@ -70,6 +71,18 @@ int domotic_pi::json::SchemaProvider::load()
 	}
 	_schemas["InterfaceType.json"] =
 		std::make_shared<rapidjson::SchemaDocument>(InterfaceTypeDoc);
+
+	const char * MqttInterface =
+#include "../json-schema/MqttInterface.json"
+		;
+	rapidjson::Document MqttInterfaceDoc;
+	if (InterfaceTypeDoc.Parse(MqttInterface).HasParseError()) {
+		console->error("json::SchemaProvider::load : error found while loading json "
+			"schema 'MqttInterface.json'.");
+		return -1;
+	}
+	_schemas["MqttInterface.json"] =
+		std::make_shared<rapidjson::SchemaDocument>(MqttInterfaceDoc);
 
 	const char * ioBinding =
 #include "../json-schema/ioBinding.json"
@@ -141,7 +154,7 @@ bool domotic_pi::json::hasValidSchema(const rapidjson::Value& json, const char* 
 {
 	const rapidjson::SchemaDocument* sd = domotic_pi::json::SchemaProvider::GetSchema(schemaUri);
 	if (sd == nullptr) {
-		domotic_pi::console->error("domotic_pi::json::hasValidSchema : json schema '%s' not found.", schemaUri);
+		domotic_pi::console->error("domotic_pi::json::hasValidSchema : json schema '{}' not found.", schemaUri);
 		return false;
 	}
 
@@ -155,7 +168,7 @@ bool domotic_pi::json::hasValidSchema(const rapidjson::Value& json, const char* 
 		validator.GetError().Accept(writer);
 
 		console->error("domotic_pi::json::hasValidSchema : invalid configuration file : "
-			"\nInvalid shcema: %s\nInvalid keyword: %s\n%s",
+			"\nInvalid shcema: {}\nInvalid keyword: {}\n{}",
 			sb.GetString(), validator.GetInvalidSchemaKeyword(), errorBuf.GetString());
 
 		sb.Clear();
@@ -172,7 +185,7 @@ const rapidjson::SchemaDocument* domotic_pi::json::SchemaProvider::GetSchema(con
 	if (_schemas.find(fileName) != _schemas.end())
 		return _schemas[fileName].get();
 
-	console->warn("json::SchemaProvider::GetSchema : schema '%s' not found.", uri);
+	console->warn("json::SchemaProvider::GetSchema : schema '{}' not found.", uri);
 
 	return nullptr;
 }

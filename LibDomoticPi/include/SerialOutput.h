@@ -12,6 +12,8 @@ namespace domotic_pi {
 
 	public:
 		SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range);
+		SerialOutput(const SerialOutput&) = delete;
+		SerialOutput& operator= (const SerialOutput&) = delete;
 		virtual ~SerialOutput();
 
 		void setState(OutState newState) override;
@@ -24,7 +26,6 @@ namespace domotic_pi {
 		SerialInterface_ptr _serial;
 		int _range_min;
 		int _range_max;
-		int _value;
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 		hap::BoolCharacteristics_ptr _stateInfo;

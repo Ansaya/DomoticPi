@@ -5,6 +5,7 @@
 #include <domoticPi.h>
 #include <exceptions.h>
 #include <InterfaceType.h>
+#include <MqttOutput.h>
 #include <SerialInterface.h>
 #include <SerialOutput.h>
 
@@ -32,7 +33,7 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 	std::string id = config["id"].GetString();
 	Output_ptr output = parentNode->getOutput(id);
 	if (output != nullptr) {
-		console->warn("Output::from_json : output '%s' already loaded.", id.c_str());
+		console->warn("Output::from_json : output '{}' already loaded.", id.c_str());
 		return output;
 	}
 
@@ -62,7 +63,7 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 			si = parentNode->getSerialInterface(port);
 
 			if (si == nullptr) {
-				console->error("Output::fromJson : requested serial interface '%s' is not present on node '%s'.",
+				console->error("Output::fromJson : requested serial interface '{}' is not present on node '{}'.",
 					port.c_str(), parentNode->getID().c_str());
 				throw domotic_pi_exception("Required serial port not found");
 			}
@@ -77,17 +78,35 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 		break;
 
 	case Mqtt: {
+		const rapidjson::Value& mqttInterface = config["mqttInterface"];
 
+		if (mqttInterface.HasMember("username")) {
+			output = std::make_shared<MqttOutput>(
+				config["id"].GetString(),
+				mqttInterface["topic"].GetString(),
+				mqttInterface["broker"].GetString(),
+				mqttInterface["port"].GetInt(),
+				mqttInterface["username"].GetString(),
+				mqttInterface["password"].GetString());
+		}
+		else {
+			output = std::make_shared<MqttOutput>(
+				config["id"].GetString(),
+				mqttInterface["topic"].GetString(),
+				mqttInterface["broker"].GetString(),
+				mqttInterface["port"].GetInt());
+		}
+		
 	}
 		break;
 
 	case I2c: {
-
+		throw domotic_pi_exception("I2c output module not yet implemented.");
 	}
 		break;
 
 	default: {
-		console->error("Output::from_json : output required '%s' interface which is not available.", type.c_str());
+		console->error("Output::from_json : output required '{}' interface which is not available.", type.c_str());
 		throw domotic_pi_exception("Required module interface not found.");
 	}
 	}
@@ -97,7 +116,7 @@ Output_ptr Output::from_json(const rapidjson::Value& config, DomoticNode_ptr par
 
 	parentNode->addOutput(output);
 
-	console->info("Output::from_json : new %s output created with id '%s' on node '%s'.", 
+	console->info("Output::from_json : new {} output created with id '{}' on node '{}'.", 
 		type.c_str(), id.c_str(), parentNode->getID().c_str());
 
 	return output;

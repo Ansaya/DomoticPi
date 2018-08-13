@@ -22,6 +22,9 @@ namespace domotic_pi {
 		//	@throws already_used_exception If pin is already used by another object
 		Pin(int pin);
 
+		Pin(const Pin&) = delete;
+		Pin& operator= (const Pin&) = delete;
+
 		virtual ~Pin();
 
 		int getPin() const;

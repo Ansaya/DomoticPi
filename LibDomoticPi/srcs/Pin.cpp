@@ -19,7 +19,7 @@ Pin::Pin(int pin) : _pin(pin) {
 		return;
 
 	if (pin > DOMOTIC_PI_MAX_PIN) {
-		console->error("Pin::ctor : pin %d not present.", pin);
+		console->error("Pin::ctor : pin {} not present.", pin);
 		throw std::out_of_range("Pin number must be between 0 and " STR(DOMOTIC_PI_MAX_PIN) ".");
 	}
 
@@ -29,14 +29,14 @@ Pin::Pin(int pin) : _pin(pin) {
 
 	// If requested pin is already in use throw
 	if (_inUse[pin]) {
-		console->error("Pin::ctor : pin %d is already in use.", pin);
+		console->error("Pin::ctor : pin {} is already in use.", pin);
 		throw domotic_pi_exception("Requested pin is alreay in use.");
 	}
 
 	// Else set pin in use and release lock
 	_inUse[pin] = true;
 
-	console->info("Pin::ctor : pin %d locked.", pin);
+	console->info("Pin::ctor : pin {} locked.", pin);
 }
 
 Pin::~Pin() {
@@ -55,7 +55,7 @@ Pin::~Pin() {
 	pinMode(getPin(), DOMOTIC_PI_PIN_STANDARD_MODE);
 	pullUpDnControl(getPin(), DOMOTIC_PI_PIN_STANDARD_PUD);
 
-	console->info("Pin::dtor : pin %d unlocked.", _pin);
+	console->info("Pin::dtor : pin {} unlocked.", _pin);
 }
 
 int Pin::getPin() const {

@@ -27,6 +27,8 @@ namespace domotic_pi {
 		 */
 		SerialInterface(const std::string& port, int baud, int txPin, int rxPin);
 
+		SerialInterface(const SerialInterface&) = delete;
+		SerialInterface& operator= (const SerialInterface&) = delete;
 		virtual ~SerialInterface();
 
 		/**

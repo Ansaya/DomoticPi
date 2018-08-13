@@ -18,7 +18,7 @@ Input::Input(const std::string& id, int pinNumber) :
 	if (pinNumber >= 0) {
 		pinMode(pinNumber, INPUT);
 
-		console->info("Input::ctor : pin %d set as input.", pinNumber);
+		console->info("Input::ctor : pin {} set as input.", pinNumber);
 	}	
 }
 
@@ -37,7 +37,7 @@ Input_ptr Input::from_json(const rapidjson::Value& config, DomoticNode_ptr paren
 	std::string id = config["id"].GetString();
 	Input_ptr input = parentNode->getInput(id);
 	if (input != nullptr) {
-		console->warn("Input::from_json : input '%s' already loaded.", id.c_str());
+		console->warn("Input::from_json : input '{}' already loaded.", id.c_str());
 		return input;
 	}
 
@@ -68,7 +68,7 @@ Input_ptr Input::from_json(const rapidjson::Value& config, DomoticNode_ptr paren
 			si = parentNode->getSerialInterface(port);
 
 			if (si == nullptr) {
-				console->error("Output::fromJson : requested serial interface '%s' is not present on node '%s'.",
+				console->error("Output::fromJson : requested serial interface '{}' is not present on node '{}'.",
 					port.c_str(), parentNode->getID().c_str());
 				throw domotic_pi_exception("Required serial port not found");
 			}
@@ -79,17 +79,17 @@ Input_ptr Input::from_json(const rapidjson::Value& config, DomoticNode_ptr paren
 		break;
 
 	case Mqtt: {
-
+		throw domotic_pi_exception("Mqtt input module not yet implemented.");
 	}
 		break;
 
 	case I2c: {
-
+		throw domotic_pi_exception("I2c input module not yet implemented.");
 	}
 		break;
 
 	default: {
-		console->error("Input::from_json : input required '%s' interface which is not available.", type.c_str());
+		console->error("Input::from_json : input required '{}' interface which is not available.", type.c_str());
 		throw domotic_pi_exception("Required module interface not found.");
 	}
 	}
@@ -99,7 +99,7 @@ Input_ptr Input::from_json(const rapidjson::Value& config, DomoticNode_ptr paren
 
 	parentNode->addInput(input);
 
-	console->info("Input::from_json : new %s input created with id '%s' on node '%s'.",
+	console->info("Input::from_json : new {} input created with id '{}' on node '{}'.",
 		type.c_str(), id.c_str(), parentNode->getID().c_str());
 
 	return input;

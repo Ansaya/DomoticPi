@@ -29,7 +29,8 @@ namespace domotic_pi {
 		*	@throw out_of_range if pinNumber is outside library boundaries
 		*/
 		DigitalInput(const std::string& id, int pinNumber, int pud);
-
+		DigitalInput(const DigitalInput&) = delete;
+		DigitalInput& operator= (const DigitalInput&) = delete;
 		virtual ~DigitalInput();
 
 		int getValue() const override;

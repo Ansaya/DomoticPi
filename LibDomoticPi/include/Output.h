@@ -20,8 +20,18 @@ namespace domotic_pi {
 	{
 
 	public:
+		/**
+		 *	@brief Initialize base output structure
+		 *
+		 *	@param id output id
+		 *	@param pinNumeber output pin number associated with the output
+		 *
+		 *	@note if no pin needs to be locked for the output just set any negative value
+		 */
 		Output(const std::string& id, int pinNumber);
 
+		Output(const Output&) = delete;
+		Output& operator= (const Output&) = delete;
 		virtual ~Output();
 
 		/**
@@ -60,7 +70,7 @@ namespace domotic_pi {
 		static Output_ptr from_json(const std::string& jsonConfig,
 									DomoticNode_ptr parentNode);
 
-		int getValue() const;
+		virtual int getValue() const;
 
 		virtual void setState(OutState newState) = 0;
 

@@ -32,6 +32,10 @@ R"(
           "$ref": "syspath.json"
         }
       ]
+    },
+    "mqttInterface": {
+      "description": "Mqtt connection information to connect to mqtt broker",
+      "$ref": "MqttInterface.json"
     }
   },
   "oneOf": [
@@ -39,13 +43,19 @@ R"(
       "properties": {
         "type": { "enum": [ "digital" ] }
       },
-      "required": ["pin"]
+      "required": [ "pin" ]
     },
     {
       "properties": {
         "type": { "enum": [ "serial" ] }
       },
       "required": [ "range_min", "range_max", "serialInterface" ]
+    },
+    {
+      "properties": {
+        "type": { "enum": [ "mqtt" ] }
+      },
+      "required": [ "mqttInterface" ]
     }
   ],
   "required": [ "id", "type" ],

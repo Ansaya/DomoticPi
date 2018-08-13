@@ -15,7 +15,7 @@ DigitalInput::DigitalInput(const std::string& id, int pinNumber, int pud) :
 	// Set required pull up/down mode
 	pullUpDnControl(pinNumber, pud);
 
-	console->info("DigitalInput::ctor : pin %d set as digital input with pud '%d'.", 
+	console->info("DigitalInput::ctor : pin {} set as digital input with pud '{}'.", 
 		pinNumber, pud);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
@@ -38,14 +38,14 @@ DigitalInput::~DigitalInput()
 			setISRMode(INT_EDGE_NONE);
 		}
 		catch (domotic_pi_exception& dpe) {
-			console->error("DigitalInput::dtor : error clearing ISR calls : %s", dpe.what());
+			console->error("DigitalInput::dtor : error clearing ISR calls : {}", dpe.what());
 		}
 	}
 }
 
 void DigitalInput::input_ISR()
 {
-	console->info("DigitalInput::input_ISR : ISR call execution for input '%s'.", getID().c_str());
+	console->info("DigitalInput::input_ISR : ISR call execution for input '{}'.", getID().c_str());
 
 	if (_isr_mode == INT_EDGE_NONE)
 		return;
@@ -67,13 +67,13 @@ void DigitalInput::addISRCall(std::function<void()> cb, int isr_mode)
 {
 	if (cb == nullptr) {
 		console->error("DigitalInput::addISRCall : setter called with null function pointer. "
-				"(Input: '%s')", getID().c_str());
+				"(Input: '{}')", getID().c_str());
 		throw std::invalid_argument("Callback function must not be null.");
 	}
 
 	if (isr_mode < 0 || isr_mode > 4) {
-		console->error("DigitalInput::addISRCall : setter called with invalid isr mode '%d'. "
-			"(Input: '%s')", getID().c_str());
+		console->error("DigitalInput::addISRCall : setter called with invalid isr mode '{}'. "
+			"(Input: '{}')", getID().c_str());
 		throw std::invalid_argument("isr_mode must be a value from 0 to 4");
 	}
 
@@ -88,12 +88,12 @@ void DigitalInput::addISRCall(std::function<void()> cb, int isr_mode)
 #endif
 	_isrActions.push_back(cb);
 
-	console->info("DigitalInput::addISRCall : ISR action added to input '%s'.", getID().c_str());
+	console->info("DigitalInput::addISRCall : ISR action added to input '{}'.", getID().c_str());
 }
 
 void DigitalInput::setISRMode(int isr_mode)
 {
-	console->info("DigitalInput::setISRMode : isr mode '%d' requested.", isr_mode);
+	console->info("DigitalInput::setISRMode : isr mode '{}' requested.", isr_mode);
 
 	{
 #ifdef DOMOTIC_PI_THREAD_SAFE
@@ -124,8 +124,8 @@ void DigitalInput::_setISRMode(int isr_mode)
 		retval = wiringPiISR(getPin(), isr_mode, nullptr);
 
 	if (retval) {
-		console->error("DigitalInput::setISRMode : error while changing ISR mode for input '%s' "
-			"(domotic_pi code: %d).", getID().c_str(), retval);
+		console->error("DigitalInput::setISRMode : error while changing ISR mode for input '{}' "
+			"(domotic_pi code: {}).", getID().c_str(), retval);
 		throw domotic_pi_exception("ISR mode change failed.");
 	}
 
@@ -135,7 +135,7 @@ void DigitalInput::_setISRMode(int isr_mode)
 	if (_isr_mode == INT_EDGE_NONE)
 		_isrActions.clear();
 
-	console->info("DigitalInput::setISRMode : isr mode changed to '%d' for input '%s'.",
+	console->info("DigitalInput::setISRMode : isr mode changed to '{}' for input '{}'.",
 		_isr_mode, getID().c_str());
 }
 
@@ -148,7 +148,7 @@ rapidjson::Document DigitalInput::to_json() const
 {
 	rapidjson::Document input = Input::to_json();
 
-	console->debug("DigitalInput::to_json : serializing input '%s'.", _id.c_str());
+	console->debug("DigitalInput::to_json : serializing input '{}'.", _id.c_str());
 
 	input.AddMember("type", "digital", input.GetAllocator());
 

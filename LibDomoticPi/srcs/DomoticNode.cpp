@@ -36,7 +36,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 	// Load available serial interface
 	if (config.HasMember("serialInterfaces")) {
-		console->info("DomoticNode::from_json : loading serial interfaces for node '%s'.",
+		console->info("DomoticNode::from_json : loading serial interfaces for node '{}'.",
 			domoticNode->getID().c_str());
 
 		const rapidjson::Value::ConstArray& serialInterfaces = config["serialInterfaces"].GetArray();
@@ -47,7 +47,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 	// Load available inputs
 	if (config.HasMember("inputs")) {
-		console->info("DomoticNode::from_json : loading inputs for node '%s'.",
+		console->info("DomoticNode::from_json : loading inputs for node '{}'.",
 			domoticNode->getID().c_str());
 
 		const rapidjson::Value::ConstArray& inputs = config["inputs"].GetArray();
@@ -58,7 +58,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 	// Load available outputs
 	if (config.HasMember("outputs")) {
-		console->info("DomoticNode::from_json : loading outputs for node '%s'.",
+		console->info("DomoticNode::from_json : loading outputs for node '{}'.",
 			domoticNode->getID().c_str());
 
 		const rapidjson::Value::ConstArray& outputs = config["outputs"].GetArray();
@@ -69,7 +69,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 	// Load input/output bindings
 	if (config.HasMember("bindings")) {
-		console->info("DomoticNode::from_json : loading I/O bindings for node '%s'.",
+		console->info("DomoticNode::from_json : loading I/O bindings for node '{}'.",
 			domoticNode->getID().c_str());
 
 		for (auto& it : config["bindings"].GetArray()) {
@@ -80,14 +80,14 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 			Input_ptr input = domoticNode->getInput(inputId);
 			if (input == nullptr) {
-				console->warn("DomoticNode::from_json : input '%s' not found for binding.",
+				console->warn("DomoticNode::from_json : input '{}' not found for binding.",
 					inputId);
 				continue;
 			}
 
 			Output_ptr output = domoticNode->getOutput(outputId);
 			if (output == nullptr) {
-				console->warn("DomoticNode::from_json : output '%s' not found for binding.",
+				console->warn("DomoticNode::from_json : output '{}' not found for binding.",
 					outputId);
 				continue;
 			}
@@ -102,7 +102,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 				}
 			}, isr_mode);
 
-			console->info("DomoticNode::from_json : output '%s' bounded to input '%s'.", 
+			console->info("DomoticNode::from_json : output '{}' bounded to input '{}'.", 
 				outputId.c_str(), inputId.c_str());
 		}
 	}
@@ -110,7 +110,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 	if (config.HasMember("name"))
 		domoticNode->setName(config["name"].GetString());
 
-	console->info("DomoticNode::from_json : new domotic node '%s' loaded succesfully.", 
+	console->info("DomoticNode::from_json : new domotic node '{}' loaded succesfully.", 
 		domoticNode->getID().c_str());
 
 	return domoticNode;
@@ -304,7 +304,7 @@ void DomoticNode::removeSerialInterface(const std::string & serialInterfacePort)
 
 rapidjson::Document DomoticNode::to_json() const
 {
-	console->debug("DomoticNode::to_json : serializing node '%s'.", _id.c_str());
+	console->debug("DomoticNode::to_json : serializing node '{}'.", _id.c_str());
 
 	rapidjson::Document domoticNode(rapidjson::kObjectType);
 

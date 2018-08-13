@@ -17,4 +17,4 @@ add_library(${LIB_NAME} SHARED
 	${LIB_HEADERS}
 )
 
-target_link_libraries(${LIB_NAME} wiringPi pthread)
+target_link_libraries(${LIB_NAME} wiringPi pthread mosquitto hap)

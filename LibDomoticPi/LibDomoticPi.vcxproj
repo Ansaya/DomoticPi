@@ -98,7 +98,9 @@
     <ClInclude Include="include\InterfaceType.h" />
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\Module.h" />
-    <ClInclude Include="include\MqttModule.h" />
+    <ClInclude Include="include\IMqtt.h" />
+    <ClInclude Include="include\MqttLib.h" />
+    <ClInclude Include="include\MqttOutput.h" />
     <ClInclude Include="include\MqttSubscription.h" />
     <ClInclude Include="include\Output.h" />
     <ClInclude Include="include\OutState.h" />
@@ -112,6 +114,7 @@
     <None Include="json-schema\Input.json" />
     <None Include="json-schema\InterfaceType.json" />
     <None Include="json-schema\ioBinding.json" />
+    <None Include="json-schema\MqttInterface.json" />
     <None Include="json-schema\Output.json" />
     <None Include="json-schema\pinNumber.json" />
     <None Include="json-schema\SerialInterface.json" />
@@ -125,7 +128,10 @@
     <ClCompile Include="srcs\DigitalOutput.cpp" />
     <ClCompile Include="srcs\DomoticNode.cpp" />
     <ClCompile Include="srcs\domoticPi.cpp" />
+    <ClCompile Include="srcs\IMqtt.cpp" />
     <ClCompile Include="srcs\Input.cpp" />
+    <ClCompile Include="srcs\MqttLib.cpp" />
+    <ClCompile Include="srcs\MqttOutput.cpp" />
     <ClCompile Include="srcs\MqttSubscription.cpp" />
     <ClCompile Include="srcs\Output.cpp" />
     <ClCompile Include="srcs\Pin.cpp" />
@@ -186,7 +192,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4SerialInterface_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4ioBinding_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
+      <UserProperties json-schema_4MqttInterface_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4SerialInterface_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4ioBinding_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -32,6 +32,8 @@ namespace domotic_pi {
 		 */
 		Input(const std::string& id, int pinNumber);
 
+		Input(const Input&) = delete;
+		Input& operator= (const Input&) = delete;
 		virtual ~Input();
 
 		/**

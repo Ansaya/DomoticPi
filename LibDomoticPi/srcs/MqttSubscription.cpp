@@ -8,7 +8,7 @@ using namespace domotic_pi;
 MqttSubscription::MqttSubscription(
 	const std::string& host, 
 	const int port, 
-	std::string& topic, 
+	const std::string& topic, 
 	std::function<void(const struct mosquitto_message *)> cb,
 	const std::string& username,
 	const std::string& password) : _cb(cb)
@@ -30,7 +30,7 @@ MqttSubscription::MqttSubscription(
 	// Connect to the required mqtt broker
 	int res = mosquitto_connect(mosq, host.c_str(), port, 60);
 	if (res != MOSQ_ERR_SUCCESS) {
-		console->error("MqttSubscription::ctor : module could not connect to borker at %s:%d : %s",
+		console->error("MqttSubscription::ctor : module could not connect to borker at {}:{} : {}",
 			host.c_str(), port, mosquitto_strerror(res));
 
 		throw domotic_pi_exception("Connection to mqtt broker failed.");
@@ -39,7 +39,7 @@ MqttSubscription::MqttSubscription(
 	// Subscribe to the required topic
 	res = mosquitto_subscribe(mosq, NULL, topic.c_str(), 2);
 	if (res != MOSQ_ERR_SUCCESS) {
-		console->error("MqttSubscription::ctor : could not subscribe to '%s' : %s", 
+		console->error("MqttSubscription::ctor : could not subscribe to '{}' : {}", 
 			topic.c_str(), mosquitto_strerror(res));
 		throw domotic_pi_exception("Could not subscribe to required topic");
 	}
@@ -48,7 +48,7 @@ MqttSubscription::MqttSubscription(
 	// Start mqtt listener thread for the new connection
 	res = mosquitto_loop_start(mosq);
 	if (res != MOSQ_ERR_SUCCESS) {
-		console->error("MqttSubscription::ctor : could not start mqtt client thread : %s", mosquitto_strerror(res));
+		console->error("MqttSubscription::ctor : could not start mqtt client thread : {}", mosquitto_strerror(res));
 		throw domotic_pi_exception("Thread start failed for mqtt listener.");
 	}
 }

@@ -66,10 +66,16 @@
     <ClInclude Include="include\InterfaceType.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\MqttModule.h">
+    <ClInclude Include="include\MqttSubscription.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\MqttSubscription.h">
+    <ClInclude Include="include\MqttOutput.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IMqtt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttLib.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,6 +102,9 @@
       <Filter>json-schema</Filter>
     </None>
     <None Include="json-schema\InterfaceType.json">
+      <Filter>json-schema</Filter>
+    </None>
+    <None Include="json-schema\MqttInterface.json">
       <Filter>json-schema</Filter>
     </None>
   </ItemGroup>
@@ -131,6 +140,15 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttSubscription.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttOutput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IMqtt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

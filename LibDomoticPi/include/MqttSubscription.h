@@ -10,11 +10,14 @@ class MqttSubscription {
 public:
 	~MqttSubscription();
 
+	MqttSubscription(const MqttSubscription&) = delete;
+	MqttSubscription& operator= (const MqttSubscription&) = delete;
+
 private:
 	MqttSubscription(
 		const std::string& host, 
 		const int port, 
-		std::string& topic, 
+		const std::string& topic, 
 		std::function<void(const struct mosquitto_message *)> cb,
 		const std::string& username = "",
 		const std::string& password = "");
@@ -24,7 +27,7 @@ private:
 	struct mosquitto *mosq;
 	std::function<void(const struct mosquitto_message *)> _cb;
 
-	friend class MqttModule;
+	friend class IMqtt;
 };
 
 }

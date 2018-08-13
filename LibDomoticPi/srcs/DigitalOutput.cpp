@@ -15,7 +15,7 @@ DigitalOutput::DigitalOutput(const std::string& id, int pinNumber) : Output(id, 
 	}
 
 	pinMode(pinNumber, OUTPUT);
-	console->info("DigitalOutput::ctor : pin %d set to OUTPUT mode.", pinNumber);
+	console->info("DigitalOutput::ctor : pin {} set to OUTPUT mode.", pinNumber);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
@@ -51,7 +51,7 @@ void DigitalOutput::setState(OutState newState)
 	_stateInfo->Characteristics::setValue(std::to_string(_value));
 #endif
 
-	console->info("DigitalOutput::setState : output '%s' set to '%d'.", getID(), _value);
+	console->info("DigitalOutput::setState : output '{}' set to '{}'.", getID(), _value);
 }
 
 void DigitalOutput::setValue(int newValue)
@@ -71,14 +71,14 @@ void DigitalOutput::setValue(int newValue)
 	_stateInfo->Characteristics::setValue(std::to_string(_value));
 #endif
 
-	console->info("DigitalOutput::setValue : output '%s' set to '%d'.", getID(), _value);
+	console->info("DigitalOutput::setValue : output '{}' set to '{}'.", getID(), _value);
 }
 
 rapidjson::Document DigitalOutput::to_json() const
 {
 	rapidjson::Document output = Output::to_json();
 
-	console->debug("DigitalOutput::to_json : serializing output '%s'.", _id.c_str());
+	console->debug("DigitalOutput::to_json : serializing output '{}'.", _id.c_str());
 
 	output.AddMember("type", "digital", output.GetAllocator());
 

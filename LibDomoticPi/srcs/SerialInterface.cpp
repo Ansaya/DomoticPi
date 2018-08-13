@@ -15,11 +15,11 @@ SerialInterface::SerialInterface(const std::string& port, int baud, int txPin, i
 	_serial = serialOpen(port.c_str(), baud);
 
 	if (_serial < 0) {
-		console->error("SerialInterface::ctor : serial port couldn't be open: %s.", strerror(errno));
+		console->error("SerialInterface::ctor : serial port couldn't be open: {}.", strerror(errno));
 		throw domotic_pi_exception("Couldn't open serial port.");
 	}
 
-	console->info("SerialInterface::ctor : serial open on %s at %d baud.", _port, baud);
+	console->info("SerialInterface::ctor : serial open on {} at {} baud.", _port, baud);
 }
 
 SerialInterface::~SerialInterface()
@@ -31,7 +31,7 @@ SerialInterface::~SerialInterface()
 
 	serialClose(_serial);
 
-	console->info("SerialInterface::dtor : serial close on %s.", _port);
+	console->info("SerialInterface::dtor : serial close on {}.", _port);
 }
 
 SerialInterface_ptr SerialInterface::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode, bool checkSchema)
@@ -45,7 +45,7 @@ SerialInterface_ptr SerialInterface::from_json(const rapidjson::Value& config, D
 
 	SerialInterface_ptr si = parentNode->getSerialInterface(port);
 	if (si != nullptr) {
-		console->warn("SerialInterface::from_json : parsed serial interface '%s' is already loaded.", port.c_str());
+		console->warn("SerialInterface::from_json : parsed serial interface '{}' is already loaded.", port.c_str());
 		return si;
 	}
 
@@ -60,7 +60,7 @@ SerialInterface_ptr SerialInterface::from_json(const rapidjson::Value& config, D
 
 	parentNode->addSerialInterface(si);
 
-	console->info("SerialInterface::from_json : new serial interface created from port '%s' on node '%s'.",
+	console->info("SerialInterface::from_json : new serial interface created from port '{}' on node '{}'.",
 		port.c_str(), parentNode->getID().c_str());
 
 	return si;
@@ -101,7 +101,7 @@ std::string SerialInterface::read()
 		return message;
 
 	if (bytes < 0) {
-		console->error("SerialInterface::read : error during data availability check: %s.", strerror(errno));
+		console->error("SerialInterface::read : error during data availability check: {}.", strerror(errno));
 		return message;
 	}
 
@@ -115,7 +115,7 @@ std::string SerialInterface::read()
 	// Assign read buffer to message string
 	message.assign(buffer);
 
-	console->debug("SerialInterface::read : read message: '%s'.", message.c_str());
+	console->debug("SerialInterface::read : read message: '{}'.", message.c_str());
 
 	return message;
 }
@@ -126,14 +126,14 @@ void SerialInterface::write(const std::string & message)
 	std::unique_lock<std::mutex> lck(_txOwn);
 #endif
 
-	serialPrintf(_serial, "%s", message.c_str());
+	serialPrintf(_serial, "{}", message.c_str());
 
-	console->debug("SerialInterface::read : wrote message: '%s'.", message.c_str());
+	console->debug("SerialInterface::read : wrote message: '{}'.", message.c_str());
 }
 
 rapidjson::Document SerialInterface::to_json() const
 {
-	console->debug("SerialInterface::to_json : serializing serial interface '%s'.", 
+	console->debug("SerialInterface::to_json : serializing serial interface '{}'.", 
 		_port.c_str());
 
 	rapidjson::Document serialInterface(rapidjson::kObjectType);

@@ -4,6 +4,7 @@
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 using namespace domotic_pi;
 
@@ -18,7 +19,7 @@ int main(int argc, char** argv)
 
 	auto console = spdlog::stdout_color_mt("main");
 
-	domotic_pi::console->set_level(spdlog::level::debug);
+	domotic_pi::console->set_level(spdlog::level::level_enum::debug);
 
 	console->info("Hello from domotic pi main.");
 
@@ -30,7 +31,7 @@ int main(int argc, char** argv)
 
 	FILE* nodeConfigFile = fopen(nodeConfigPath.c_str(), "r");
 	if (nodeConfigFile == nullptr) {
-		console->critical("Could not open configuration file at '%s'.", nodeConfigPath.c_str());
+		console->critical("Could not open configuration file at '{}'.", nodeConfigPath.c_str());
 		return -1;
 	}
 
@@ -50,7 +51,7 @@ int main(int argc, char** argv)
 		localNode = DomoticNode::from_json(configJson, true);
 	}
 	catch (domotic_pi_exception& dpe) {
-		console->critical("Exception while loading given node configuration: %s", dpe.what());
+		console->critical("Exception while loading given node configuration: {}", dpe.what());
 
 		return -3;
 	}
@@ -64,7 +65,7 @@ int main(int argc, char** argv)
 	rapidjson::Document localNodeJson = localNode->to_json();
 	localNodeJson.Accept(writer);
 
-	console->info("Loaded domotic node json configuration: \n%s", sb.GetString());*/
+	console->info("Loaded domotic node json configuration: \n{}", sb.GetString());*/
 
 	printf("Press a key to exit...\n");
 	getchar();

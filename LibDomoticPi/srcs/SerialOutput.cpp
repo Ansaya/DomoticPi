@@ -6,8 +6,10 @@
 using namespace domotic_pi;
 
 SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range) : 
-	Output(id, -1), _serial(serial), _range_min(min_range), _range_max(max_range), _value(min_range)
+	Output(id, -1), _serial(serial), _range_min(min_range), _range_max(max_range)
 {
+	_value = min_range;
+
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
 	_ahkAccessory->addService(lightService);
@@ -85,14 +87,14 @@ void SerialOutput::setValue(int newValue)
 	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
 #endif
 
-	console->info("SerialOutput::setValue : output '%s' set to '%d'.", getID(), _value);
+	console->info("SerialOutput::setValue : output '{}' set to '{}'.", getID(), _value);
 }
 
 rapidjson::Document SerialOutput::to_json() const
 {
 	rapidjson::Document output = Output::to_json();
 
-	console->debug("SerialOutput::to_json : serializing output '%s'.", _id.c_str());
+	console->debug("SerialOutput::to_json : serializing output '{}'.", _id.c_str());
 
 	output.AddMember("type", "serial", output.GetAllocator());
 
