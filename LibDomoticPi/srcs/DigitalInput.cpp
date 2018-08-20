@@ -10,9 +10,20 @@
 
 using namespace domotic_pi;
 
+const bool DigitalInput::_factoryRegistration =
+	InputFactory::initializer_registration("DigitalInput", DigitalInput::from_json);
+
 DigitalInput::DigitalInput(const std::string& id, int pinNumber, int pud) :
-	Input(id, pinNumber), _pud(pud), _isr_mode(INT_EDGE_NONE)
+	Pin(pinNumber), IInput(id), _pud(pud), _isr_mode(INT_EDGE_NONE)
 {
+	if (pinNumber < 0) {
+		console->error("DigitalInput::ctor : pin number must be a valid pin for a digital input.");
+		throw std::out_of_range("Pin number must be between 0 and " STR(DOMOTIC_PI_MAX_PIN) ".");
+	}
+
+	pinMode(pinNumber, INPUT);
+	console->info("DigitalInput::ctor : pin {} set to INPUT mode.", pinNumber);
+
 	// Set required pull up/down mode
 	pullUpDnControl(pinNumber, pud);
 
@@ -151,13 +162,21 @@ int DigitalInput::getValue() const
 	return digitalRead(getPin());
 }
 
+std::shared_ptr<DigitalInput> DigitalInput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	return std::make_shared<DigitalInput>(
+		config["id"].GetString(),
+		config["pin"].GetInt(),
+		config["pud"].GetInt());
+}
+
 rapidjson::Document DigitalInput::to_json() const
 {
-	rapidjson::Document input = Input::to_json();
+	rapidjson::Document input = IInput::to_json();
 
 	console->debug("DigitalInput::to_json : serializing input '{}'.", _id.c_str());
 
-	input.AddMember("type", "digital", input.GetAllocator());
+	input.AddMember("type", "DigitalInput", input.GetAllocator());
 
 	input.AddMember("pin", _pin, input.GetAllocator());
 	input.AddMember("pud", _pud, input.GetAllocator());

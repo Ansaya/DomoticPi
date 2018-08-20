@@ -1,9 +1,0 @@
-R"(
-{
-  "$schema": "http://json-schema.org/draft-04/schema",
-  "title": "InterfaceType",
-  "description": "Type of interface used by the module",
-  "type": "string",
-  "enum": [ "digital", "serial", "mqtt", "i2c" ]
-}
-)"

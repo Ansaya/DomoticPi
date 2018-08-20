@@ -1,5 +1,7 @@
 #include <MqttInput.h>
 
+#include <domoticPi.h>
+
 #include <exception>
 #include <wiringPi.h>
 
@@ -11,8 +13,8 @@ MqttInput::MqttInput(const std::string& id,
 	const int mqttPort,
 	const std::string& mqttUsername,
 	const std::string& mqttPassword) : 
-	Input(id, -1), IMqtt(id, mqttBroker, mqttPort, mqttUsername, mqttPassword), 
-	_value(0), _cmndTopic("cmnd/" + mqttTopic)
+	IInput(id, "MqttInput"), IMqtt(id, mqttBroker, mqttPort, mqttUsername, mqttPassword), 
+	_cmndTopic("cmnd/" + mqttTopic), _value(0)
 {
 	console->info("MqttInput::ctor : output '{}' subscribed to topic '{}'.",
 		getID().c_str(), _cmndTopic.c_str());
@@ -61,7 +63,7 @@ void MqttInput::addISRCall(std::function<void()> cb, int isr_mode)
 
 void MqttInput::setISRMode(int isr_mode)
 {
-	console->info("DigitalInput::setISRMode : isr mode '{}' requested.", isr_mode);
+	console->info("MqttInput::setISRMode : isr mode '{}' requested.", isr_mode);
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::unique_lock<std::mutex> lock(_isrLock);
@@ -72,6 +74,30 @@ void MqttInput::setISRMode(int isr_mode)
 	if (_isrMode == INT_EDGE_NONE) {
 		_isrCB.clear();
 	}
+}
+
+rapidjson::Document MqttInput::to_json() const
+{
+	rapidjson::Document input = IInput::to_json();
+
+	console->debug("MqttInput::to_json : serializing input '{}'.", _id.c_str());
+
+	input.AddMember("type", "MqttInput", input.GetAllocator());
+
+	rapidjson::Document mqttInterface;
+	rapidjson::Value mqttBroker;
+	rapidjson::Value mqttPort;
+	rapidjson::Value mqttTopic;
+	mqttBroker.SetString(getHost().c_str(), input.GetAllocator());
+	mqttPort.SetInt(getPort());
+	mqttTopic.SetString(_cmndTopic.substr(5).c_str(), input.GetAllocator());
+	mqttInterface.AddMember("broker", mqttBroker, input.GetAllocator());
+	mqttInterface.AddMember("port", mqttPort, input.GetAllocator());
+	mqttInterface.AddMember("topic", mqttTopic, input.GetAllocator());
+
+	input.AddMember("mqttInterface", mqttInterface, input.GetAllocator());
+
+	return input;
 }
 
 void MqttInput::_stat_message_cb(const struct mosquitto_message * message)
@@ -106,5 +132,27 @@ void MqttInput::_stat_message_cb(const struct mosquitto_message * message)
 				console->warn("MqttInput::input_ISR : isr call throw the following exception : {}", e.what());
 			}
 		}
+	}
+}
+
+std::shared_ptr<MqttInput> MqttInput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	const rapidjson::Value& mqttInterface = config["mqttInterface"];
+
+	if (mqttInterface.HasMember("username")) {
+		return std::make_shared<MqttInput>(
+			config["id"].GetString(),
+			mqttInterface["topic"].GetString(),
+			mqttInterface["broker"].GetString(),
+			mqttInterface["port"].GetInt(),
+			mqttInterface["username"].GetString(),
+			mqttInterface["password"].GetString());
+	}
+	else {
+		return std::make_shared<MqttInput>(
+			config["id"].GetString(),
+			mqttInterface["topic"].GetString(),
+			mqttInterface["broker"].GetString(),
+			mqttInterface["port"].GetInt());
 	}
 }

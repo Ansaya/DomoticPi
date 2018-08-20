@@ -67,6 +67,7 @@
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <CppAdditionalWarning>no-psabi;no-unknown-pragmas;%(CppAdditionalWarning)</CppAdditionalWarning>
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -90,6 +91,7 @@
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <CppAdditionalWarning>no-psabi;no-unknown-pragmas;%(CppAdditionalWarning)</CppAdditionalWarning>
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;</PreprocessorDefinitions>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

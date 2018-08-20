@@ -23,7 +23,11 @@ R"(
       "type": "integer",
       "enum": [ 0, 1, 2 ]
     },
-    "type": { "$ref": "InterfaceType.json" },
+    "type": {
+      "description": "Type of interface used by the module",
+      "type": "string",
+      "enum": [ "DigitalInput", "SerialInput" ]
+    },
     "range_min": {
       "description": "Minimum input value",
       "type": "integer"

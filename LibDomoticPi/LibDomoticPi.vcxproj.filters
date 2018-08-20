@@ -33,18 +33,6 @@
     <ClInclude Include="include\exceptions.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Module.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Output.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OutState.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\Pin.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -63,9 +51,6 @@
     <ClInclude Include="include\IAHKAccessory.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\InterfaceType.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\MqttSubscription.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -79,6 +64,27 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\MqttInput.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttVolume.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OutputFactory.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IOutput.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OutState.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IModule.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IInput.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputFactory.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,9 +110,6 @@
     <None Include="json-schema\ioBinding.json">
       <Filter>json-schema</Filter>
     </None>
-    <None Include="json-schema\InterfaceType.json">
-      <Filter>json-schema</Filter>
-    </None>
     <None Include="json-schema\MqttInterface.json">
       <Filter>json-schema</Filter>
     </None>
@@ -125,12 +128,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\domoticPi.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\Input.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\Output.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\Pin.cpp">
@@ -155,6 +152,21 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttInput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\InputFactory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IInput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IModule.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IOutput.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\OutputFactory.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

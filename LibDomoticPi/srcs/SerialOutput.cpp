@@ -1,12 +1,16 @@
 #include <SerialOutput.h>
 
 #include <domoticPi.h>
+#include <exceptions.h>
 #include <SerialInterface.h>
 
 using namespace domotic_pi;
 
+const bool SerialOutput::_factoryRegistration =
+	OutputFactory::initializer_registration("SerialOutput", SerialOutput::from_json);
+
 SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range) : 
-	Output(id, -1), _serial(serial), _range_min(min_range), _range_max(max_range)
+	IOutput(id, "SerialOutput"), _serial(serial), _range_min(min_range), _range_max(max_range)
 {
 	_value = min_range;
 
@@ -90,13 +94,46 @@ void SerialOutput::setValue(int newValue)
 	console->info("SerialOutput::setValue : output '{}' set to '{}'.", getID(), _value);
 }
 
+std::shared_ptr<SerialOutput> SerialOutput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	// If serialInterface is an object, then the serial interface requested needs to be created
+	bool create = config["serialInterface"].IsObject();
+
+	SerialInterface_ptr si;
+
+	if (create) {
+		// TODO : initialize the interface through the InterfaceFactory
+		si = SerialInterface::from_json(config["serialInterface"], parentNode, false);
+	}
+	else {
+		// Get required serial port name
+		std::string port = config["serialInterface"].GetString();
+
+		si = parentNode->getSerialInterface(port);
+
+		if (si == nullptr) {
+			console->error("SerialOutput::fromJson : requested serial interface '{}' is not present on node '{}'.",
+				port.c_str(), parentNode->getID().c_str());
+			throw domotic_pi_exception("Required serial port not found");
+		}
+	}
+
+	std::shared_ptr<SerialOutput> output = std::make_shared<SerialOutput>(
+		config["id"].GetString(),
+		si,
+		config["range_min"].GetInt(),
+		config["range_max"].GetInt());
+
+	return output;
+}
+
 rapidjson::Document SerialOutput::to_json() const
 {
-	rapidjson::Document output = Output::to_json();
+	rapidjson::Document output = IOutput::to_json();
 
 	console->debug("SerialOutput::to_json : serializing output '{}'.", _id.c_str());
 
-	output.AddMember("type", "serial", output.GetAllocator());
+	output.AddMember("type", "SerialOutput", output.GetAllocator());
 
 	rapidjson::Value serialInterface;
 	serialInterface.SetString(_serial->getPort().c_str(), output.GetAllocator());

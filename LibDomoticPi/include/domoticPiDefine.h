@@ -42,14 +42,11 @@
 
 namespace domotic_pi {
 
-	class Pin;
-	typedef std::shared_ptr<Pin> Pin_ptr;
+	class IInput;
+	typedef std::shared_ptr<IInput> Input_ptr;
 
-	class Input;
-	typedef std::shared_ptr<Input> Input_ptr;
-
-	class Output;
-	typedef std::shared_ptr<Output> Output_ptr;
+	class IOutput;
+	typedef std::shared_ptr<IOutput> Output_ptr;
 
 	class SerialInterface;
 	typedef std::shared_ptr<SerialInterface> SerialInterface_ptr;

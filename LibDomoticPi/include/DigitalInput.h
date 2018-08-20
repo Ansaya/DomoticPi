@@ -2,7 +2,9 @@
 #define DOMOTIC_PI_DIGITAL_INPUT
 
 #include "domoticPiDefine.h"
-#include "Input.h"
+#include "IInput.h"
+#include "InputFactory.h"
+#include "Pin.h"
 
 #include <functional>
 #include <memory>
@@ -12,7 +14,7 @@
 
 namespace domotic_pi {
 
-	class DigitalInput : public Input {
+	class DigitalInput : public Pin, public IInput, protected InputFactory {
 
 	public:
 
@@ -29,6 +31,7 @@ namespace domotic_pi {
 		*	@throw out_of_range if pinNumber is outside library boundaries
 		*/
 		DigitalInput(const std::string& id, int pinNumber, int pud);
+
 		DigitalInput(const DigitalInput&) = delete;
 		DigitalInput& operator= (const DigitalInput&) = delete;
 		virtual ~DigitalInput();
@@ -86,6 +89,9 @@ namespace domotic_pi {
 		*	This function will call all the registered callbacks on ISR trigger.
 		*/
 		void input_ISR();
+
+		static const bool _factoryRegistration;
+		static std::shared_ptr<DigitalInput> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);
 
 	};
 

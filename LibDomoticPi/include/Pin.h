@@ -4,7 +4,9 @@
 #include "domoticPiDefine.h"
 
 #include <memory>
+#ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
+#endif // DOMOTIC_PI_THREAD_SAFE
 
 namespace domotic_pi {
 
@@ -39,9 +41,11 @@ namespace domotic_pi {
 		static bool _inUse [];
 #ifdef DOMOTIC_PI_THREAD_SAFE
 		static std::mutex _pinLock;
-#endif
+#endif // DOMOTIC_PI_THREAD_SAFE
 
 	};
+
+	typedef std::shared_ptr<Pin> Pin_ptr;
 
 }
 

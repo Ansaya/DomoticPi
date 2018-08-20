@@ -2,8 +2,10 @@
 
 #include <domoticPi.h>
 #include <exceptions.h>
-#include <Input.h>
-#include <Output.h>
+#include <IInput.h>
+#include <InputFactory.h>
+#include <IOutput.h>
+#include <OutputFactory.h>
 #include <SerialInterface.h>
 
 #include <algorithm>
@@ -52,7 +54,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& inputs = config["inputs"].GetArray();
 		for (auto& it : inputs) {
-			Input::from_json(it, domoticNode);
+			InputFactory::from_json(it, domoticNode);
 		}
 	}
 
@@ -63,7 +65,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 		const rapidjson::Value::ConstArray& outputs = config["outputs"].GetArray();
 		for (auto& it : outputs) {
-			Output::from_json(it, domoticNode);
+			OutputFactory::from_json(it, domoticNode);
 		}
 	}
 
@@ -94,7 +96,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 			// Weak reference is passed to input ISR to avoid nullptr 
 			// in case the output is deleted afterwards
-			std::weak_ptr<Output> weakOut = output;
+			std::weak_ptr<IOutput> weakOut = output;
 			
 			input->addISRCall([weakOut, outputAction]() {
 				if (auto effectiveOut = weakOut.lock()) {

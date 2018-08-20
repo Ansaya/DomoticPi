@@ -1,9 +1,14 @@
 #include <MqttOutput.h>
 
+#include <domoticPi.h>
+
 #include <algorithm>
 #include <functional>
 
 using namespace domotic_pi;
+
+const bool MqttOutput::_factoryRegistration = 
+	OutputFactory::initializer_registration("MqttOutput", MqttOutput::from_json);
 
 MqttOutput::MqttOutput(
 	const std::string& id,
@@ -12,7 +17,7 @@ MqttOutput::MqttOutput(
 	const int mqttPort,
 	const std::string& mqttUsername,
 	const std::string& mqttPassword) :
-	Output(id, -1), 
+	IOutput(id, "MqttOutput"), 
 	IMqtt(id, mqttBroker, mqttPort, mqttUsername, mqttPassword),
 	_cmndTopic("cmnd/" + mqttTopic), _statTopic("stat/" + mqttTopic), _range_min(0), _range_max(1)
 {
@@ -98,13 +103,35 @@ void MqttOutput::setState(OutState newState)
 	}
 }
 
+std::shared_ptr<MqttOutput> MqttOutput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	const rapidjson::Value& mqttInterface = config["mqttInterface"];
+
+	if (mqttInterface.HasMember("username")) {
+		return std::make_shared<MqttOutput>(
+			config["id"].GetString(),
+			mqttInterface["topic"].GetString(),
+			mqttInterface["broker"].GetString(),
+			mqttInterface["port"].GetInt(),
+			mqttInterface["username"].GetString(),
+			mqttInterface["password"].GetString());
+	}
+	else {
+		return std::make_shared<MqttOutput>(
+			config["id"].GetString(),
+			mqttInterface["topic"].GetString(),
+			mqttInterface["broker"].GetString(),
+			mqttInterface["port"].GetInt());
+	}
+}
+
 rapidjson::Document MqttOutput::to_json() const
 {
-	rapidjson::Document output = Output::to_json();
+	rapidjson::Document output = IOutput::to_json();
 
 	console->debug("MqttOutput::to_json : serializing output '{}'.", _id.c_str());
 
-	output.AddMember("type", "mqtt", output.GetAllocator());
+	output.AddMember("type", "MqttOutput", output.GetAllocator());
 
 	rapidjson::Document mqttInterface;
 	rapidjson::Value mqttBroker;

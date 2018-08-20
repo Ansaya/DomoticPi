@@ -13,7 +13,11 @@ R"(
       "type": "string"
     },
     "pin": { "$ref": "pinNumber.json" },
-    "type": { "$ref": "InterfaceType.json" },
+    "type": {
+      "description": "Type of output to be used by the module",
+      "type": "string",
+      "enum": [ "DigitalOutput", "SerialOutput", "MqttOutput" ]
+    },
     "range_min": {
       "description": "Minimum output value",
       "type": "integer"
