@@ -40,7 +40,7 @@ Output_ptr OutputFactory::from_json(
 		output->setName(config["name"].GetString());
 	}
 
-	parentNode->addOutput(output);
+	parentNode->addOutput(std::dynamic_pointer_cast<IOutput>(output));
 
 	console->info("OutputFactory::from_json : new {} output created with id '{}' on node '{}'.",
 		outputType.c_str(), id.c_str(), parentNode->getID().c_str());

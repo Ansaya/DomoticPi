@@ -30,12 +30,12 @@ R"(
         }
       ]
     },
-    "serialInterfaces": {
-      "description": "Serial interfaces associated to this node",
+    "comms": {
+      "description": "Comm interfaces associated to this node",
       "type": "array",
       "items": [
         {
-          "$ref": "SerialInterface.json"
+          "$ref": "Comm.json"
         }
       ]
     },

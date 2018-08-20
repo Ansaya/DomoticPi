@@ -34,7 +34,7 @@ Input_ptr InputFactory::from_json(const rapidjson::Value& config,
 	if (config.HasMember("name"))
 		input->setName(config["name"].GetString());
 
-	parentNode->addInput(input);
+	parentNode->addInput(std::dynamic_pointer_cast<IInput>(input));
 
 	console->info("InputFactory::from_json : new {} input created with id '{}' on node '{}'.",
 		inputType.c_str(), id.c_str(), parentNode->getID().c_str());

@@ -1,26 +1,23 @@
 #ifndef DOMOTIC_PI_MQTT_VOLUME
 #define DOMOTIC_PI_MQTT_VOLUME
 
-#include "IMqtt.h"
-#include "MqttSubscription.h"
+#include "domoticPiDefine.h"
+#include "MqttComm.h"
 #include "IOutput.h"
+#include "MqttSubscription.h"
+#include "OutputFactory.h"
 
 #include <memory>
 #include <mosquitto.h>
 
 namespace domotic_pi {
 
-class MqttVolume : public IOutput, public IMqtt {
+class MqttVolume : public IOutput, protected OutputFactory {
 public:
 	MqttVolume(
 		const std::string& id,
 		const std::string& mqttVolumeTopic,
-		const std::string& mqttMuteeTopic,
-		const std::string& mqttPowerTopic,
-		const std::string& mqttBroker,
-		const int mqttPort,
-		const std::string& mqttUsername = "",
-		const std::string& mqttPassword = "");
+		std::shared_ptr<MqttComm> mqttComm);
 
 	MqttVolume(const MqttVolume&) = delete;
 	MqttVolume& operator= (const MqttVolume&) = delete;
@@ -33,17 +30,10 @@ public:
 	rapidjson::Document to_json() const override;
 
 private:
-	MqttSubscription * _volumeStat;
+	std::shared_ptr<MqttComm> _mqttComm;
 	const std::string _volCmndTopic;
 	const std::string _volStatTopic;
-
-	MqttSubscription * _muteStat;
-	const std::string _muteCmndTopic;
-	const std::string _muteStatTopic;
-
-	MqttSubscription * _powerStat;
-	const std::string _powerCmndTopic;
-	const std::string _powerStatTopic;
+	MqttSubscription * _volumeStat;
 	
 	int _range_min;
 	int _range_max;
@@ -54,8 +44,6 @@ private:
 #endif
 
 	void _vol_stat_cb(const struct mosquitto_message * message);
-	void _mute_stat_cb(const struct mosquitto_message * message);
-	void _power_stat_cb(const struct mosquitto_message * message);
 
 	static const bool _factoryRegistration;
 	static std::shared_ptr<MqttVolume> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);

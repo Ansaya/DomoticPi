@@ -1,28 +1,31 @@
 #ifndef DOMOTIC_PI_MQTT_MODULE
 #define DOMOTIC_PI_MQTT_MODULE
 
+#include "CommFactory.h"
+#include "IComm.h"
 #include "MqttLib.h"
 #include "MqttSubscription.h"
+#include "Serializable.h"
 
 #include <functional>
 #include <memory>
 #include <mosquitto.h>
+#include <rapidjson/document.h>
 #include <string>
 
 namespace domotic_pi {
 
-class IMqtt {
+class MqttComm : public IComm, protected CommFactory {
 public:
-	IMqtt(
-		const std::string& id, 
+	MqttComm(
 		const std::string& host, 
 		const int port, 
 		const std::string& username = "",
 		const std::string& password = "");
 
-	IMqtt(const IMqtt&) = delete;
-	IMqtt& operator= (const IMqtt&) = delete;
-	virtual ~IMqtt();
+	MqttComm(const MqttComm&) = delete;
+	MqttComm& operator= (const MqttComm&) = delete;
+	virtual ~MqttComm();
 
 	const std::string &getHost() const;
 
@@ -31,8 +34,6 @@ public:
 	const std::string &getUsername() const;
 
 	const std::string &getPassword() const;
-
-protected:
 
 	/**
 	 *	@brief Publish given message to specified topic (with retain flag if needed)
@@ -50,13 +51,15 @@ protected:
 	 *	@param topic topic to subscribe to
 	 *	@param message_cb callback to trigger on received messages
 	 *
-	 *	@note The returned object must not be shared outside the class: IMqtt object
+	 *	@note The returned object must not be shared outside the class: MqttComm object
 	 *		  need to be disposed along with its relative MqttModule class to avoid runtime errors.
 	 *
 	 *	@return Subscription object to be kept until the subscription is needed
 	 */
-	MqttSubscription *subscribe(const std::string& topic, 
+	MqttSubscription * subscribe(const std::string& topic, 
 					std::function<void(const struct mosquitto_message *)> message_cb);
+
+	rapidjson::Document to_json() const override;
 
 private:
 	const std::shared_ptr<MqttLib> _mosquittoLib;
@@ -65,6 +68,9 @@ private:
 	const std::string _username;
 	const std::string _password;
 	struct mosquitto *mosq;
+
+	static const bool _factoryRegistration;
+	static std::shared_ptr<MqttComm> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);
 
 };
 

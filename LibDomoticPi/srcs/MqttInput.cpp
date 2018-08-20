@@ -1,26 +1,33 @@
 #include <MqttInput.h>
 
+#include <CommFactory.h>
 #include <domoticPi.h>
 
 #include <exception>
+#include <exceptions.h>
 #include <wiringPi.h>
 
 using namespace domotic_pi;
 
+const bool MqttInput::_factoryRegistration = 
+	InputFactory::initializer_registration("MqttInput", MqttInput::from_json);
+
 MqttInput::MqttInput(const std::string& id,
 	const std::string& mqttTopic,
-	const std::string& mqttBroker,
-	const int mqttPort,
-	const std::string& mqttUsername,
-	const std::string& mqttPassword) : 
-	IInput(id, "MqttInput"), IMqtt(id, mqttBroker, mqttPort, mqttUsername, mqttPassword), 
-	_cmndTopic("cmnd/" + mqttTopic), _value(0)
+	std::shared_ptr<MqttComm> mqttComm) :
+	IInput(id, ""), _mqttComm(mqttComm), 
+	_cmndTopic("cmnd/" + mqttTopic), 
+	_cmndSubscription(_mqttComm->subscribe(_cmndTopic,
+		std::bind(&MqttInput::_stat_message_cb, this, std::placeholders::_1))),
+	_value(0)
 {
+	if (mqttComm == nullptr) {
+		console->error("MqttInput::ctor : given mqtt comm interface can not be null.");
+		throw domotic_pi_exception("Mqtt comm interface can not be null.");
+	}
+
 	console->info("MqttInput::ctor : output '{}' subscribed to topic '{}'.",
 		getID().c_str(), _cmndTopic.c_str());
-
-	_cmndSubscription = subscribe(_cmndTopic,
-		std::bind(&MqttInput::_stat_message_cb, this, std::placeholders::_1));
 }
 
 MqttInput::~MqttInput()
@@ -76,6 +83,25 @@ void MqttInput::setISRMode(int isr_mode)
 	}
 }
 
+std::shared_ptr<MqttInput> MqttInput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	const rapidjson::Value& mqttInterface = config["comm"];
+
+	std::shared_ptr<MqttComm> mqttComm = nullptr;
+
+	if (mqttInterface.IsString()) {
+		mqttComm = std::dynamic_pointer_cast<MqttComm>(parentNode->getComm(mqttInterface.GetString()));
+	}
+	else {
+		mqttComm = std::dynamic_pointer_cast<MqttComm>(CommFactory::from_json(mqttInterface, parentNode));
+	}
+
+	return std::make_shared<MqttInput>(
+		config["id"].GetString(),
+		config["mqttTopic"].GetString(),
+		mqttComm);
+}
+
 rapidjson::Document MqttInput::to_json() const
 {
 	rapidjson::Document input = IInput::to_json();
@@ -84,18 +110,13 @@ rapidjson::Document MqttInput::to_json() const
 
 	input.AddMember("type", "MqttInput", input.GetAllocator());
 
-	rapidjson::Document mqttInterface;
-	rapidjson::Value mqttBroker;
-	rapidjson::Value mqttPort;
-	rapidjson::Value mqttTopic;
-	mqttBroker.SetString(getHost().c_str(), input.GetAllocator());
-	mqttPort.SetInt(getPort());
-	mqttTopic.SetString(_cmndTopic.substr(5).c_str(), input.GetAllocator());
-	mqttInterface.AddMember("broker", mqttBroker, input.GetAllocator());
-	mqttInterface.AddMember("port", mqttPort, input.GetAllocator());
-	mqttInterface.AddMember("topic", mqttTopic, input.GetAllocator());
+	rapidjson::Value comm;
+	comm.SetString(_mqttComm->getID().c_str(), input.GetAllocator());
+	input.AddMember("comm", comm, input.GetAllocator());
 
-	input.AddMember("mqttInterface", mqttInterface, input.GetAllocator());
+	rapidjson::Value mqttTopic;
+	mqttTopic.SetString(_cmndTopic.substr(5).c_str(), input.GetAllocator());
+	input.AddMember("mqttTopic", mqttTopic, input.GetAllocator());
 
 	return input;
 }
@@ -132,27 +153,5 @@ void MqttInput::_stat_message_cb(const struct mosquitto_message * message)
 				console->warn("MqttInput::input_ISR : isr call throw the following exception : {}", e.what());
 			}
 		}
-	}
-}
-
-std::shared_ptr<MqttInput> MqttInput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
-{
-	const rapidjson::Value& mqttInterface = config["mqttInterface"];
-
-	if (mqttInterface.HasMember("username")) {
-		return std::make_shared<MqttInput>(
-			config["id"].GetString(),
-			mqttInterface["topic"].GetString(),
-			mqttInterface["broker"].GetString(),
-			mqttInterface["port"].GetInt(),
-			mqttInterface["username"].GetString(),
-			mqttInterface["password"].GetString());
-	}
-	else {
-		return std::make_shared<MqttInput>(
-			config["id"].GetString(),
-			mqttInterface["topic"].GetString(),
-			mqttInterface["broker"].GetString(),
-			mqttInterface["port"].GetInt());
 	}
 }

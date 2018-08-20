@@ -25,41 +25,41 @@ R"(
     "range_max": {
       "description": "Maximum output value",
       "type": "integer"
-    },
-    "serialInterface": {
-      "description": "Serial interface to use in case this is a SerialOutput",
+    }
+    "comm": {
+      "description": "Comm interface to be used by the output.",
       "oneOf": [
         {
-          "$ref": "SerialInterface.json"
+          "$ref": "Comm.json"
         },
         {
-          "$ref": "syspath.json"
+          "type": "string"
         }
       ]
     },
-    "mqttInterface": {
-      "description": "Mqtt connection information to connect to mqtt broker",
-      "$ref": "MqttInterface.json"
+    "mqttTopic": {
+      "description": "Topic to subscribe/publish to on the broker. Given pattern will be preceeded by 'cmnd/' or 'stat/' respectively when publishing or subscribing.",
+      "type": "string"
     }
   },
   "oneOf": [
     {
       "properties": {
-        "type": { "enum": [ "digital" ] }
+        "type": { "enum": [ "DigitalOutput" ] }
       },
       "required": [ "pin" ]
     },
     {
       "properties": {
-        "type": { "enum": [ "serial" ] }
+        "type": { "enum": [ "SerialOutput" ] }
       },
-      "required": [ "range_min", "range_max", "serialInterface" ]
+      "required": [ "range_min", "range_max", "comm" ]
     },
     {
       "properties": {
-        "type": { "enum": [ "mqtt" ] }
+        "type": { "enum": [ "MqttOutput", "MqttVolume" ] }
       },
-      "required": [ "mqttInterface" ]
+      "required": [ "comm", "mqttTopic" ]
     }
   ],
   "required": [ "id", "type" ],

@@ -8,10 +8,9 @@ namespace domotic_pi {
 
 class MqttSubscription {
 public:
-	~MqttSubscription();
-
 	MqttSubscription(const MqttSubscription&) = delete;
 	MqttSubscription& operator= (const MqttSubscription&) = delete;
+	~MqttSubscription();
 
 private:
 	MqttSubscription(
@@ -27,7 +26,7 @@ private:
 	struct mosquitto *mosq;
 	std::function<void(const struct mosquitto_message *)> _cb;
 
-	friend class IMqtt;
+	friend class MqttComm;
 };
 
 }

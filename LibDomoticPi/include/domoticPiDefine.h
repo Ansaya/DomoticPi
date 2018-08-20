@@ -35,7 +35,7 @@
 
 #define DOMOTIC_PI_JSON_INPUT "Input.json"
 #define DOMOTIC_PI_JSON_OUTPUT "Output.json"
-#define DOMOTIC_PI_JSON_SERIAL_INTERFACE "SerialInterface.json"
+#define DOMOTIC_PI_JSON_COMM "Comm.json"
 #define DOMOTIC_PI_JSON_DOMOTIC_NODE "DomoticNode.json"
 
 #include <memory>
@@ -48,8 +48,8 @@ namespace domotic_pi {
 	class IOutput;
 	typedef std::shared_ptr<IOutput> Output_ptr;
 
-	class SerialInterface;
-	typedef std::shared_ptr<SerialInterface> SerialInterface_ptr;
+	class IComm;
+	typedef std::shared_ptr<IComm> Comm_ptr;
 
 	class DomoticNode;
 	typedef std::shared_ptr<DomoticNode> DomoticNode_ptr;

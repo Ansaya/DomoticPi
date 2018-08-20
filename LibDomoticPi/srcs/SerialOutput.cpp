@@ -1,17 +1,22 @@
 #include <SerialOutput.h>
 
+#include <CommFactory.h>
 #include <domoticPi.h>
 #include <exceptions.h>
-#include <SerialInterface.h>
 
 using namespace domotic_pi;
 
 const bool SerialOutput::_factoryRegistration =
 	OutputFactory::initializer_registration("SerialOutput", SerialOutput::from_json);
 
-SerialOutput::SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range) : 
-	IOutput(id, "SerialOutput"), _serial(serial), _range_min(min_range), _range_max(max_range)
+SerialOutput::SerialOutput(const std::string& id, std::shared_ptr<SerialInterface> serialComm, int min_range, int max_range) : 
+	IOutput(id, "SerialOutput"), _serial(serialComm), _range_min(min_range), _range_max(max_range)
 {
+	if (serialComm == nullptr) {
+		console->error("SerialOutput::ctor : given serial interface can not be null.");
+		throw domotic_pi_exception("Serial interface can not be null");
+	}
+
 	_value = min_range;
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
@@ -96,35 +101,22 @@ void SerialOutput::setValue(int newValue)
 
 std::shared_ptr<SerialOutput> SerialOutput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
 {
-	// If serialInterface is an object, then the serial interface requested needs to be created
-	bool create = config["serialInterface"].IsObject();
+	const rapidjson::Value& serialInterface = config["comm"];
 
-	SerialInterface_ptr si;
+	std::shared_ptr<SerialInterface> serialComm = nullptr;
 
-	if (create) {
-		// TODO : initialize the interface through the InterfaceFactory
-		si = SerialInterface::from_json(config["serialInterface"], parentNode, false);
+	if (serialInterface.IsString()) {
+		serialComm = std::dynamic_pointer_cast<SerialInterface>(parentNode->getComm(serialInterface.GetString()));
 	}
 	else {
-		// Get required serial port name
-		std::string port = config["serialInterface"].GetString();
-
-		si = parentNode->getSerialInterface(port);
-
-		if (si == nullptr) {
-			console->error("SerialOutput::fromJson : requested serial interface '{}' is not present on node '{}'.",
-				port.c_str(), parentNode->getID().c_str());
-			throw domotic_pi_exception("Required serial port not found");
-		}
+		serialComm = std::dynamic_pointer_cast<SerialInterface>(CommFactory::from_json(serialInterface, parentNode));
 	}
 
-	std::shared_ptr<SerialOutput> output = std::make_shared<SerialOutput>(
+	return std::make_shared<SerialOutput>(
 		config["id"].GetString(),
-		si,
+		serialComm,
 		config["range_min"].GetInt(),
 		config["range_max"].GetInt());
-
-	return output;
 }
 
 rapidjson::Document SerialOutput::to_json() const
@@ -135,9 +127,9 @@ rapidjson::Document SerialOutput::to_json() const
 
 	output.AddMember("type", "SerialOutput", output.GetAllocator());
 
-	rapidjson::Value serialInterface;
-	serialInterface.SetString(_serial->getPort().c_str(), output.GetAllocator());
-	output.AddMember("serialInterface", serialInterface, output.GetAllocator());
+	rapidjson::Value comm;
+	comm.SetString(_serial->getID().c_str(), output.GetAllocator());
+	output.AddMember("comm", comm, output.GetAllocator());
 
 	output.AddMember("range_min", _range_min, output.GetAllocator());
 	output.AddMember("range_max", _range_max, output.GetAllocator());

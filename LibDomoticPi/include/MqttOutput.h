@@ -1,8 +1,8 @@
 #ifndef DOMOTIC_PI_MQTT_OUTPUT
 #define DOMOTIC_PI_MQTT_OUTPUT
 
-#include "IMqtt.h"
 #include "IOutput.h"
+#include "MqttComm.h"
 #include "MqttSubscription.h"
 #include "OutputFactory.h"
 
@@ -22,7 +22,6 @@ namespace domotic_pi {
  */
 class MqttOutput : 
 	public IOutput, 
-	public IMqtt,
 	protected OutputFactory 
 {
 public:
@@ -32,18 +31,12 @@ public:
 	 *
 	 *	@param id unique identifier for this module
 	 *	@param mqttTopic device topic to be used as suffix after cmnd/ and stat/
-	 *	@param mqttBroker mqtt broker to connect to
-	 *	@param mqttPort broker port to be used for the connection
-	 *	@param mqttUsername username to be used for mqtt connection - optional
-	 *	@param mqttPassword password to be used for mqtt connection - optional
+	 *	@param mqttComm mqtt comm interface to use for the output
 	 */
 	MqttOutput(
 		const std::string& id, 
 		const std::string& mqttTopic, 
-		const std::string& mqttBroker, 
-		const int mqttPort, 
-		const std::string& mqttUsername = "", 
-		const std::string& mqttPassword = "");
+		std::shared_ptr<MqttComm> mqttComm);
 
 	MqttOutput(const MqttOutput&) = delete;
 	MqttOutput& operator= (const MqttOutput&) = delete;
@@ -56,9 +49,11 @@ public:
 	rapidjson::Document to_json() const override;
 
 private:
-	MqttSubscription * _statSubscription;
+	std::shared_ptr<MqttComm> _mqttComm;
 	const std::string _cmndTopic;
 	const std::string _statTopic;
+	MqttSubscription * _statSubscription;
+	
 	int _range_min;
 	int _range_max;
 

@@ -57,9 +57,6 @@
     <ClInclude Include="include\MqttOutput.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\IMqtt.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\MqttLib.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -87,6 +84,15 @@
     <ClInclude Include="include\InputFactory.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\IComm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttComm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CommFactory.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -98,9 +104,6 @@
     <None Include="json-schema\pinNumber.json">
       <Filter>json-schema</Filter>
     </None>
-    <None Include="json-schema\SerialInterface.json">
-      <Filter>json-schema</Filter>
-    </None>
     <None Include="json-schema\syspath.json">
       <Filter>json-schema</Filter>
     </None>
@@ -110,7 +113,7 @@
     <None Include="json-schema\ioBinding.json">
       <Filter>json-schema</Filter>
     </None>
-    <None Include="json-schema\MqttInterface.json">
+    <None Include="json-schema\Comm.json">
       <Filter>json-schema</Filter>
     </None>
   </ItemGroup>
@@ -145,9 +148,6 @@
     <ClCompile Include="srcs\MqttOutput.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="srcs\IMqtt.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="srcs\MqttLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -167,6 +167,21 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\OutputFactory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IAHKAccessory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IComm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttVolume.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttComm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\CommFactory.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

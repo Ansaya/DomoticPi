@@ -1,6 +1,8 @@
 #include <MqttOutput.h>
 
+#include <CommFactory.h>
 #include <domoticPi.h>
+#include <exceptions.h>
 
 #include <algorithm>
 #include <functional>
@@ -13,14 +15,19 @@ const bool MqttOutput::_factoryRegistration =
 MqttOutput::MqttOutput(
 	const std::string& id,
 	const std::string& mqttTopic,
-	const std::string& mqttBroker,
-	const int mqttPort,
-	const std::string& mqttUsername,
-	const std::string& mqttPassword) :
+	std::shared_ptr<MqttComm> mqttComm) :
 	IOutput(id, "MqttOutput"), 
-	IMqtt(id, mqttBroker, mqttPort, mqttUsername, mqttPassword),
-	_cmndTopic("cmnd/" + mqttTopic), _statTopic("stat/" + mqttTopic), _range_min(0), _range_max(1)
+	_mqttComm(mqttComm),
+	_cmndTopic("cmnd/" + mqttTopic), _statTopic("stat/" + mqttTopic), 
+	_statSubscription(_mqttComm->subscribe(_statTopic,
+		std::bind(&MqttOutput::_stat_message_cb, this, std::placeholders::_1))),
+	_range_min(0), _range_max(1)
 {
+	if (mqttComm == nullptr) {
+		console->error("MqttOutput::ctor : given mqtt comm interface can not be null.");
+		throw domotic_pi_exception("Mqtt comm interface can not be null.");
+	}
+
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
 	_ahkAccessory->addService(lightService);
@@ -47,9 +54,6 @@ MqttOutput::MqttOutput(
 
 	console->info("MqttOutput::ctor : output '{}' subscribed to topic '{}'.", 
 		getID().c_str(), _statTopic.c_str());
-	
-	_statSubscription = subscribe(_statTopic, 
-		std::bind(&MqttOutput::_stat_message_cb, this, std::placeholders::_1));
 }
 
 MqttOutput::~MqttOutput()
@@ -73,7 +77,7 @@ void MqttOutput::setValue(int newValue)
 		_value = 1;
 	}
 
-	publish(_cmndTopic, message);
+	_mqttComm->publish(_cmndTopic, message);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
@@ -105,24 +109,21 @@ void MqttOutput::setState(OutState newState)
 
 std::shared_ptr<MqttOutput> MqttOutput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
 {
-	const rapidjson::Value& mqttInterface = config["mqttInterface"];
+	const rapidjson::Value& mqttInterface = config["comm"];
 
-	if (mqttInterface.HasMember("username")) {
-		return std::make_shared<MqttOutput>(
-			config["id"].GetString(),
-			mqttInterface["topic"].GetString(),
-			mqttInterface["broker"].GetString(),
-			mqttInterface["port"].GetInt(),
-			mqttInterface["username"].GetString(),
-			mqttInterface["password"].GetString());
+	std::shared_ptr<MqttComm> mqttComm = nullptr;
+
+	if (mqttInterface.IsString()) {
+		mqttComm = std::dynamic_pointer_cast<MqttComm>(parentNode->getComm(mqttInterface.GetString()));
 	}
 	else {
-		return std::make_shared<MqttOutput>(
-			config["id"].GetString(),
-			mqttInterface["topic"].GetString(),
-			mqttInterface["broker"].GetString(),
-			mqttInterface["port"].GetInt());
+		mqttComm = std::dynamic_pointer_cast<MqttComm>(CommFactory::from_json(mqttInterface, parentNode));
 	}
+
+	return std::make_shared<MqttOutput>(
+		config["id"].GetString(),
+		config["mqttTopic"].GetString(),
+		mqttComm);
 }
 
 rapidjson::Document MqttOutput::to_json() const
@@ -131,20 +132,13 @@ rapidjson::Document MqttOutput::to_json() const
 
 	console->debug("MqttOutput::to_json : serializing output '{}'.", _id.c_str());
 
-	output.AddMember("type", "MqttOutput", output.GetAllocator());
+	rapidjson::Value comm;
+	comm.SetString(_mqttComm->getID().c_str(), output.GetAllocator());
+	output.AddMember("comm", comm, output.GetAllocator());
 
-	rapidjson::Document mqttInterface;
-	rapidjson::Value mqttBroker;
-	rapidjson::Value mqttPort;
 	rapidjson::Value mqttTopic;
-	mqttBroker.SetString(getHost().c_str(), output.GetAllocator());
-	mqttPort.SetInt(getPort());
 	mqttTopic.SetString(_cmndTopic.substr(5).c_str(), output.GetAllocator());
-	mqttInterface.AddMember("broker", mqttBroker, output.GetAllocator());
-	mqttInterface.AddMember("port", mqttPort, output.GetAllocator());
-	mqttInterface.AddMember("topic", mqttTopic, output.GetAllocator());
-
-	output.AddMember("mqttInterface", mqttInterface, output.GetAllocator());
+	output.AddMember("mqttTopic", mqttTopic, output.GetAllocator());
 
 	return output;
 }

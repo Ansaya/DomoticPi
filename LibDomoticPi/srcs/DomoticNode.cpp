@@ -36,14 +36,14 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 
 	DomoticNode_ptr domoticNode = std::make_shared<DomoticNode>(config["id"].GetString());
 
-	// Load available serial interface
-	if (config.HasMember("serialInterfaces")) {
-		console->info("DomoticNode::from_json : loading serial interfaces for node '{}'.",
+	// Load available comm interfaces
+	if (config.HasMember("comms")) {
+		console->info("DomoticNode::from_json : loading comm interfaces for node '{}'.",
 			domoticNode->getID().c_str());
 
-		const rapidjson::Value::ConstArray& serialInterfaces = config["serialInterfaces"].GetArray();
-		for (auto& it : serialInterfaces) {
-			SerialInterface::from_json(it, domoticNode);
+		const rapidjson::Value::ConstArray& commInterfaces = config["comms"].GetArray();
+		for (auto& it : commInterfaces) {
+			CommFactory::from_json(it, domoticNode);
 		}
 	}
 
@@ -179,7 +179,9 @@ bool DomoticNode::addInput(Input_ptr input)
 	_inputs.push_back(input);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::AccessorySet::getInstance().addAccessory(input->getAHKAccessory());
+	if (input->hasAHKAccessory()) {
+		hap::AccessorySet::getInstance().addAccessory(input->getAHKAccessory());
+	}
 #endif
 
 	return true;
@@ -196,7 +198,9 @@ void DomoticNode::removeInput(const std::string & inputId)
 
 	if (input != _inputs.end()) {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		hap::AccessorySet::getInstance().removeAccessory((*input)->getAHKAccessory());
+		if ((*input)->hasAHKAccessory()) {
+			hap::AccessorySet::getInstance().removeAccessory((*input)->getAHKAccessory());
+		}
 #endif
 
 		_inputs.erase(input);
@@ -234,7 +238,9 @@ bool DomoticNode::addOutput(Output_ptr output)
 	_outputs.push_back(output);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::AccessorySet::getInstance().addAccessory(output->getAHKAccessory());
+	if(output->hasAHKAccessory()) {
+		hap::AccessorySet::getInstance().addAccessory(output->getAHKAccessory());
+	}
 #endif
 
 	return true;
@@ -251,56 +257,58 @@ void DomoticNode::removeOutput(const std::string & outputId)
 
 	if (output != _outputs.end()) {
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		hap::AccessorySet::getInstance().removeAccessory((*output)->getAHKAccessory());
+		if ((*output)->hasAHKAccessory()) {
+			hap::AccessorySet::getInstance().removeAccessory((*output)->getAHKAccessory());
+		}
 #endif
 		_outputs.erase(output);
 	}
 }
 
-SerialInterface_ptr DomoticNode::getSerialInterface(const std::string& port) const
+Comm_ptr DomoticNode::getComm(const std::string& id) const
 {
 	// Search for port name in already present serial interfaces
-	auto it = std::find_if(_serialPorts.begin(), _serialPorts.end(),
-		[port](const SerialInterface_ptr& si) {
-		return port == si->getPort();
+	auto it = std::find_if(_comms.begin(), _comms.end(),
+		[id](const Comm_ptr& si) {
+		return id == si->getID();
 	});
 
 	// If port exists return found serial interface
-	if (it != _serialPorts.end())
+	if (it != _comms.end())
 		return *it;
 
 	return nullptr;
 }
 
-const std::vector<SerialInterface_ptr>& DomoticNode::getSerialInterfaces() const
+const std::vector<Comm_ptr>& DomoticNode::getComms() const
 {
-	return _serialPorts;
+	return _comms;
 }
 
-bool DomoticNode::addSerialInterface(SerialInterface_ptr serialInterface)
+bool DomoticNode::addComm(Comm_ptr comm)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_serialInterfacesLock);
+	std::unique_lock<std::mutex> lock(_commsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	// If conflict exists return immediately
-	if (getSerialInterface(serialInterface->getPort()) != nullptr)
+	if (getComm(comm->getID()) != nullptr)
 		return false;
 
-	_serialPorts.push_back(serialInterface);
+	_comms.push_back(comm);
 
 	return true;
 }
 
-void DomoticNode::removeSerialInterface(const std::string & serialInterfacePort)
+void DomoticNode::removeComm(const std::string & id)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_serialInterfacesLock);
+	std::unique_lock<std::mutex> lock(_commsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	std::remove_if(_serialPorts.begin(), _serialPorts.end(), 
-		[serialInterfacePort](const SerialInterface_ptr& si) {
-			return serialInterfacePort == si->getPort();
+	std::remove_if(_comms.begin(), _comms.end(), 
+		[id](const Comm_ptr& comm) {
+			return id == comm->getID();
 		});
 }
 
@@ -334,9 +342,9 @@ rapidjson::Document DomoticNode::to_json() const
 
 	// Populate and set node serial interfaces
 	rapidjson::Value serialInterfaces(rapidjson::kArrayType);
-	for (auto& it : _serialPorts)
+	for (auto& it : _comms)
 		serialInterfaces.PushBack(it->to_json(), domoticNode.GetAllocator());
-	domoticNode.AddMember("serialInterfaces", serialInterfaces, domoticNode.GetAllocator());
+	domoticNode.AddMember("comms", serialInterfaces, domoticNode.GetAllocator());
 
 	return domoticNode;
 }

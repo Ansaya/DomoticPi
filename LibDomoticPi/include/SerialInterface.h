@@ -1,17 +1,21 @@
 #ifndef DOMOTIC_PI_SERIAL_INTERFACE
 #define DOMOTIC_PI_SERIAL_INTERFACE
 
+#include "CommFactory.h"
 #include "domoticPiDefine.h"
+#include "IComm.h"
 #include "Pin.h"
 
 #include <memory>
+#ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
+#endif // DOMOTIC_PI_THREAD_SAFE
 #include <rapidjson/document.h>
 #include <string>
 
 namespace domotic_pi {
 
-	class SerialInterface {
+	class SerialInterface : public IComm, protected CommFactory {
 	public:
 
 		/**	
@@ -30,43 +34,6 @@ namespace domotic_pi {
 		SerialInterface(const SerialInterface&) = delete;
 		SerialInterface& operator= (const SerialInterface&) = delete;
 		virtual ~SerialInterface();
-
-		/**
-		 *	@brief Deserialize and add new serial interface to parent node
-		 *
-		 *	@note If given serialized interface is already present in the parent node
-		 *	it will be returned immediatley without trying to initialize a copy
-		 *
-		 *	@param config json configuration for a serial interface
-		 *	@param parentNode parent node to associate the new interface to
-		 *	@param checkSchema enable schema validation before parsing
-		 *
-		 *	@return new serial interface initialized from json configuration
-		 *	@throws domotic_pi_exception for any error while parsing or initializing the object
-		 *	@throws out_of_range if out of range pin numbers are required
-		 */
-		static SerialInterface_ptr from_json(const rapidjson::Value& config, 
-											 DomoticNode_ptr parentNode, 
-											 bool checkSchema = false);
-
-		/**
-		 *	@brief Deserialize and add new serial interface to parent node
-		 *
-		 *	@note If given serialized interface is already present in the parent node
-		 *	it will be returned immediatley without trying to initialize a copy
-		 *
-		 *	@note this method will always validate the json schema before parsing 
-		 *	the new object
-		 *
-		 *	@param jsonConfig json configuration string for a serial interface
-		 *	@param parentNode parent node to associate the new interface to
-		 *
-		 *	@return new serial interface initialized from json configuration
-		 *	@throws domotic_pi_exception for any error while parsing or initializing the object
-		 *	@throws out_of_range if out of range pin numbers are required
-		 */
-		static SerialInterface_ptr from_json(const std::string& jsonConfig,
-											 DomoticNode_ptr parentNode);
 
 		/**
 		 *	@breif Get device port used by this serial interface
@@ -98,7 +65,7 @@ namespace domotic_pi {
 		 */
 		void write(const std::string& message);
 
-		rapidjson::Document to_json() const;
+		rapidjson::Document to_json() const override;
 
 	private:
 		const std::string _port;
@@ -110,6 +77,9 @@ namespace domotic_pi {
 		std::mutex _txOwn;
 		std::mutex _rxOwn;
 #endif
+
+		static const bool _factoryRegistration;
+		static std::shared_ptr<SerialInterface> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);
 
 	};
 

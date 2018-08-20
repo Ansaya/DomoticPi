@@ -99,34 +99,34 @@ namespace domotic_pi {
 #pragma endregion
 
 		/**
-		 *		Serial interfaces handlers
+		 *		Comm interfaces handlers
 		 */
-#pragma region SerialInterfaces
+#pragma region CommInterfaces
 
-		SerialInterface_ptr getSerialInterface(const std::string& id) const;
+		Comm_ptr getComm(const std::string& id) const;
 
 		/**
-		 *	@brief Get full list of serial interfaces in this node
+		 *	@brief Get full list of comm interfaces in this node
 		 *	
-		 *	@return Available serial interfaces' vector
+		 *	@return Available comm interfaces' vector
 		 */
-		const std::vector<SerialInterface_ptr> & getSerialInterfaces() const;
+		const std::vector<Comm_ptr> & getComms() const;
 
 		/**
-		 *	@brief Add a new serial interface to the node
+		 *	@brief Add a new comm interface to the node
 		 *
-		 *	@param serialInterface serial interface to add to this node
+		 *	@param comm serial interface to add to this node
 		 *
-		 *	@return True if operation succeded, false if a serial interface with same port was already present
+		 *	@return True if operation succeded, false if a comm interface with same id was already present
 		 */
-		bool addSerialInterface(SerialInterface_ptr serialInterface);
+		bool addComm(Comm_ptr comm);
 
 		/**
-		 *	@brief Remove serial interface with given port from the node if present
+		 *	@brief Remove comm interface with given port from the node if present
 		 *
-		 *	@param serialInterfacePort port of the serial interface module to remove
+		 *	@param id id of the comm interface module to remove
 		 */
-		void removeSerialInterface(const std::string& serialInterfacePort);
+		void removeComm(const std::string& id);
 
 #pragma endregion
 
@@ -143,13 +143,13 @@ namespace domotic_pi {
 		std::string _name;
 		std::vector<Input_ptr> _inputs;
 		std::vector<Output_ptr> _outputs;
-		std::vector<SerialInterface_ptr> _serialPorts;
+		std::vector<Comm_ptr> _comms;
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
 		std::mutex _nameLock;
 		std::mutex _inputsLock;
 		std::mutex _outputsLock;
-		std::mutex _serialInterfacesLock;
+		std::mutex _commsLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT

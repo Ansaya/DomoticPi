@@ -86,6 +86,7 @@
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="include\CommFactory.h" />
     <ClInclude Include="include\DigitalInput.h" />
     <ClInclude Include="include\DigitalOutput.h" />
     <ClInclude Include="include\DomoticAPI.h" />
@@ -94,12 +95,13 @@
     <ClInclude Include="include\domoticPiDefine.h" />
     <ClInclude Include="include\exceptions.h" />
     <ClInclude Include="include\IAHKAccessory.h" />
+    <ClInclude Include="include\IComm.h" />
     <ClInclude Include="include\IInput.h" />
     <ClInclude Include="include\InputFactory.h" />
     <ClInclude Include="include\IOutput.h" />
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\IModule.h" />
-    <ClInclude Include="include\IMqtt.h" />
+    <ClInclude Include="include\MqttComm.h" />
     <ClInclude Include="include\MqttInput.h" />
     <ClInclude Include="include\MqttLib.h" />
     <ClInclude Include="include\MqttOutput.h" />
@@ -116,22 +118,24 @@
     <None Include="json-schema\DomoticNode.json" />
     <None Include="json-schema\Input.json" />
     <None Include="json-schema\ioBinding.json" />
-    <None Include="json-schema\MqttInterface.json" />
     <None Include="json-schema\Output.json" />
     <None Include="json-schema\pinNumber.json" />
-    <None Include="json-schema\SerialInterface.json" />
+    <None Include="json-schema\Comm.json" />
     <None Include="json-schema\syspath.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="srcs\CommFactory.cpp" />
     <ClCompile Include="srcs\DigitalInput.cpp" />
     <ClCompile Include="srcs\DigitalOutput.cpp" />
     <ClCompile Include="srcs\DomoticNode.cpp" />
     <ClCompile Include="srcs\domoticPi.cpp" />
+    <ClCompile Include="srcs\IAHKAccessory.cpp" />
+    <ClCompile Include="srcs\IComm.cpp" />
     <ClCompile Include="srcs\IModule.cpp" />
-    <ClCompile Include="srcs\IMqtt.cpp" />
+    <ClCompile Include="srcs\MqttComm.cpp" />
     <ClCompile Include="srcs\IInput.cpp" />
     <ClCompile Include="srcs\InputFactory.cpp" />
     <ClCompile Include="srcs\IOutput.cpp" />
@@ -139,6 +143,7 @@
     <ClCompile Include="srcs\MqttLib.cpp" />
     <ClCompile Include="srcs\MqttOutput.cpp" />
     <ClCompile Include="srcs\MqttSubscription.cpp" />
+    <ClCompile Include="srcs\MqttVolume.cpp" />
     <ClCompile Include="srcs\OutputFactory.cpp" />
     <ClCompile Include="srcs\Pin.cpp" />
     <ClCompile Include="srcs\SerialInterface.cpp" />
@@ -200,7 +205,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties json-schema_4Input_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4MqttInterface_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4SerialInterface_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4ioBinding_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
+      <UserProperties json-schema_4Input_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4ioBinding_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

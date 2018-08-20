@@ -22,10 +22,10 @@ namespace domotic_pi {
 	typedef std::shared_ptr<IModule> Module_ptr;
 
 	class IModule : 
-		public Serializable,
-	#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		public IAHKAccessory 
-	#endif
+		public Serializable
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		, public IAHKAccessory 
+#endif
 	{
 
 	public:
@@ -33,9 +33,9 @@ namespace domotic_pi {
 		 *	@brief Initialize a new module with given unique identifier and HAP module name
 		 *
 		 *	@param id unique identifier for the new module
-		 *	@param moduleName module type name for HAP service
+		 *	@param moduleName module type name for HAP service - optional (no accessory is created if omitted)
 		 */
-		IModule(const std::string& id, const std::string& moduleName = "GenericModule");
+		IModule(const std::string& id, const std::string& moduleName = "");
 
 		IModule(const IModule&) = delete;
 		IModule& operator= (const IModule&) = delete;
@@ -60,17 +60,22 @@ namespace domotic_pi {
 
 		rapidjson::Document to_json() const override;
 
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		bool hasAHKAccessory() const override;
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
+
 	protected:
 		const std::string _id;
-	#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+		const bool _hasAHKAccessory;
 		hap::StringCharacteristics_ptr _nameInfo;
-	#endif
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 	private:
 		std::string _name;
-	#ifdef DOMOTIC_PI_THREAD_SAFE
+#ifdef DOMOTIC_PI_THREAD_SAFE
 		std::mutex _nameLock;
-	#endif // DOMOTIC_PI_THREAD_SAFE
+#endif // DOMOTIC_PI_THREAD_SAFE
 	};
 
 }

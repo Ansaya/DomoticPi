@@ -2,13 +2,14 @@
 #define DOMOTIC_PI_MQTT_INPUT
 
 #include "domoticPiDefine.h"
-#include "IMqtt.h"
+#include "MqttComm.h"
 #include "IInput.h"
 #include "InputFactory.h"
 #include "MqttSubscription.h"
 
 #include <functional>
 #include <list>
+#include <memory>
 #include <mosquitto.h>
 #ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
@@ -18,14 +19,11 @@
 
 namespace domotic_pi {
 
-class MqttInput : public IInput, public IMqtt, protected InputFactory {
+class MqttInput : public IInput, protected InputFactory {
 public:
 	MqttInput(const std::string& id,
 		const std::string& mqttTopic,
-		const std::string& mqttBroker,
-		const int mqttPort,
-		const std::string& mqttUsername = "",
-		const std::string& mqttPassword = "");
+		std::shared_ptr<MqttComm> mqttComm);
 
 	MqttInput(const MqttInput&) = delete;
 	MqttInput& operator= (const MqttInput&) = delete;
@@ -40,8 +38,9 @@ public:
 	rapidjson::Document to_json() const override;
 
 private:
-	MqttSubscription * _cmndSubscription;
+	std::shared_ptr<MqttComm> _mqttComm;
 	const std::string _cmndTopic;
+	MqttSubscription * _cmndSubscription;
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::mutex _isrLock;
 #endif

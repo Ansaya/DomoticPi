@@ -11,16 +11,24 @@
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 #include "IAHKAccessory.h"
 #endif
-#include "Module.h"
+#include "IModule.h"
 #include "Serializable.h"
 
-#include "Input.h"
+#include "InputFactory.h"
+#include "IInput.h"
 #include "DigitalInput.h"
+#include "MqttInput.h"
 
-#include "Output.h"
+#include "OutputFactory.h"
+#include "IOutput.h"
 #include "DigitalOutput.h"
+#include "MqttOutput.h"
+#include "MqttVolume.h"
 #include "SerialOutput.h"
 
+#include "CommFactory.h"
+#include "IComm.h"
+#include "MqttComm.h"
 #include "SerialInterface.h"
 
 #include "DomoticNode.h"

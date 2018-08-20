@@ -1,0 +1,70 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "Comm",
+  "description": "Comm interface initialization information",
+  "properties": {
+    "name": {
+      "description": "Comm interface name",
+      "type": "string"
+    },
+    "type": {
+      "description": "Comm interface type",
+      "type": "string",
+      "enum": [ "MqttComm", "SerialInterface" ]
+    },
+    "serialPort": {
+      "description": "Device port to be used by this serial interface (ie. /dev/serial0) ",
+      "$ref": "syspath.json"
+    },
+    "serialBaud": {
+      "description": "Serial port baud rate to use",
+      "type": "integer"
+    },
+    "serialTxPin": {
+      "description": "Serial tx pin used",
+      "$ref": "pinNumber.json"
+    },
+    "serialRxPin": {
+      "description": "Serial rx pin used",
+      "$ref": "pinNumber.json"
+    },
+    "mqttPort": {
+      "description": "Port number of mqtt broker.",
+      "type": "integer",
+      "maximum": 65535,
+      "minimum": 0
+    },
+    "mqttBorker": {
+      "description": "IP address of mqtt broker.",
+      "type": "string",
+      "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+    },
+    "mqttUsername": {
+      "description": "Username for the mqtt connection.",
+      "type": "string"
+    },
+    "mqttPassword": {
+      "description": "Password for the mqtt connection.",
+      "type": "string"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "type": { "enum": [ "MqttComm" ] }
+      },
+      "required": [ "mqttBroker", "mqttPort" ]
+    },
+    {
+      "properties": {
+        "type": { "enum": [ "SerialInterface" ] }
+      },
+      "required": [ "serialPort", "serialBaud" ]
+    }
+  ],
+  "required": [ "type" ],
+  "type": "object",
+  "additionalItems":  false
+}
+)"

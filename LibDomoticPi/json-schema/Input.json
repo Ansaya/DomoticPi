@@ -26,7 +26,7 @@ R"(
     "type": {
       "description": "Type of interface used by the module",
       "type": "string",
-      "enum": [ "DigitalInput", "SerialInput" ]
+      "enum": [ "DigitalInput", "MqttInput" ]
     },
     "range_min": {
       "description": "Minimum input value",
@@ -36,40 +36,34 @@ R"(
       "description": "Maximum input value",
       "type": "integer"
     },
-    "serialInterface": {
-      "description": "Serial interface to use in case this is a SerialInput",
+    "comm": {
+      "description": "Comm interface to use by the input",
       "oneOf": [
         {
-          "$ref": "SerialInterface.json"
+          "$ref": "Comm.json"
         },
         {
-          "$ref": "syspath.json"
+          "type": "string"
         }
       ]
     },
-    "mqttInterface": {
-      "description": "Mqtt connection information to connect to mqtt broker",
-      "$ref": "MqttInterface.json"
+    "mqttTopic": {
+      "description": "Topic to subscribe to on the broker. Given pattern will be preceeded by 'cmnd/' when  subscribing.",
+      "type": "string"
     }
   },
   "oneOf": [
     {
       "properties": {
-        "type": { "enum": [ "digital" ] }
+        "type": { "enum": [ "DigitalInput" ] }
       },
       "required": [ "pin", "pud" ]
     },
     {
       "properties": {
-        "type": { "enum": [ "serial" ] }
+        "type": { "enum": [ "MqttInput" ] }
       },
-      "required": [ "range_min", "range_max", "serialInterface" ]
-    },
-    {
-      "properties": {
-        "type": { "enum": [ "mqtt" ] }
-      },
-      "required": [ "mqttInterface" ]
+      "required": [ "comm", "mqttTopic" ]
     }
   ],
   "required": [ "id", "type" ],

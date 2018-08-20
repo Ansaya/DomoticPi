@@ -4,6 +4,7 @@
 #include "domoticPiDefine.h"
 #include "IOutput.h"
 #include "OutputFactory.h"
+#include "SerialInterface.h"
 
 #include <string>
 
@@ -12,7 +13,11 @@ namespace domotic_pi {
 	class SerialOutput : public IOutput, protected OutputFactory {
 
 	public:
-		SerialOutput(const std::string& id, SerialInterface_ptr serial, int min_range, int max_range);
+		SerialOutput(
+			const std::string& id, 
+			std::shared_ptr<SerialInterface> serialComm, 
+			int min_range, 
+			int max_range);
 
 		SerialOutput(const SerialOutput&) = delete;
 		SerialOutput& operator= (const SerialOutput&) = delete;
@@ -25,7 +30,7 @@ namespace domotic_pi {
 		rapidjson::Document to_json() const override;
 
 	private:
-		SerialInterface_ptr _serial;
+		std::shared_ptr<SerialInterface> _serial;
 		int _range_min;
 		int _range_max;
 

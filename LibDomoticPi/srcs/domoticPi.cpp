@@ -60,18 +60,6 @@ int domotic_pi::json::SchemaProvider::load()
 	_schemas["pinNumber.json"] = 
 		std::make_shared<rapidjson::SchemaDocument>(pinNumberDoc);
 
-	const char * MqttInterface =
-#include "../json-schema/MqttInterface.json"
-		;
-	rapidjson::Document MqttInterfaceDoc;
-	if (MqttInterfaceDoc.Parse(MqttInterface).HasParseError()) {
-		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema 'MqttInterface.json'.");
-		return -1;
-	}
-	_schemas["MqttInterface.json"] =
-		std::make_shared<rapidjson::SchemaDocument>(MqttInterfaceDoc);
-
 	const char * ioBinding =
 #include "../json-schema/ioBinding.json"
 		;
@@ -85,17 +73,17 @@ int domotic_pi::json::SchemaProvider::load()
 
 	domotic_pi::json::SchemaProvider provider;
 
-	const char * SerialInterface =
-#include "../json-schema/SerialInterface.json"
+	const char * Comm =
+#include "../json-schema/Comm.json"
 		;
-	rapidjson::Document SerialInterfaceDoc;
-	if (SerialInterfaceDoc.Parse(SerialInterface).HasParseError()) {
+	rapidjson::Document CommDoc;
+	if (CommDoc.Parse(Comm).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema '" STR(DOMOTIC_PI_JSON_SERIAL_INTERFACE) "'.");
+			"schema '" STR(DOMOTIC_PI_JSON_COMM) "'.");
 		return -1;
 	}
-	_schemas[DOMOTIC_PI_JSON_SERIAL_INTERFACE] =
-		std::make_shared<rapidjson::SchemaDocument>(SerialInterfaceDoc, nullptr, 0, &provider);
+	_schemas[DOMOTIC_PI_JSON_COMM] =
+		std::make_shared<rapidjson::SchemaDocument>(CommDoc, nullptr, 0, &provider);
 
 	const char * Input =
 #include "../json-schema/Input.json"

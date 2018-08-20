@@ -9,8 +9,11 @@
 
 using namespace domotic_pi;
 
+const bool SerialInterface::_factoryRegistration = 
+	CommFactory::initializer_registration("SerialInterface", SerialInterface::from_json);
+
 SerialInterface::SerialInterface(const std::string& port, int baud, int txPin, int rxPin) :
-	_port(port), _baudRate(baud), _pinTX(txPin), _pinRX(rxPin)
+	IComm(port, "SerialInterface"), _port(port), _baudRate(baud), _pinTX(txPin), _pinRX(rxPin)
 {
 	_serial = serialOpen(port.c_str(), baud);
 
@@ -32,49 +35,6 @@ SerialInterface::~SerialInterface()
 	serialClose(_serial);
 
 	console->info("SerialInterface::dtor : serial close on {}.", _port);
-}
-
-SerialInterface_ptr SerialInterface::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode, bool checkSchema)
-{
-	if (checkSchema && !json::hasValidSchema(config, DOMOTIC_PI_JSON_SERIAL_INTERFACE)) {
-		console->error("SerialInterface::from_json : invalid json schema for a serial interface.");
-		throw domotic_pi_exception("Json configuration for domotic_pi::SerialInterface not valid.");
-	}
-
-	std::string port = config["port"].GetString();
-
-	SerialInterface_ptr si = parentNode->getSerialInterface(port);
-	if (si != nullptr) {
-		console->warn("SerialInterface::from_json : parsed serial interface '{}' is already loaded.", port.c_str());
-		return si;
-	}
-
-	int txPin = config.HasMember("txPin") ? config["txPin"].GetInt() : -1;
-	int rxPin = config.HasMember("rxPin") ? config["rxPin"].GetInt() : -1;
-
-	si = std::make_shared<SerialInterface>(
-		port,
-		config["baud"].GetInt(),
-		txPin,
-		rxPin);
-
-	parentNode->addSerialInterface(si);
-
-	console->info("SerialInterface::from_json : new serial interface created from port '{}' on node '{}'.",
-		port.c_str(), parentNode->getID().c_str());
-
-	return si;
-}
-
-SerialInterface_ptr SerialInterface::from_json(const std::string& jsonConfig, DomoticNode_ptr parentNode)
-{
-	rapidjson::Document config;
-	if (config.Parse(jsonConfig.c_str()).HasParseError()) {
-		console->error("SerialInterface::from_json : could not parse given configuration string.");
-		throw domotic_pi_exception("Could not parse given json srting.");
-	}
-
-	return SerialInterface::from_json(config, parentNode, true);
 }
 
 const std::string & SerialInterface::getPort() const
@@ -131,12 +91,25 @@ void SerialInterface::write(const std::string & message)
 	console->debug("SerialInterface::read : wrote message: '{}'.", message.c_str());
 }
 
+std::shared_ptr<SerialInterface> SerialInterface::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+{
+	int txPin = config.HasMember("txPin") ? config["txPin"].GetInt() : -1;
+	int rxPin = config.HasMember("rxPin") ? config["rxPin"].GetInt() : -1;
+
+	return std::make_shared<SerialInterface>(
+		config["port"].GetString(),
+		config["baud"].GetInt(),
+		txPin,
+		rxPin);
+}
+
 rapidjson::Document SerialInterface::to_json() const
 {
-	console->debug("SerialInterface::to_json : serializing serial interface '{}'.", 
+	console->debug("SerialInterface::to_json : serializing serial comm '{}'.", 
 		_port.c_str());
 
-	rapidjson::Document serialInterface(rapidjson::kObjectType);
+	rapidjson::Document serialInterface = IComm::to_json();
+	serialInterface.RemoveMember("id");
 
 	rapidjson::Value port;
 	port.SetString(_port.c_str(), serialInterface.GetAllocator());
