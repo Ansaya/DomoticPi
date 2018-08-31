@@ -3,49 +3,62 @@
   "name": "Flow3r House",
   "inputs": [
     {
-      "id": "001",
-      "name": "test1",
-      "type": "DigitalInput",
-      "pin": 0,
-      "pud": 1
+      "id": "002",
+      "name": "Test button",
+      "type": "MqttButton",
+      "comm": "domoticMqtt",
+      "mqttTopic": "test/POWER1",
+      "doublePressDuration": 250
     }
   ],
   "outputs": [
     {
       "id": "001",
       "name": "testOut",
-      "type": "DigitalOutput",
+      "type": "DigitalSwitch",
       "pin": 1
     },
     {
       "id": "002",
       "name": "Gruppo TV",
-      "type": "MqttOutput",
-      "comm": "127.0.0.1",
+      "type": "MqttSwitch",
+      "comm": "domoticMqtt",
       "mqttTopic": "sala/POWER3"
     },
     {
       "id": "003",
+      "name": "Audio Sala",
+      "type": "MqttSwitch",
+      "comm": "domoticMqtt",
+      "mqttTopic": "sala/POWER2"
+    },
+    {
+      "id": "004",
       "name": "Luce TV",
-      "type": "MqttOutput",
-      "comm": "127.0.0.1",
+      "type": "MqttSwitch",
+      "comm": "domoticMqtt",
       "mqttTopic": "sala/POWER1"
     }
   ],
   "comms": [
     {
+      "id": "domoticMqtt",
+      "type": "MqttComm",
       "mqttBroker": "127.0.0.1",
       "mqttPort": 1883,
       "mqttUsername": "domoticPi",
       "mqttPassword": "ipcitomod"
     }
-  ]
+  ],
   "bindings": [
     {
-      "inputId": "001",
+      "inputId": "002",
       "outputId": "001",
       "inputState": 2,
       "outputAction": 2
     }
-  ]
+  ],
+  "homekit": {
+    "password": "575-57-575"
+  }
 }

@@ -10,8 +10,9 @@ IAHKAccessory::~IAHKAccessory()
 {
 }
 
-bool IAHKAccessory::hasAHKAccessory() const {
-	return false;
+bool IAHKAccessory::hasAHKAccessory() const 
+{
+	return _ahkAccessory != nullptr;
 }
 
 const hap::Accessory_ptr IAHKAccessory::getAHKAccessory() const

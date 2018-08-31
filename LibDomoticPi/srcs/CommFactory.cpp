@@ -10,8 +10,6 @@ using namespace domotic_pi;
 std::mutex CommFactory::_commInitMap;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-std::map<std::string, std::function<Comm_ptr(const rapidjson::Value&, DomoticNode_ptr)>> CommFactory::_commInitializers;
-
 Comm_ptr CommFactory::from_json(const rapidjson::Value& config,
 	DomoticNode_ptr parentNode,
 	bool checkSchema)
@@ -30,7 +28,7 @@ Comm_ptr CommFactory::from_json(const rapidjson::Value& config,
 	}
 
 	std::string commType = config["type"].GetString();
-	comm = _commInitializers[commType](config, parentNode);
+	comm = _commInitializers()[commType](config, parentNode);
 
 	if (config.HasMember("name"))
 		comm->setName(config["name"].GetString());
@@ -58,20 +56,28 @@ Comm_ptr CommFactory::from_json(const std::string& jsonConfig,
 }
 
 bool CommFactory::initializer_registration(
-	const std::string& inputType,
+	const std::string& commType,
 	std::function<Comm_ptr(const rapidjson::Value&, DomoticNode_ptr)> from_json)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::unique_lock<std::mutex> lock(_commInitMap);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	if (_commInitializers.find(inputType) != _commInitializers.end()) {
+	if (_commInitializers().find(commType) != _commInitializers().end()) {
 		console->error("CommFactory::initializer_registration : comm type identifier '{}' already in use.");
 
 		throw domotic_pi_exception("Comm initializer duplicated");
 	}
 
-	_commInitializers[inputType] = from_json;
+	if (!_commInitializers().emplace(commType, from_json).second) {
+		throw domotic_pi_exception("Could not emplace initializer in factory map");
+	}
 
 	return true;
+}
+
+std::map<const std::string, std::function<Comm_ptr(const rapidjson::Value&, DomoticNode_ptr)>> &CommFactory::_commInitializers()
+{
+	static std::map<const std::string, std::function<Comm_ptr(const rapidjson::Value&, DomoticNode_ptr)>> commInitializers;
+	return commInitializers;
 }

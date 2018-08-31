@@ -8,17 +8,18 @@ using namespace domotic_pi;
 const bool MqttComm::_factoryRegistration = CommFactory::initializer_registration("MqttComm", MqttComm::from_json);
 
 MqttComm::MqttComm(
+	const std::string& id,
 	const std::string& host,
 	const int port,
 	const std::string& username,
 	const std::string& password) :
-	IComm(host, "MqttComm"),
+	IComm(id, "MqttComm"),
 	_mosquittoLib(MqttLib::load()), _host(host), _port(port), _username(username), _password(password)
 {
 	// Allocate mosquitto structure for the new connection
 	mosq = mosquitto_new(NULL, true, NULL);
 	if (!mosq) {
-		console->error("MqttModule::ctor : mqtt comm for '{}' could not allocate memory for mqtt structure.",
+		console->error("MqttComm::ctor : mqtt comm for '{}' could not allocate memory for mqtt structure.",
 			host.c_str());
 
 		throw domotic_pi_exception("Connection to mqtt broker failed.");
@@ -32,7 +33,7 @@ MqttComm::MqttComm(
 	// Connect to the required mqtt broker
 	int res = mosquitto_connect(mosq, host.c_str(), port, 60);
 	if (res != MOSQ_ERR_SUCCESS) {
-		console->error("MqttModule::ctor : mqtt comm for '{}' could not connect to borker at {}:{} : {}",
+		console->error("MqttComm::ctor : mqtt comm for '{}' could not connect to borker at {}:{} : {}",
 			host.c_str(), host.c_str(), port, mosquitto_strerror(res));
 
 		throw domotic_pi_exception("Connection to mqtt broker failed.");
@@ -41,7 +42,7 @@ MqttComm::MqttComm(
 	// Start mqtt listener thread for the new connection
 	res = mosquitto_loop_start(mosq);
 	if (res != MOSQ_ERR_SUCCESS) {
-		console->error("MqttModule::ctor : could not start mqtt client thread for '{}' : {}",
+		console->error("MqttComm::ctor : could not start mqtt client thread for '{}' : {}",
 			host.c_str(), mosquitto_strerror(res));
 		throw domotic_pi_exception("Thread start failed for mqtt listener.");
 	}
@@ -90,7 +91,7 @@ void MqttComm::publish(
 		2,							// Set QoS to deliver the message exactly once
 		retain);
 
-	console->info("MqttModule::publish : message '{}' published on topic '{}'.",
+	console->info("MqttComm::publish : message '{}' published on topic '{}'.",
 		message.c_str(), topic.c_str());
 }
 
@@ -107,24 +108,25 @@ MqttSubscription *MqttComm::subscribe(
 
 std::shared_ptr<MqttComm> MqttComm::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
 {
-	if (config.HasMember("username")) {
+	if (config.HasMember("mqttUsername")) {
 		return std::make_shared<MqttComm>(
-			config["broker"].GetString(),
-			config["port"].GetInt(),
-			config["username"].GetString(),
-			config["password"].GetString());
+			config["id"].GetString(),
+			config["mqttBroker"].GetString(),
+			config["mqttPort"].GetInt(),
+			config["mqttUsername"].GetString(),
+			config["mqttPassword"].GetString());
 	}
 	else {
 		return std::make_shared<MqttComm>(
-			config["broker"].GetString(),
-			config["port"].GetInt());
+			config["id"].GetString(),
+			config["mqttBroker"].GetString(),
+			config["mqttPort"].GetInt());
 	}
 }
 
 rapidjson::Document MqttComm::to_json() const
 {
 	rapidjson::Document mqttComm = IComm::to_json();
-	mqttComm.RemoveMember("id");
 
 	console->debug("MqttComm::to_json : serializing mqtt interface '{}'.", _id.c_str());
 
@@ -132,16 +134,16 @@ rapidjson::Document MqttComm::to_json() const
 	rapidjson::Value port;
 	broker.SetString(_host.c_str(), mqttComm.GetAllocator());
 	port.SetInt(_port);
-	mqttComm.AddMember("broker", broker, mqttComm.GetAllocator());
-	mqttComm.AddMember("port", port, mqttComm.GetAllocator());
+	mqttComm.AddMember("mqttBroker", broker, mqttComm.GetAllocator());
+	mqttComm.AddMember("mqttPort", port, mqttComm.GetAllocator());
 
 	if (!_username.empty()) {
 		rapidjson::Value username;
 		rapidjson::Value password;
 		username.SetString(_username.c_str(), mqttComm.GetAllocator());
 		password.SetString(_password.c_str(), mqttComm.GetAllocator());
-		mqttComm.AddMember("username", username, mqttComm.GetAllocator());
-		mqttComm.AddMember("password", password, mqttComm.GetAllocator());
+		mqttComm.AddMember("mqttUsername", username, mqttComm.GetAllocator());
+		mqttComm.AddMember("mqttPassword", password, mqttComm.GetAllocator());
 	}
 
 	return mqttComm;

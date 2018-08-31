@@ -26,7 +26,7 @@ R"(
     "type": {
       "description": "Type of interface used by the module",
       "type": "string",
-      "enum": [ "DigitalInput", "MqttInput" ]
+      "enum": [ "DigitalButton", "MqttButton" ]
     },
     "range_min": {
       "description": "Minimum input value",
@@ -37,7 +37,7 @@ R"(
       "type": "integer"
     },
     "comm": {
-      "description": "Comm interface to use by the input",
+      "description": "Comm interface to use by the input or its id if it is already present in comms array of the node.",
       "oneOf": [
         {
           "$ref": "Comm.json"
@@ -50,18 +50,28 @@ R"(
     "mqttTopic": {
       "description": "Topic to subscribe to on the broker. Given pattern will be preceeded by 'cmnd/' when  subscribing.",
       "type": "string"
+    },
+    "doublePressDuration": {
+      "description": "Timeout in milliseconds within a double state change is translated to a double press event",
+      "type": "integer",
+      "minimum": 0
+    },
+    "longPressDuration": {
+      "description": "Time in milliseconds current state has to be maintained to trigger a long press event",
+      "type": "integer",
+      "minimum": 0
     }
   },
   "oneOf": [
     {
       "properties": {
-        "type": { "enum": [ "DigitalInput" ] }
+        "type": { "enum": [ "DigitalButton" ] }
       },
-      "required": [ "pin", "pud" ]
+      "required": [ "pin", "pud", "isr_mode" ]
     },
     {
       "properties": {
-        "type": { "enum": [ "MqttInput" ] }
+        "type": { "enum": [ "MqttButton" ] }
       },
       "required": [ "comm", "mqttTopic" ]
     }

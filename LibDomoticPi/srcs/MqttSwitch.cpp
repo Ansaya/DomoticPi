@@ -1,67 +1,67 @@
-#include <MqttOutput.h>
+#include <MqttSwitch.h>
 
 #include <CommFactory.h>
 #include <domoticPi.h>
 #include <exceptions.h>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
+#include <thread>
 
 using namespace domotic_pi;
 
-const bool MqttOutput::_factoryRegistration = 
-	OutputFactory::initializer_registration("MqttOutput", MqttOutput::from_json);
+const bool MqttSwitch::_factoryRegistration = 
+	OutputFactory::initializer_registration("MqttSwitch", MqttSwitch::from_json);
 
-MqttOutput::MqttOutput(
+MqttSwitch::MqttSwitch(
 	const std::string& id,
 	const std::string& mqttTopic,
 	std::shared_ptr<MqttComm> mqttComm) :
-	IOutput(id, "MqttOutput"), 
+	IOutput(id), 
 	_mqttComm(mqttComm),
 	_cmndTopic("cmnd/" + mqttTopic), _statTopic("stat/" + mqttTopic), 
 	_statSubscription(_mqttComm->subscribe(_statTopic,
-		std::bind(&MqttOutput::_stat_message_cb, this, std::placeholders::_1))),
+		std::bind(&MqttSwitch::_stat_message_cb, this, std::placeholders::_1))),
 	_range_min(0), _range_max(1)
 {
 	if (mqttComm == nullptr) {
-		console->error("MqttOutput::ctor : given mqtt comm interface can not be null.");
+		console->error("MqttSwitch::ctor : given mqtt comm interface can not be null.");
 		throw domotic_pi_exception("Mqtt comm interface can not be null.");
 	}
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
-	_ahkAccessory->addService(lightService);
+	_ahkAccessory = std::make_shared<hap::Accessory>();
 
-	lightService->addCharacteristic(_nameInfo);
+	_ahkAccessory->addInfoService(getName(), DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER,
+		typeid(MqttSwitch).name(), _id, "1.0.0", 
+		[this](bool oldValue, bool newValue, void* sender) {
+			this->setState(ON);
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			this->setState(OFF);
+		});
 
-	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_all);
-	_stateInfo->Characteristics::setValue(std::to_string(false));
+	_ahkAccessory->addSwitchService(&_stateInfo, &_nameInfo);
+
+	_nameInfo->setValue(getName());
+
+	_stateInfo->setValue(false);
 	_stateInfo->setValueChangeCB([this](bool oldValue, bool newValue, void* sender) {
 		if (oldValue != newValue)
 			setState(newValue ? ON : OFF);
 	});
-	lightService->addCharacteristic(_stateInfo);
-
-	_valueInfo = std::make_shared<hap::IntCharacteristics>(hap::char_brightness, hap::permission_all,
-		_range_min, _range_max, 1, hap::unit_percentage);
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
-	_valueInfo->setValueChangeCB([this](int oldValue, int newValue, void* sender) {
-		if (oldValue != newValue)
-			setValue(newValue);
-	});
-	lightService->addCharacteristic(_valueInfo);
 #endif
 
-	console->info("MqttOutput::ctor : output '{}' subscribed to topic '{}'.", 
+	console->info("MqttSwitch::ctor : output '{}' subscribed to topic '{}'.", 
 		getID().c_str(), _statTopic.c_str());
 }
 
-MqttOutput::~MqttOutput()
+MqttSwitch::~MqttSwitch()
 {
 	delete _statSubscription;
 }
 
-void MqttOutput::setValue(int newValue)
+void MqttSwitch::setValue(int newValue)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::unique_lock<std::mutex> lck(_valueLock);
@@ -70,24 +70,17 @@ void MqttOutput::setValue(int newValue)
 	std::string message;
 	if (newValue == _range_min) {
 		message = "OFF";
-		_value = 0;
 	}
 	else {
 		message = "ON";
-		_value = 1;
 	}
 
 	_mqttComm->publish(_cmndTopic, message);
 
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
-#endif
-
-	console->info("MqttOutput::setValue : output '{}' set to '{}'.", getID(), _value);
+	console->info("MqttSwitch::setValue : output '{}' set to '{}'.", getID(), _value);
 }
 
-void MqttOutput::setState(OutState newState)
+void MqttSwitch::setState(OutState newState)
 {
 	switch (newState) {
 	case ON:
@@ -107,7 +100,7 @@ void MqttOutput::setState(OutState newState)
 	}
 }
 
-std::shared_ptr<MqttOutput> MqttOutput::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
+std::shared_ptr<MqttSwitch> MqttSwitch::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
 {
 	const rapidjson::Value& mqttInterface = config["comm"];
 
@@ -120,17 +113,19 @@ std::shared_ptr<MqttOutput> MqttOutput::from_json(const rapidjson::Value& config
 		mqttComm = std::dynamic_pointer_cast<MqttComm>(CommFactory::from_json(mqttInterface, parentNode));
 	}
 
-	return std::make_shared<MqttOutput>(
+	return std::make_shared<MqttSwitch>(
 		config["id"].GetString(),
 		config["mqttTopic"].GetString(),
 		mqttComm);
 }
 
-rapidjson::Document MqttOutput::to_json() const
+rapidjson::Document MqttSwitch::to_json() const
 {
 	rapidjson::Document output = IOutput::to_json();
 
-	console->debug("MqttOutput::to_json : serializing output '{}'.", _id.c_str());
+	console->debug("MqttSwitch::to_json : serializing output '{}'.", _id.c_str());
+
+	output.AddMember("type", "MqttSwitch", output.GetAllocator());
 
 	rapidjson::Value comm;
 	comm.SetString(_mqttComm->getID().c_str(), output.GetAllocator());
@@ -143,12 +138,12 @@ rapidjson::Document MqttOutput::to_json() const
 	return output;
 }
 
-void MqttOutput::_stat_message_cb(const struct mosquitto_message * message)
+void MqttSwitch::_stat_message_cb(const struct mosquitto_message * message)
 {
 	// Read and lowercase received message
 	std::string messageString((char *)message->payload, message->payloadlen);
 
-	console->debug("MqttOutput::_stat_message_cb : message '{}' from topic '{}'.", 
+	console->debug("MqttSwitch::_stat_message_cb : message '{}' from topic '{}'.", 
 		messageString.c_str(), _statTopic.c_str());
 
 	std::transform(messageString.begin(), messageString.end(), messageString.begin(), ::tolower);
@@ -169,10 +164,9 @@ void MqttOutput::_stat_message_cb(const struct mosquitto_message * message)
 	}
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+	_stateInfo->setValue(_value != _range_min);
 #endif
 
-	console->info("MqttOutput::_stat_message_cb : output '{}' changed value to {}.", 
+	console->info("MqttSwitch::_stat_message_cb : output '{}' changed value to {}.", 
 		getID().c_str(), _value);
 }

@@ -1,5 +1,5 @@
-#ifndef DOMOTIC_PI_MQTT_OUTPUT
-#define DOMOTIC_PI_MQTT_OUTPUT
+#ifndef DOMOTIC_PI_MQTT_SWITCH
+#define DOMOTIC_PI_MQTT_SWITCH
 
 #include "IOutput.h"
 #include "MqttComm.h"
@@ -20,27 +20,27 @@ namespace domotic_pi {
  *	course changes on stat/name topic needs to be published as ON/OFF
  *	words to be interpreted correctly.
  */
-class MqttOutput : 
+class MqttSwitch : 
 	public IOutput, 
 	protected OutputFactory 
 {
 public:
 
 	/**
-	 *	@brief Initialize a new output
+	 *	@brief Initialize a new mqtt output switch
 	 *
 	 *	@param id unique identifier for this module
 	 *	@param mqttTopic device topic to be used as suffix after cmnd/ and stat/
 	 *	@param mqttComm mqtt comm interface to use for the output
 	 */
-	MqttOutput(
+	MqttSwitch(
 		const std::string& id, 
 		const std::string& mqttTopic, 
 		std::shared_ptr<MqttComm> mqttComm);
 
-	MqttOutput(const MqttOutput&) = delete;
-	MqttOutput& operator= (const MqttOutput&) = delete;
-	~MqttOutput();
+	MqttSwitch(const MqttSwitch&) = delete;
+	MqttSwitch& operator= (const MqttSwitch&) = delete;
+	~MqttSwitch();
 
 	void setState(OutState newState) override;
 
@@ -59,15 +59,14 @@ private:
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::BoolCharacteristics_ptr _stateInfo;
-	hap::IntCharacteristics_ptr _valueInfo;
 #endif
 
 	void _stat_message_cb(const struct mosquitto_message * message);
 
 	static const bool _factoryRegistration;
-	static std::shared_ptr<MqttOutput> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);
+	static std::shared_ptr<MqttSwitch> from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode);
 };
 
 }
 
-#endif // !DOMOTIC_PI_MQTT_OUTPUT
+#endif // !DOMOTIC_PI_MQTT_SWITCH

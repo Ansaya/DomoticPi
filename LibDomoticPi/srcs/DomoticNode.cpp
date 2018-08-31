@@ -77,7 +77,7 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 		for (auto& it : config["bindings"].GetArray()) {
 			const std::string inputId = it["inputId"].GetString();
 			const std::string outputId = it["outputId"].GetString();
-			const int isr_mode = it["inputState"].GetInt() + 1;
+			const int inputState = it["inputState"].GetInt();
 			const OutState outputAction = (OutState)it["outputAction"].GetInt();
 
 			Input_ptr input = domoticNode->getInput(inputId);
@@ -98,19 +98,31 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 			// in case the output is deleted afterwards
 			std::weak_ptr<IOutput> weakOut = output;
 			
-			input->addISRCall([weakOut, outputAction]() {
-				if (auto effectiveOut = weakOut.lock()) {
+			input->addValueChangeCallback([weakOut, inputState, outputAction] (int newValue) {
+				if (!weakOut.expired() && (inputState == 2 || inputState == newValue)) {
+					auto effectiveOut = weakOut.lock();
 					effectiveOut->setState(outputAction);
 				}
-			}, isr_mode);
+			});
 
 			console->info("DomoticNode::from_json : output '{}' bounded to input '{}'.", 
 				outputId.c_str(), inputId.c_str());
 		}
 	}
 
+	// Set node name
 	if (config.HasMember("name"))
 		domoticNode->setName(config["name"].GetString());
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	// Enable Apple HomeKit if required
+	if (config.HasMember("homekit")) {
+		const rapidjson::Value& homekitConfig = config["homekit"];
+		domoticNode->enableHAP(
+			homekitConfig["password"].GetString(),
+			homekitConfig.HasMember("name") ? homekitConfig["name"].GetString() : domoticNode->_name);
+	}
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 	console->info("DomoticNode::from_json : new domotic node '{}' loaded succesfully.", 
 		domoticNode->getID().c_str());
@@ -351,10 +363,10 @@ rapidjson::Document DomoticNode::to_json() const
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 
-bool DomoticNode::enableHAP()
+bool DomoticNode::enableHAP(const std::string& password, const std::string& hapName)
 {
 	return hap::net::HAPService::getInstance()
-		.setupAndListen(hap::deviceType_bridge);
+		.setupAndListen(hapName.empty() ? _id : hapName, password);
 }
 
 void DomoticNode::disableHAP()

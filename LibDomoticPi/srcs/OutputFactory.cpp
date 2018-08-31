@@ -11,8 +11,6 @@ using namespace domotic_pi;
 std::mutex OutputFactory::_outputInitMap;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-std::map<std::string, std::function<Output_ptr(const rapidjson::Value&, DomoticNode_ptr)>> OutputFactory::_outputInitializers;
-
 Output_ptr OutputFactory::from_json(
 	const rapidjson::Value& config,
 	DomoticNode_ptr parentNode,
@@ -34,7 +32,7 @@ Output_ptr OutputFactory::from_json(
 
 	// Get requeired output type and call relative class initializer
 	std::string outputType = config["type"].GetString();
-	output = _outputInitializers[outputType](config, parentNode);
+	output = _outputInitializers()[outputType](config, parentNode);
 
 	if (config.HasMember("name")) {
 		output->setName(config["name"].GetString());
@@ -69,13 +67,21 @@ bool OutputFactory::initializer_registration(
 	std::unique_lock<std::mutex> lock(_outputInitMap);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	if (_outputInitializers.find(outputType) != _outputInitializers.end()) {
+	if (_outputInitializers().find(outputType) != _outputInitializers().end()) {
 		console->error("OutputFactory::initializer_registration : output type identifier '{}' already in use.");
 
 		throw domotic_pi_exception("Output initializer duplicated");
 	}
 
-	_outputInitializers[outputType] = from_json;
+	if (!_outputInitializers().emplace(outputType, from_json).second) {
+		throw domotic_pi_exception("Could not emplace initializer in factory map");
+	}
 
 	return true;
+}
+
+std::map<const std::string, std::function<Output_ptr(const rapidjson::Value&, DomoticNode_ptr)>> &OutputFactory::_outputInitializers()
+{
+	static std::map<const std::string, std::function<Output_ptr(const rapidjson::Value&, DomoticNode_ptr)>> outputInitializers;
+	return outputInitializers;
 }

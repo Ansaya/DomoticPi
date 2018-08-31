@@ -131,7 +131,17 @@ namespace domotic_pi {
 #pragma endregion
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		bool enableHAP();
+		/**
+		 *	@brief Enable Apple HomeKit service for this node with given password and name
+		 *
+		 *	@note HAP service password should be formatted as XXX-XX-XXX where X is a 0-9 integer
+		 *
+		 *	@param password HAP service password for client connections
+		 *	@param hapName HAP service name to expose, if omitted node id will be used
+		 *
+		 *	@return True if service has been correcty initialized, false else
+		 */
+		bool enableHAP(const std::string& password, const std::string& hapName = "");
 
 		void disableHAP();
 

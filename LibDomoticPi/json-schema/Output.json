@@ -16,7 +16,7 @@ R"(
     "type": {
       "description": "Type of output to be used by the module",
       "type": "string",
-      "enum": [ "DigitalOutput", "SerialOutput", "MqttOutput" ]
+      "enum": [ "DigitalSwitch", "SerialOutput", "MqttSwitch", "MqttVolume" ]
     },
     "range_min": {
       "description": "Minimum output value",
@@ -25,9 +25,9 @@ R"(
     "range_max": {
       "description": "Maximum output value",
       "type": "integer"
-    }
+    },
     "comm": {
-      "description": "Comm interface to be used by the output.",
+      "description": "Comm interface to use by the output or its id if it is already present in comms array of the node.",
       "oneOf": [
         {
           "$ref": "Comm.json"
@@ -45,7 +45,7 @@ R"(
   "oneOf": [
     {
       "properties": {
-        "type": { "enum": [ "DigitalOutput" ] }
+        "type": { "enum": [ "DigitalSwitch" ] }
       },
       "required": [ "pin" ]
     },
@@ -57,7 +57,7 @@ R"(
     },
     {
       "properties": {
-        "type": { "enum": [ "MqttOutput", "MqttVolume" ] }
+        "type": { "enum": [ "MqttSwitch", "MqttVolume" ] }
       },
       "required": [ "comm", "mqttTopic" ]
     }

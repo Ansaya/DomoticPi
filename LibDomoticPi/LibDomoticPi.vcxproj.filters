@@ -12,15 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DigitalInput.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DigitalOutput.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DomoticAPI.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\DomoticNode.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -54,13 +45,7 @@
     <ClInclude Include="include\MqttSubscription.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\MqttOutput.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\MqttLib.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttInput.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\MqttVolume.h">
@@ -93,6 +78,27 @@
     <ClInclude Include="include\CommFactory.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ButtonState.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CallbackToken.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IButtonStateGenerator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttButton.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MqttSwitch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DigitalSwitch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DigitalButton.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -121,12 +127,6 @@
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="srcs\DigitalInput.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\DigitalOutput.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="srcs\DomoticNode.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -145,13 +145,7 @@
     <ClCompile Include="srcs\MqttSubscription.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="srcs\MqttOutput.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="srcs\MqttLib.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttInput.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\InputFactory.cpp">
@@ -182,6 +176,24 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="srcs\CommFactory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\IButtonStateGenerator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\CallbackToken.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\DigitalSwitch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\DigitalButton.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttButton.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttSwitch.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

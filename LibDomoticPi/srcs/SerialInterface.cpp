@@ -12,8 +12,13 @@ using namespace domotic_pi;
 const bool SerialInterface::_factoryRegistration = 
 	CommFactory::initializer_registration("SerialInterface", SerialInterface::from_json);
 
-SerialInterface::SerialInterface(const std::string& port, int baud, int txPin, int rxPin) :
-	IComm(port, "SerialInterface"), _port(port), _baudRate(baud), _pinTX(txPin), _pinRX(rxPin)
+SerialInterface::SerialInterface(
+	const std::string& id, 
+	const std::string& port, 
+	int baud, 
+	int txPin, 
+	int rxPin) 
+	: IComm(id, "SerialInterface"), _port(port), _baudRate(baud), _pinTX(txPin), _pinRX(rxPin)
 {
 	_serial = serialOpen(port.c_str(), baud);
 
@@ -93,12 +98,13 @@ void SerialInterface::write(const std::string & message)
 
 std::shared_ptr<SerialInterface> SerialInterface::from_json(const rapidjson::Value& config, DomoticNode_ptr parentNode)
 {
-	int txPin = config.HasMember("txPin") ? config["txPin"].GetInt() : -1;
-	int rxPin = config.HasMember("rxPin") ? config["rxPin"].GetInt() : -1;
+	int txPin = config.HasMember("serialTxPin") ? config["serialTxPin"].GetInt() : -1;
+	int rxPin = config.HasMember("serialRxPin") ? config["serialRxPin"].GetInt() : -1;
 
 	return std::make_shared<SerialInterface>(
-		config["port"].GetString(),
-		config["baud"].GetInt(),
+		config["id"].GetString(),
+		config["serialPort"].GetString(),
+		config["serialBaud"].GetInt(),
 		txPin,
 		rxPin);
 }
@@ -109,19 +115,18 @@ rapidjson::Document SerialInterface::to_json() const
 		_port.c_str());
 
 	rapidjson::Document serialInterface = IComm::to_json();
-	serialInterface.RemoveMember("id");
 
 	rapidjson::Value port;
 	port.SetString(_port.c_str(), serialInterface.GetAllocator());
-	serialInterface.AddMember("port", port, serialInterface.GetAllocator());
+	serialInterface.AddMember("serialPort", port, serialInterface.GetAllocator());
 
-	serialInterface.AddMember("baud", _baudRate, serialInterface.GetAllocator());
+	serialInterface.AddMember("serialBaud", _baudRate, serialInterface.GetAllocator());
 
 	if (_pinTX.getPin() >= 0)
-		serialInterface.AddMember("txPin", _pinTX.getPin(), serialInterface.GetAllocator());
+		serialInterface.AddMember("serialTxPin", _pinTX.getPin(), serialInterface.GetAllocator());
 
 	if (_pinRX.getPin() >= 0)
-		serialInterface.AddMember("rxPin", _pinRX.getPin(), serialInterface.GetAllocator());
+		serialInterface.AddMember("serialRxPin", _pinRX.getPin(), serialInterface.GetAllocator());
 
 	return serialInterface;
 }

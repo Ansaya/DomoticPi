@@ -71,7 +71,7 @@ namespace domotic_pi {
 #ifdef DOMOTIC_PI_THREAD_SAFE
 		static std::mutex _outputInitMap;
 #endif // DOMOTIC_PI_THREAD_SAFE
-		static std::map<std::string, std::function<Output_ptr(const rapidjson::Value&, DomoticNode_ptr)>> _outputInitializers;
+		static std::map<const std::string, std::function<Output_ptr(const rapidjson::Value&, DomoticNode_ptr)>> &_outputInitializers();
 	};
 
 }

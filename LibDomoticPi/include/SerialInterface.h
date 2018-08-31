@@ -21,6 +21,7 @@ namespace domotic_pi {
 		/**	
 		 *	@brief Lock needed pins and initializes serial communication interface.
 		 *
+		 *	@param id Unique identifier for this comm module
 		 *	@param port Serial device port (ie. /dev/serial0)
 		 *	@param speed Serial port baud rate
 		 *	@param txPin Serial tx pin number
@@ -29,7 +30,7 @@ namespace domotic_pi {
 		 *	@throws domotic_pi_exception if dedicated serial pins are already in use.
 		 *	@throws out_of_range if given t/rx pins are out of library bounds
 		 */
-		SerialInterface(const std::string& port, int baud, int txPin, int rxPin);
+		SerialInterface(const std::string& id, const std::string& port, int baud, int txPin, int rxPin);
 
 		SerialInterface(const SerialInterface&) = delete;
 		SerialInterface& operator= (const SerialInterface&) = delete;

@@ -9,8 +9,6 @@ using namespace domotic_pi;
 std::mutex InputFactory::_inputInitMap;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-std::map<std::string, std::function<Input_ptr(const rapidjson::Value&, DomoticNode_ptr)>> InputFactory::_inputInitializers;
-
 Input_ptr InputFactory::from_json(const rapidjson::Value& config,
 	DomoticNode_ptr parentNode,
 	bool checkSchema)
@@ -29,7 +27,7 @@ Input_ptr InputFactory::from_json(const rapidjson::Value& config,
 	}
 
 	std::string inputType = config["type"].GetString();
-	input = _inputInitializers[inputType](config, parentNode);
+	input = _inputInitializers()[inputType](config, parentNode);
 
 	if (config.HasMember("name"))
 		input->setName(config["name"].GetString());
@@ -64,13 +62,21 @@ bool InputFactory::initializer_registration(
 	std::unique_lock<std::mutex> lock(_inputInitMap);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	if (_inputInitializers.find(inputType) != _inputInitializers.end()) {
+	if (_inputInitializers().find(inputType) != _inputInitializers().end()) {
 		console->error("InputFactory::initializer_registration : input type identifier '{}' already in use.");
 
 		throw domotic_pi_exception("Input initializer duplicated");
 	}
 
-	_inputInitializers[inputType] = from_json;
+	if (!_inputInitializers().emplace(inputType, from_json).second) {
+		throw domotic_pi_exception("Could not emplace initializer in factory map");
+	}
 
 	return true;
+}
+
+std::map<const std::string, std::function<Input_ptr(const rapidjson::Value&, DomoticNode_ptr)>> &InputFactory::_inputInitializers()
+{
+	static std::map<const std::string, std::function<Input_ptr(const rapidjson::Value&, DomoticNode_ptr)>> inputInitializers;
+	return inputInitializers;
 }

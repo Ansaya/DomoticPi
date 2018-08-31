@@ -5,6 +5,7 @@
 #include "domoticPi.h"
 
 #include "exceptions.h"
+#include "ButtonState.h"
 #include "OutState.h"
 
 #include "Pin.h"
@@ -16,13 +17,13 @@
 
 #include "InputFactory.h"
 #include "IInput.h"
-#include "DigitalInput.h"
-#include "MqttInput.h"
+#include "DigitalButton.h"
+#include "MqttButton.h"
 
 #include "OutputFactory.h"
 #include "IOutput.h"
-#include "DigitalOutput.h"
-#include "MqttOutput.h"
+#include "DigitalSwitch.h"
+#include "MqttSwitch.h"
 #include "MqttVolume.h"
 #include "SerialOutput.h"
 

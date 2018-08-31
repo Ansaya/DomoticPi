@@ -40,7 +40,6 @@ private:
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 	hap::BoolCharacteristics_ptr _stateInfo;
-	hap::IntCharacteristics_ptr _valueInfo;
 #endif
 
 	void _vol_stat_cb(const struct mosquitto_message * message);

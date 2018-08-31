@@ -16,7 +16,7 @@ MqttVolume::MqttVolume(
 	const std::string& id,
 	const std::string& mqttVolumeTopic,
 	std::shared_ptr<MqttComm> mqttComm)
-	: IOutput(id, "VolumeOutput"), 
+	: IOutput(id), 
 	_mqttComm(mqttComm), 
 	_volCmndTopic("cmnd/" + mqttVolumeTopic),
 	_volStatTopic("stat/" + mqttVolumeTopic),
@@ -30,31 +30,23 @@ MqttVolume::MqttVolume(
 	}
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::Service_ptr volumeService = std::make_shared<hap::Service>(hap::service_speaker);
-	_ahkAccessory->addService(volumeService);
+	_ahkAccessory = std::make_shared<hap::Accessory>();
 
-	volumeService->addCharacteristic(_nameInfo);
+	_ahkAccessory->addInfoService(getName(), DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER,
+		typeid(MqttVolume).name(), _id, "0.8.0", [](bool oldValue, bool newValue, void* sender) {});
 
-	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_all);
-	_stateInfo->Characteristics::setValue(std::to_string(false));
+	_ahkAccessory->addSwitchService(&_stateInfo, &_nameInfo);
+
+	_nameInfo->setValue(getName());
+
 	_stateInfo->setValueChangeCB([this](bool oldValue, bool newValue, void* sender) {
-		if (oldValue != newValue)
-			setState(newValue ? ON : OFF);
+		if (oldValue != newValue) {
+			setState((OutState)newValue);
+		}
 	});
-	volumeService->addCharacteristic(_stateInfo);
-
-	_valueInfo = std::make_shared<hap::IntCharacteristics>(hap::char_outputVolume, hap::permission_all,
-		_range_min, _range_max, 1, hap::unit_percentage);
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
-	_valueInfo->setValueChangeCB([this](int oldValue, int newValue, void* sender) {
-		if (oldValue != newValue)
-			setValue(newValue);
-	});
-
-	volumeService->addCharacteristic(_valueInfo);
 #endif // DOMOTIC_PI_APPLE_HOMEKIT
 
-	console->info("MqttVolume::ctor : module '{}' initialized as volume output.");
+	console->info("MqttVolume::ctor : module '{}' initialized as volume output.", _id.c_str());
 }
 
 MqttVolume::~MqttVolume()
@@ -64,12 +56,28 @@ MqttVolume::~MqttVolume()
 
 void MqttVolume::setState(OutState newState)
 {
-	int newValue = newState == ON ? _range_max 
-		: newState == OFF ? _range_min 
-		: _value == _range_min ? _range_max
-		: _range_min;
-
-	return setValue(newValue);
+	switch (newState)
+	{
+	case ON: {
+		setValue(_range_max);
+	}
+		break;
+	case OFF: {
+		setValue(_range_min);
+	}
+		break;
+	case TOGGLE: {
+		if (_value == _range_min) {
+			setValue(_range_max);
+		}
+		else {
+			setValue(_range_min);
+		}
+	}
+		break;
+	default:
+		break;
+	}
 }
 
 void MqttVolume::setValue(int newValue)
@@ -86,13 +94,6 @@ void MqttVolume::setValue(int newValue)
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	_mqttComm->publish(_volCmndTopic, std::to_string(newValue));
-
-	_value = newValue;
-
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
-#endif
 
 	console->info("MqttVolume::setValue : output '{}' set to '{}'.", getID(), _value);
 }
@@ -112,7 +113,7 @@ std::shared_ptr<MqttVolume> MqttVolume::from_json(const rapidjson::Value& config
 
 	return std::make_shared<MqttVolume>(
 		config["id"].GetString(),
-		config["topic"].GetString(),
+		config["mqttTopic"].GetString(),
 		mqttComm);
 }
 
@@ -122,7 +123,7 @@ rapidjson::Document MqttVolume::to_json() const
 
 	console->debug("MqttVolume::to_json : serializing output '{}'.", _id.c_str());
 
-	output.AddMember("type", "MqttOutput", output.GetAllocator());
+	output.AddMember("type", "MqttVolume", output.GetAllocator());
 
 	rapidjson::Value comm;
 	comm.SetString(_mqttComm->getID().c_str(), output.GetAllocator());
@@ -160,8 +161,7 @@ void MqttVolume::_vol_stat_cb(const struct mosquitto_message * message)
 	}
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+	_stateInfo->setValue(_value != _range_min);
 #endif
 
 	console->info("MqttVolume::_vol_stat_cb : output '{}' changed value to '{}'.", 

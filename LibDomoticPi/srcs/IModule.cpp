@@ -4,26 +4,9 @@
 
 using namespace domotic_pi;
 
-IModule::IModule(const std::string& id, const std::string& moduleName) 
-	: _id(id)
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	, _hasAHKAccessory(!moduleName.empty())
-#endif // DOMOTIC_PI_APPLE_HOMEKIT
-	, _name("")
+IModule::IModule(const std::string& id) 
+	: _id(id), _name("")
 {
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	if (_hasAHKAccessory) {
-		_ahkAccessory = std::make_shared<hap::Accessory>();
-
-		_ahkAccessory->addInfoService("Module", DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER,
-			moduleName, _id, [](bool oldValue, bool newValue, void* sender) {});
-
-		_nameInfo = std::make_shared<hap::StringCharacteristics>(hap::char_serviceName, hap::permission_read);
-		_nameInfo->setValueChangeCB([this](std::string oldValue, std::string newValue, void* sender) {
-			setName(newValue);
-		});
-	}
-#endif
 }
 
 IModule::~IModule()
@@ -52,7 +35,9 @@ void IModule::setName(const std::string& name)
 	_name.assign(name);
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_nameInfo->Characteristics::setValue(_name);
+	if (_nameInfo != nullptr) {
+		_nameInfo->setValue(_name);
+	}
 #endif
 }
 
@@ -72,9 +57,4 @@ rapidjson::Document IModule::to_json() const
 	moduleDoc.AddMember("name", name, moduleDoc.GetAllocator());
 
 	return moduleDoc;
-}
-
-bool IModule::hasAHKAccessory() const
-{
-	return _hasAHKAccessory;
 }

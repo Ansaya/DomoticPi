@@ -6,7 +6,6 @@
 #include "IInput.h"
 
 #include <map>
-#include <memory>
 #ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
 #endif // DOMOTIC_PI_THREAD_SAFE
@@ -72,7 +71,7 @@ namespace domotic_pi {
 #ifdef DOMOTIC_PI_THREAD_SAFE
 		static std::mutex _inputInitMap;
 #endif // DOMOTIC_PI_THREAD_SAFE
-		static std::map<std::string, std::function<Input_ptr(const rapidjson::Value&, DomoticNode_ptr)>> _inputInitializers;
+		static std::map<const std::string, std::function<Input_ptr(const rapidjson::Value&, DomoticNode_ptr)>> &_inputInitializers();
 	};
 
 }

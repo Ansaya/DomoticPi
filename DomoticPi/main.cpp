@@ -58,8 +58,6 @@ int main(int argc, char** argv)
 
 	console->info("Domotic node loaded succesfully.");
 
-	localNode->enableHAP();
-
 	/*rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
 	rapidjson::Document localNodeJson = localNode->to_json();

@@ -10,7 +10,7 @@ const bool SerialOutput::_factoryRegistration =
 	OutputFactory::initializer_registration("SerialOutput", SerialOutput::from_json);
 
 SerialOutput::SerialOutput(const std::string& id, std::shared_ptr<SerialInterface> serialComm, int min_range, int max_range) : 
-	IOutput(id, "SerialOutput"), _serial(serialComm), _range_min(min_range), _range_max(max_range)
+	IOutput(id), _serial(serialComm), _range_min(min_range), _range_max(max_range)
 {
 	if (serialComm == nullptr) {
 		console->error("SerialOutput::ctor : given serial interface can not be null.");
@@ -20,27 +20,21 @@ SerialOutput::SerialOutput(const std::string& id, std::shared_ptr<SerialInterfac
 	_value = min_range;
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	hap::Service_ptr lightService = std::make_shared<hap::Service>(hap::service_lightBulb);
-	_ahkAccessory->addService(lightService);
+	_ahkAccessory->addLightBulbService(&_stateInfo, &_valueInfo, nullptr, &_nameInfo, nullptr, nullptr);
 
-	lightService->addCharacteristic(_nameInfo);
+	_nameInfo->setValue(getName());
 
-	_stateInfo = std::make_shared<hap::BoolCharacteristics>(hap::char_on, hap::permission_all);
-	_stateInfo->Characteristics::setValue(std::to_string(false));
+	_stateInfo->setValue(false);
 	_stateInfo->setValueChangeCB([this](bool oldValue, bool newValue, void* sender) {
 		if (oldValue != newValue)
 			setState(newValue ? ON : OFF);
 	});
-	lightService->addCharacteristic(_stateInfo);
 
-	_valueInfo = std::make_shared<hap::IntCharacteristics>(hap::char_brightness, hap::permission_all, 
-		_range_min, _range_max, 1, hap::unit_percentage);
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+	_valueInfo->setValue(_value);
 	_valueInfo->setValueChangeCB([this](int oldValue, int newValue, void* sender) {
 		if (oldValue != newValue)
 			setValue(newValue);
 	});
-	lightService->addCharacteristic(_valueInfo);
 #endif
 }
 
@@ -92,8 +86,8 @@ void SerialOutput::setValue(int newValue)
 	_value = newValue;
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-	_stateInfo->hap::Characteristics::setValue(std::to_string(_value != _range_min));
-	_valueInfo->hap::Characteristics::setValue(std::to_string(_value));
+	_stateInfo->setValue(_value != _range_min);
+	_valueInfo->setValue(_value);
 #endif
 
 	console->info("SerialOutput::setValue : output '{}' set to '{}'.", getID(), _value);

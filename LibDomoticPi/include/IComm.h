@@ -11,6 +11,12 @@ namespace domotic_pi {
 
 	class IComm : public IModule {
 	public:
+		/**
+		 *	@brief Initialize a generic comm module
+		 *
+		 *	@param id unique identifier for this comm module
+		 *	@param typeName name of derived comm type to be returned by getType method
+		 */
 		IComm(const std::string& id, const std::string& typeName);
 
 		IComm(const IComm&) = delete;
@@ -19,6 +25,8 @@ namespace domotic_pi {
 
 		/**
 		 *	@brief Get comm type from derived class
+		 *
+		 *	@return typeName string passed during IComm initialization
 		 */
 		const std::string& getType() const;
 

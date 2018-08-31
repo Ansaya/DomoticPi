@@ -47,6 +47,25 @@ R"(
           "ref$": "ioBinding.json"
         }
       ]
+    },
+    "homekit": {
+      "description": "Triggers Apple Homekit interface loading, to enable domoticPi modules interface with Apple Home App",
+      "title": "Apple Homekit properties",
+      "properties": {
+        "name": {
+          "description": "Apple HomeKit accessory bridge name to set; will be the node name if not set",
+          "type": "string",
+          "minLength": 2
+        },
+        "password": {
+          "description": "Apple HomeKit pairing password as a string 123-45-678",
+          "type": "string",
+          "pattern": "^\\d{3}-\\d{2}-\\d{3}$"
+        }
+      },
+      "required": [ "password" ],
+      "type": "object",
+      "additionalItems": false
     }
   },
   "required": [ "id" ],

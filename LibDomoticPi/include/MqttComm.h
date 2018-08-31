@@ -18,6 +18,7 @@ namespace domotic_pi {
 class MqttComm : public IComm, protected CommFactory {
 public:
 	MqttComm(
+		const std::string& id,
 		const std::string& host, 
 		const int port, 
 		const std::string& username = "",

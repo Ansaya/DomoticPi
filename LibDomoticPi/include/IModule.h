@@ -17,10 +17,6 @@
 
 namespace domotic_pi {
 
-	class IModule;
-
-	typedef std::shared_ptr<IModule> Module_ptr;
-
 	class IModule : 
 		public Serializable
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
@@ -33,9 +29,8 @@ namespace domotic_pi {
 		 *	@brief Initialize a new module with given unique identifier and HAP module name
 		 *
 		 *	@param id unique identifier for the new module
-		 *	@param moduleName module type name for HAP service - optional (no accessory is created if omitted)
 		 */
-		IModule(const std::string& id, const std::string& moduleName = "");
+		IModule(const std::string& id);
 
 		IModule(const IModule&) = delete;
 		IModule& operator= (const IModule&) = delete;
@@ -56,18 +51,13 @@ namespace domotic_pi {
 		 *
 		 *	@param name new name for this module
 		 */
-		void setName(const std::string& name);
+		virtual void setName(const std::string& name);
 
 		rapidjson::Document to_json() const override;
-
-#ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		bool hasAHKAccessory() const override;
-#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 	protected:
 		const std::string _id;
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
-		const bool _hasAHKAccessory;
 		hap::StringCharacteristics_ptr _nameInfo;
 #endif // DOMOTIC_PI_APPLE_HOMEKIT
 
@@ -77,6 +67,8 @@ namespace domotic_pi {
 		std::mutex _nameLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
 	};
+
+	typedef std::shared_ptr<IModule> Module_ptr;
 
 }
 

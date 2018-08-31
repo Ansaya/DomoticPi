@@ -6,7 +6,9 @@
 #include "OutState.h"
 
 #include <memory>
+#ifdef DOMOTIC_PI_THREAD_SAFE
 #include <mutex>
+#endif // DOMOTIC_PI_THREAD_SAFE
 #include <string>
 
 namespace domotic_pi {
@@ -17,9 +19,8 @@ namespace domotic_pi {
 		 *	@brief Initialize a new output with given unique identifier and HAP module name
 		 *
 		 *	@param id unique identifier for the new module
-		 *	@param moduleName module type name for HAK service
 		 */
-		IOutput(const std::string& id, const std::string& moduleName = "GenericOutput");
+		IOutput(const std::string& id);
 
 		IOutput(const IOutput&) = delete;
 		IOutput& operator= (const IOutput&) = delete;

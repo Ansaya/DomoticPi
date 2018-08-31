@@ -4,6 +4,10 @@ R"(
   "title": "Comm",
   "description": "Comm interface initialization information",
   "properties": {
+    "id": {
+      "description": "Unique identifier for this comm module.",
+      "type": "string"
+    },
     "name": {
       "description": "Comm interface name",
       "type": "string"
@@ -63,7 +67,7 @@ R"(
       "required": [ "serialPort", "serialBaud" ]
     }
   ],
-  "required": [ "type" ],
+  "required": [ "id", "type" ],
   "type": "object",
   "additionalItems":  false
 }

@@ -6,7 +6,7 @@ namespace domotic_pi {
 	enum OutState {
 		OFF = 0,
 		ON = 1,
-		TOGGLE = -1
+		TOGGLE = 2
 	};
 
 }
