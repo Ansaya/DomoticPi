@@ -7,7 +7,7 @@
     <Filter Include="include">
       <UniqueIdentifier>{094ff56c-7732-46f6-8483-474ee936b946}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src">
+    <Filter Include="srcs">
       <UniqueIdentifier>{3a535da5-1806-43bb-ac49-96b8f51431ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -128,73 +128,73 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="srcs\DomoticNode.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\domoticPi.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\Pin.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\SerialInterface.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\SerialOutput.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttSubscription.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttLib.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\InputFactory.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IInput.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IModule.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IOutput.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\OutputFactory.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IAHKAccessory.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IComm.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttVolume.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttComm.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\CommFactory.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\IButtonStateGenerator.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\CallbackToken.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\DigitalSwitch.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\DigitalButton.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttButton.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttSwitch.cpp">
-      <Filter>src</Filter>
+      <Filter>srcs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

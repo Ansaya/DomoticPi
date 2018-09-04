@@ -44,7 +44,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document syspathDoc;
 	if (syspathDoc.Parse(syspath).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema 'syspath.json' : ", rapidjson::GetParseError_En(syspathDoc.GetParseError()));
+			"schema 'syspath.json' : {}", rapidjson::GetParseError_En(syspathDoc.GetParseError()));
 		return -1;
 	}
 	_schemas["syspath.json"] = std::make_shared<rapidjson::SchemaDocument>(syspathDoc);
@@ -55,7 +55,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document pinNumberDoc;
 	if (pinNumberDoc.Parse(pinNumber).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema 'pinNumber.json' : ", rapidjson::GetParseError_En(pinNumberDoc.GetParseError()));
+			"schema 'pinNumber.json' : {}", rapidjson::GetParseError_En(pinNumberDoc.GetParseError()));
 		return -1;
 	}
 	_schemas["pinNumber.json"] = 
@@ -67,7 +67,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document ioBindingDoc;
 	if (ioBindingDoc.Parse(ioBinding).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema 'ioBinding.json' : ", rapidjson::GetParseError_En(ioBindingDoc.GetParseError()));
+			"schema 'ioBinding.json' : {}", rapidjson::GetParseError_En(ioBindingDoc.GetParseError()));
 		return -1;
 	}
 	_schemas["ioBinding.json"] = std::make_shared<rapidjson::SchemaDocument>(ioBindingDoc);
@@ -80,7 +80,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document CommDoc;
 	if (CommDoc.Parse(Comm).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema '" DOMOTIC_PI_JSON_COMM "' : ", rapidjson::GetParseError_En(CommDoc.GetParseError()));
+			"schema '" DOMOTIC_PI_JSON_COMM "' : {}", rapidjson::GetParseError_En(CommDoc.GetParseError()));
 		return -1;
 	}
 	_schemas[DOMOTIC_PI_JSON_COMM] =
@@ -92,7 +92,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document InputDoc;
 	if (InputDoc.Parse(Input).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema '" DOMOTIC_PI_JSON_INPUT "' : ", rapidjson::GetParseError_En(InputDoc.GetParseError()));
+			"schema '" DOMOTIC_PI_JSON_INPUT "' : {}", rapidjson::GetParseError_En(InputDoc.GetParseError()));
 		return -1;
 	}
 	_schemas[DOMOTIC_PI_JSON_INPUT] = 
@@ -104,7 +104,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document OutputDoc;
 	if (OutputDoc.Parse(Output).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema '" DOMOTIC_PI_JSON_OUTPUT "' : ", rapidjson::GetParseError_En(OutputDoc.GetParseError()));
+			"schema '" DOMOTIC_PI_JSON_OUTPUT "' : {}", rapidjson::GetParseError_En(OutputDoc.GetParseError()));
 		return -1;
 	}
 	_schemas[DOMOTIC_PI_JSON_OUTPUT] = 
@@ -116,7 +116,7 @@ int domotic_pi::json::SchemaProvider::load()
 	rapidjson::Document DomoticNodeDoc;
 	if (DomoticNodeDoc.Parse(DomoticNode).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema '" DOMOTIC_PI_JSON_DOMOTIC_NODE "' : ", rapidjson::GetParseError_En(DomoticNodeDoc.GetParseError()));
+			"schema '" DOMOTIC_PI_JSON_DOMOTIC_NODE "' : {}", rapidjson::GetParseError_En(DomoticNodeDoc.GetParseError()));
 		return -1;
 	}
 	_schemas[DOMOTIC_PI_JSON_DOMOTIC_NODE] = 

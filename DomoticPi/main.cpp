@@ -1,10 +1,15 @@
 #include <cstdio>
 #include <domoticPi/libDomoticPi.h>
+#include <rapidjson/error/en.h>
 #include <rapidjson/filereadstream.h>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <systemd/sd-daemon.h>
+
+#include <mutex>
+#include <condition_variable>
 
 using namespace domotic_pi;
 
@@ -32,6 +37,7 @@ int main(int argc, char** argv)
 	FILE* nodeConfigFile = fopen(nodeConfigPath.c_str(), "r");
 	if (nodeConfigFile == nullptr) {
 		console->critical("Could not open configuration file at '{}'.", nodeConfigPath.c_str());
+		sd_notifyf(0, "STATUS=Failed to open configuration file: %s not found", nodeConfigPath.c_str());
 		return -1;
 	}
 
@@ -42,7 +48,9 @@ int main(int argc, char** argv)
 	configJson.ParseStream(is);
 	fclose(nodeConfigFile);
 	if (configJson.HasParseError()) {
-		console->critical("Syntax error detected in given json file.");
+		const char *parseErrorStr = rapidjson::GetParseError_En(configJson.GetParseError());
+		console->critical("Syntax error detected in given json file : {}", parseErrorStr);
+		sd_notifyf(0, "STATUS=Failed to parse configuration file: \n%s", parseErrorStr);
 		return -2;
 	}
 
@@ -52,11 +60,14 @@ int main(int argc, char** argv)
 	}
 	catch (domotic_pi_exception& dpe) {
 		console->critical("Exception while loading given node configuration: {}", dpe.what());
-
+		sd_notifyf(0, "STATUS=Exception thrown during execution : \n%s", dpe.what());
 		return -3;
 	}
 
 	console->info("Domotic node loaded succesfully.");
+
+	// Notify systemd for initialization completed
+	sd_notify(0, "READY=1");
 
 	/*rapidjson::StringBuffer sb;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -65,8 +76,12 @@ int main(int argc, char** argv)
 
 	console->info("Loaded domotic node json configuration: \n{}", sb.GetString());*/
 
-	printf("Press a key to exit...\n");
-	getchar();
+	std::mutex mWake;
+	bool wake = false;
+	std::condition_variable wakeCond;
+
+	std::unique_lock<std::mutex> lock(mWake);
+	wakeCond.wait(lock, [&wake] { return wake; });
 
 	return 0;
 }

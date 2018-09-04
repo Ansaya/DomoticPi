@@ -10,10 +10,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="nodeConfig.json" />
+    <None Include="domoticpi.service" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

@@ -53,7 +53,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <Link>
-      <LibraryDependencies>wiringPi;domoticPi;hap;pthread;mosquitto</LibraryDependencies>
+      <LibraryDependencies>wiringPi;domoticPi;hap;pthread;mosquitto;systemd;</LibraryDependencies>
       <AdditionalLibraryDirectories>..\LibDomoticPi\bin\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <RemotePostBuildEvent>
@@ -63,7 +63,6 @@
       </Message>
     </RemotePostBuildEvent>
     <ClCompile>
-      <PositionIndependentCode>false</PositionIndependentCode>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <CppAdditionalWarning>no-psabi;no-unknown-pragmas;%(CppAdditionalWarning)</CppAdditionalWarning>
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -80,7 +79,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="domoticpi.service" />
     <None Include="nodeConfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>

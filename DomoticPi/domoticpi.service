@@ -1,0 +1,13 @@
+[Unit]
+	Description=DomoticPi house automation service
+	After=network.target
+
+	[Service]
+	Type=notify
+	WorkingDirectory=/usr/local/etc/domoticPi
+	ExecStart=+/usr/local/etc/domoticPi/domoticPi nodeConfig.json
+	RestartSec=5
+	Restart=always
+
+	[Install]
+	WantedBy=multi-user.target
