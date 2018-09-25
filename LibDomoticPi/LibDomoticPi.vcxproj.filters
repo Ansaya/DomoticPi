@@ -99,6 +99,9 @@
     <ClInclude Include="include\DigitalButton.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\MqttAwning.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -194,6 +197,9 @@
       <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttSwitch.cpp">
+      <Filter>srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttAwning.cpp">
       <Filter>srcs</Filter>
     </ClCompile>
   </ItemGroup>

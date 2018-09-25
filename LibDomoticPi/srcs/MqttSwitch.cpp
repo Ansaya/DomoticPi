@@ -53,7 +53,7 @@ MqttSwitch::MqttSwitch(
 #endif
 
 	console->info("MqttSwitch::ctor : output '{}' subscribed to topic '{}'.", 
-		getID().c_str(), _statTopic.c_str());
+		_id.c_str(), _statTopic.c_str());
 }
 
 MqttSwitch::~MqttSwitch()
@@ -77,7 +77,7 @@ void MqttSwitch::setValue(int newValue)
 
 	_mqttComm->publish(_cmndTopic, message);
 
-	console->info("MqttSwitch::setValue : output '{}' set to '{}'.", getID(), _value);
+	console->info("MqttSwitch::setValue : output '{}' set to '{}'.", _id.c_str(), _value);
 }
 
 void MqttSwitch::setState(OutState newState)
@@ -168,5 +168,5 @@ void MqttSwitch::_stat_message_cb(const struct mosquitto_message * message)
 #endif
 
 	console->info("MqttSwitch::_stat_message_cb : output '{}' changed value to {}.", 
-		getID().c_str(), _value);
+		_id.c_str(), _value);
 }
