@@ -102,6 +102,9 @@
     <ClInclude Include="include\ProgrammedEvent.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\MqttAwning.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -200,6 +203,9 @@
       <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\ProgrammedEvent.cpp">
+      <Filter>srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\MqttAwning.cpp">
       <Filter>srcs</Filter>
     </ClCompile>
   </ItemGroup>

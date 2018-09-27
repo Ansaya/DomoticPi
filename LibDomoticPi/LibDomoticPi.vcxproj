@@ -103,6 +103,7 @@
     <ClInclude Include="include\IOutput.h" />
     <ClInclude Include="include\libDomoticPi.h" />
     <ClInclude Include="include\IModule.h" />
+    <ClInclude Include="include\MqttAwning.h" />
     <ClInclude Include="include\MqttButton.h" />
     <ClInclude Include="include\MqttComm.h" />
     <ClInclude Include="include\MqttLib.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="srcs\IAHKAccessory.cpp" />
     <ClCompile Include="srcs\IComm.cpp" />
     <ClCompile Include="srcs\IModule.cpp" />
+    <ClCompile Include="srcs\MqttAwning.cpp" />
     <ClCompile Include="srcs\MqttButton.cpp" />
     <ClCompile Include="srcs\MqttComm.cpp" />
     <ClCompile Include="srcs\IInput.cpp" />

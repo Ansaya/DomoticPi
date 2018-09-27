@@ -16,7 +16,7 @@ R"(
     "type": {
       "description": "Type of output to be used by the module",
       "type": "string",
-      "enum": [ "DigitalSwitch", "SerialOutput", "MqttSwitch", "MqttVolume" ]
+      "enum": [ "DigitalSwitch", "SerialOutput", "MqttSwitch", "MqttVolume", "MqttAwning" ]
     },
     "range_min": {
       "description": "Minimum output value",
@@ -57,7 +57,7 @@ R"(
     },
     {
       "properties": {
-        "type": { "enum": [ "MqttSwitch", "MqttVolume" ] }
+        "type": { "enum": [ "MqttSwitch", "MqttVolume", "MqttAwning" ] }
       },
       "required": [ "comm", "mqttTopic" ]
     }
