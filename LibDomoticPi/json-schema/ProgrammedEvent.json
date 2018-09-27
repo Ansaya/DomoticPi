@@ -1,0 +1,40 @@
+R"(
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ProgrammedEvent",
+  "description": "Change some outputs on a given module value change.",
+  "properties": {
+    "id": {
+      "description": "Unique identifier for this programmed event.",
+      "type": "string"
+    },
+    "outputActions": {
+      "description": "List of output values to set when trigger is fired.",
+      "type": "array",
+      "minItems": 1,
+      "items": [
+        {
+          "title": "OutputAction",
+          "description": "Output-value pair to be set by the trigger.",
+          "properties": {
+            "outputId": {
+              "description": "Id of the output module to change the value of.",
+              "type": "string"
+            },
+            "outputValue": {
+              "description": "Value to set the output to.",
+              "type": "string"
+            }
+          },
+          "required": [ "outputId", "outputValue" ],
+          "type": "object",
+          "additionalItems": false
+        }
+      ]
+    }
+  },
+  "required": [ "id", "outputActions" ],
+  "type": "object",
+  "additionalItems": false
+}
+)"

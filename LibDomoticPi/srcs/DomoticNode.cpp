@@ -41,20 +41,8 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 		console->info("DomoticNode::from_json : loading comm interfaces for node '{}'.",
 			domoticNode->getID().c_str());
 
-		const rapidjson::Value::ConstArray& commInterfaces = config["comms"].GetArray();
-		for (auto& it : commInterfaces) {
+		for (auto& it : config["comms"].GetArray()) {
 			CommFactory::from_json(it, domoticNode);
-		}
-	}
-
-	// Load available inputs
-	if (config.HasMember("inputs")) {
-		console->info("DomoticNode::from_json : loading inputs for node '{}'.",
-			domoticNode->getID().c_str());
-
-		const rapidjson::Value::ConstArray& inputs = config["inputs"].GetArray();
-		for (auto& it : inputs) {
-			InputFactory::from_json(it, domoticNode);
 		}
 	}
 
@@ -63,50 +51,28 @@ DomoticNode_ptr DomoticNode::from_json(const rapidjson::Value& config, bool chec
 		console->info("DomoticNode::from_json : loading outputs for node '{}'.",
 			domoticNode->getID().c_str());
 
-		const rapidjson::Value::ConstArray& outputs = config["outputs"].GetArray();
-		for (auto& it : outputs) {
+		for (auto& it : config["outputs"].GetArray()) {
 			OutputFactory::from_json(it, domoticNode);
 		}
 	}
 
-	// Load input/output bindings
-	if (config.HasMember("bindings")) {
-		console->info("DomoticNode::from_json : loading I/O bindings for node '{}'.",
+	// Load available programmed events
+	if (config.HasMember("programmedEvents")) {
+		console->info("DomoticNode::from_json : loading programmed events for node '{}'.",
 			domoticNode->getID().c_str());
 
-		for (auto& it : config["bindings"].GetArray()) {
-			const std::string inputId = it["inputId"].GetString();
-			const std::string outputId = it["outputId"].GetString();
-			const int inputState = it["inputState"].GetInt();
-			const OutState outputAction = (OutState)it["outputAction"].GetInt();
+		for (auto& it : config["programmedEvents"].GetArray()) {
+			ProgrammedEvent::from_json(it, domoticNode);
+		}
+	}
 
-			Input_ptr input = domoticNode->getInput(inputId);
-			if (input == nullptr) {
-				console->warn("DomoticNode::from_json : input '{}' not found for binding.",
-					inputId);
-				continue;
-			}
+	// Load available inputs
+	if (config.HasMember("inputs")) {
+		console->info("DomoticNode::from_json : loading inputs for node '{}'.",
+			domoticNode->getID().c_str());
 
-			Output_ptr output = domoticNode->getOutput(outputId);
-			if (output == nullptr) {
-				console->warn("DomoticNode::from_json : output '{}' not found for binding.",
-					outputId);
-				continue;
-			}
-
-			// Weak reference is passed to input ISR to avoid nullptr 
-			// in case the output is deleted afterwards
-			std::weak_ptr<IOutput> weakOut = output;
-			
-			input->addValueChangeCallback([weakOut, inputState, outputAction] (int newValue) {
-				if (!weakOut.expired() && (inputState == 2 || inputState == newValue)) {
-					auto effectiveOut = weakOut.lock();
-					effectiveOut->setState(outputAction);
-				}
-			});
-
-			console->info("DomoticNode::from_json : output '{}' bounded to input '{}'.", 
-				outputId.c_str(), inputId.c_str());
+		for (auto& it : config["inputs"].GetArray()) {
+			InputFactory::from_json(it, domoticNode);
 		}
 	}
 
@@ -155,13 +121,17 @@ void DomoticNode::setName(const std::string & name)
 	_name = name;
 }
 
-const std::string & DomoticNode::getName() const
+std::string DomoticNode::getName() const
 {
 	return _name;
 }
 
 Input_ptr DomoticNode::getInput(const std::string& id) const
 {
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::mutex> lock(_inputsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
 	// Search for required id in present inputs
 	auto it = std::find_if(_inputs.begin(), _inputs.end(),
 		[id](const Input_ptr& i) { return id == i->getID(); });
@@ -221,6 +191,11 @@ void DomoticNode::removeInput(const std::string & inputId)
 
 Output_ptr DomoticNode::getOutput(const std::string& id) const
 {
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::mutex> lock(_outputsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+
 	// Search for required id in present outputs
 	auto it = std::find_if(_outputs.begin(), _outputs.end(),
 		[id](const Output_ptr& o) { return id == o->getID(); });
@@ -279,6 +254,11 @@ void DomoticNode::removeOutput(const std::string & outputId)
 
 Comm_ptr DomoticNode::getComm(const std::string& id) const
 {
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::mutex> lock(_commsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+
 	// Search for port name in already present serial interfaces
 	auto it = std::find_if(_comms.begin(), _comms.end(),
 		[id](const Comm_ptr& si) {
@@ -322,6 +302,46 @@ void DomoticNode::removeComm(const std::string & id)
 		[id](const Comm_ptr& comm) {
 			return id == comm->getID();
 		});
+}
+
+ProgrammedEvent_ptr DomoticNode::getProgrammedEvent(const std::string& id) const
+{
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::mutex> lock(_programmedEventsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+	auto it = std::find_if(_programmedEvents.begin(), _programmedEvents.end(), 
+		[&](const ProgrammedEvent_ptr &evt) {
+			return evt->getID() == id;
+		});
+
+	if (it != _programmedEvents.end()) {
+		return *it;
+	}
+
+	return nullptr;
+}
+
+const std::vector<ProgrammedEvent_ptr> &DomoticNode::getProgrammedEvents() const
+{
+	return _programmedEvents;
+}
+
+bool DomoticNode::addProgrammedEvent(ProgrammedEvent_ptr programmedEvent)
+{
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::mutex> lock(_programmedEventsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+	auto it = std::find_if(_programmedEvents.begin(), _programmedEvents.end(),
+		[&](const ProgrammedEvent_ptr &evt) {
+		return evt->getID() == programmedEvent->getID();
+	});
+}
+
+void DomoticNode::removeProgrammedEvent(const std::string& id)
+{
+
 }
 
 rapidjson::Document DomoticNode::to_json() const

@@ -12,6 +12,30 @@ R"(
       "description": "Module name.",
       "type": "string"
     },
+    "triggerEvents": {
+      "description": "List of programmed event ids and value triggering condition to be associated with this module.",
+      "type": "array",
+      "minItems": 1,
+      "items": [
+        {
+          "title": "EventBinding",
+          "description": "Pair of programmed event id and triggering condition for that event on this module.",
+          "properties": {
+            "eventId": {
+              "description": "Programmed event id",
+              "type": "string"
+            },
+            "triggerValue": {
+              "description": "Value of parent module for which the programmed event should be triggered. (Any value if not specified)",
+              "type": "integer"
+            }
+          },
+          "required": [ "eventId" ],
+          "type": "object",
+          "additionalItems": false
+        }
+      ]
+    }
     "isr_mode": {
       "description": "When ISR actions should be triggered on this module.\n1 - Rising edge\n2 - Falling edge\n3 - Both edges\n4 - ISR disabled",
       "type": "integer",

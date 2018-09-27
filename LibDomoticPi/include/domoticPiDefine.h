@@ -36,6 +36,7 @@
 #define DOMOTIC_PI_JSON_INPUT "Input.json"
 #define DOMOTIC_PI_JSON_OUTPUT "Output.json"
 #define DOMOTIC_PI_JSON_COMM "Comm.json"
+#define DOMOTIC_PI_JSON_PROGRAMMED_EVENT "ProgrammedEvent.json"
 #define DOMOTIC_PI_JSON_DOMOTIC_NODE "DomoticNode.json"
 
 #include <memory>

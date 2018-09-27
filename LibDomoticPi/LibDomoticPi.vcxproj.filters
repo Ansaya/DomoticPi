@@ -99,6 +99,9 @@
     <ClInclude Include="include\DigitalButton.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ProgrammedEvent.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -116,10 +119,10 @@
     <None Include="json-schema\DomoticNode.json">
       <Filter>json-schema</Filter>
     </None>
-    <None Include="json-schema\ioBinding.json">
+    <None Include="json-schema\Comm.json">
       <Filter>json-schema</Filter>
     </None>
-    <None Include="json-schema\Comm.json">
+    <None Include="json-schema\ProgrammedEvent.json">
       <Filter>json-schema</Filter>
     </None>
   </ItemGroup>
@@ -194,6 +197,9 @@
       <Filter>srcs</Filter>
     </ClCompile>
     <ClCompile Include="srcs\MqttSwitch.cpp">
+      <Filter>srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="srcs\ProgrammedEvent.cpp">
       <Filter>srcs</Filter>
     </ClCompile>
   </ItemGroup>

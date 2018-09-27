@@ -112,6 +112,7 @@
     <ClInclude Include="include\OutputFactory.h" />
     <ClInclude Include="include\OutState.h" />
     <ClInclude Include="include\Pin.h" />
+    <ClInclude Include="include\ProgrammedEvent.h" />
     <ClInclude Include="include\SerialInterface.h" />
     <ClInclude Include="include\Serializable.h" />
     <ClInclude Include="include\SerialOutput.h" />
@@ -119,7 +120,7 @@
   <ItemGroup>
     <None Include="json-schema\DomoticNode.json" />
     <None Include="json-schema\Input.json" />
-    <None Include="json-schema\ioBinding.json" />
+    <None Include="json-schema\ProgrammedEvent.json" />
     <None Include="json-schema\Output.json" />
     <None Include="json-schema\pinNumber.json" />
     <None Include="json-schema\Comm.json" />
@@ -150,6 +151,7 @@
     <ClCompile Include="srcs\MqttVolume.cpp" />
     <ClCompile Include="srcs\OutputFactory.cpp" />
     <ClCompile Include="srcs\Pin.cpp" />
+    <ClCompile Include="srcs\ProgrammedEvent.cpp" />
     <ClCompile Include="srcs\SerialInterface.cpp" />
     <ClCompile Include="srcs\SerialOutput.cpp" />
   </ItemGroup>
@@ -175,10 +177,12 @@
       <LibraryDependencies>hap;wiringPi;pthread;mosquitto</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
-      <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>
+      <Command>
+      </Command>
     </RemotePostBuildEvent>
     <RemotePostBuildEvent>
-      <Message>Create global library link</Message>
+      <Message>
+      </Message>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -199,17 +203,19 @@
       <LibraryDependencies>hap;wiringPi;pthread;mosquitto</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
-      <Command>sudo ln -sf $(RemoteOutDir)$(TargetFileName) /usr/local/lib/$(TargetFileName); if [ ! -L /usr/local/include/domoticPi ]; then sudo ln -s $(RemoteProjectDir)/include /usr/local/include/domoticPi; fi;</Command>
+      <Command>
+      </Command>
     </RemotePostBuildEvent>
     <RemotePostBuildEvent>
-      <Message>Create global library link</Message>
+      <Message>
+      </Message>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties json-schema_4Input_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4Output_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4ioBinding_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
+      <UserProperties json-schema_4Input_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4DomoticNode_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4Output_1json__JSONSchema="http://json-schema.org/draft-04/schema" json-schema_4syspath_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

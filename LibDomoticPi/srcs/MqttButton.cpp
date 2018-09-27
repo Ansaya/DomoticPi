@@ -79,12 +79,17 @@ std::shared_ptr<MqttButton> MqttButton::from_json(const rapidjson::Value& config
 
 	auto durations = IButtonStateGenerator::from_json(config);
 
-	return std::make_shared<MqttButton>(
+	auto mqttButton = std::make_shared<MqttButton>(
 		config["id"].GetString(),
 		config["mqttTopic"].GetString(),
 		mqttComm,
 		std::get<0>(durations),
 		std::get<1>(durations));
+
+	// Set base class attributes from json configuration
+	IInput::from_json(config, mqttButton, parentNode);
+
+	return mqttButton;
 }
 
 rapidjson::Document MqttButton::to_json() const
@@ -134,5 +139,5 @@ void MqttButton::_stat_message_cb(const struct mosquitto_message * message)
 
 	console->info("MqttButton::_stat_message_cb : input '{}' changed value to '{}'.", getID().c_str(), _value);
 
-	valueChangeCallbacks(_value);
+	valueChanged(_value);
 }

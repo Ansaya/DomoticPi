@@ -15,6 +15,7 @@ R"(
     "inputs": {
       "description": "Input modules associated to this node",
       "type": "array",
+      "minItems": 1,
       "items": [
         {
           "$ref": "Input.json"
@@ -24,6 +25,7 @@ R"(
     "outputs": {
       "description": "Output modules associated to this node",
       "type": "array",
+      "minItems": 1,
       "items": [
         {
           "$ref": "Output.json"
@@ -33,18 +35,20 @@ R"(
     "comms": {
       "description": "Comm interfaces associated to this node",
       "type": "array",
+      "minItems": 1,
       "items": [
         {
           "$ref": "Comm.json"
         }
       ]
     },
-    "bindings": {
-      "description": "Bind inputs to outputs to perform specific actions",
+    "programmedEvents": {
+      "description": "Events are lists of actions which can be triggered by value changes on given modules.",
       "type": "array",
+      "minItems": 1,
       "items": [
         {
-          "ref$": "ioBinding.json"
+          "ref$": "ProgrammedEvent.json"
         }
       ]
     },

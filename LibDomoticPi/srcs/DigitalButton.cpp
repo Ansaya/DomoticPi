@@ -83,7 +83,7 @@ void DigitalButton::input_ISR()
 
 	buttonStateChange();
 
-	valueChangeCallbacks(_isr_mode == INT_EDGE_BOTH ? getValue() : _isr_mode == INT_EDGE_RISING ? 1 : 0);
+	valueChanged(_isr_mode == INT_EDGE_BOTH ? getValue() : _isr_mode == INT_EDGE_RISING ? 1 : 0);
 }
 
 void DigitalButton::setISRMode(int isr_mode)
@@ -135,6 +135,9 @@ std::shared_ptr<DigitalButton> DigitalButton::from_json(const rapidjson::Value& 
 		std::get<1>(durations));
 
 	digitalInput->setISRMode(config["isr_mode"].GetInt());
+
+	// Set IInput base class attributes
+	IInput::from_json<DigitalButton>(config, digitalInput, parentNode);
 
 	return digitalInput;
 }

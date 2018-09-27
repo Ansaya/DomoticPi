@@ -7,7 +7,7 @@
 using namespace domotic_pi;
 
 IInput::IInput(const std::string& id) 
-	: IModule(id), _this(this), _valueChangeCallbacks()
+	: IModule(id), _this(this), _valueEventPairs()
 {
 }
 
@@ -15,61 +15,63 @@ IInput::~IInput()
 {
 }
 
-CallbackToken_ptr IInput::addValueChangeCallback(std::function<void(int)> callback)
+void IInput::addProgrammedEvent(ProgrammedEvent_ptr progEvent, int triggerValue)
 {
-	// When given function is nullptr, return a useless CallbackToken
-	if (callback == nullptr) {
-		console->debug("IInput::addValueChangeCallback : null callback added to input {}.", _id.c_str());
-		return std::make_shared<CallbackToken>();
+	// When given event is nullptr, return
+	if (progEvent == nullptr) {
+		return;
 	}
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_valueChangeCBList);
+	std::unique_lock<std::shared_mutex> lock(_valueEventPairsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	_valueChangeCallbacks.push_back(std::make_tuple(_valueChangeCBCounter, callback));
-
-	console->debug("IInput::addValueChangeCallback : value change callback added to input {}.", _id.c_str());
-
-	auto weak_parent = std::weak_ptr<IInput>(_this);
-	uint32_t cbIndex = _valueChangeCBCounter++;
-
-	return std::make_shared<CallbackToken>([weak_parent, cbIndex] {
-		if (weak_parent.expired()) {
-			console->debug("IInput::__CallbackToken_lambda : parent expired before callback was removed.");
-			return;
+	// Remove previous programmed event occurrecies
+	for (auto it = _valueEventPairs.begin(); it != _valueEventPairs.end(); ++it) {
+		if (it->second.expired() || it->second.lock()->getID() == progEvent->getID()) {
+			_valueEventPairs.erase(it);
 		}
+	}
 
-		auto parent = weak_parent.lock();
+	// Place new programmed event-trigger value pair in the list
+	_valueEventPairs.push_back(std::make_pair(triggerValue, std::weak_ptr<ProgrammedEvent>(progEvent)));
 
-#ifdef DOMOTIC_PI_THREAD_SAFE
-		std::unique_lock<std::mutex> lock(parent->_valueChangeCBList);
-#endif // DOMOTIC_PI_THREAD_SAFE
-
-		for (auto cb = parent->_valueChangeCallbacks.begin(); cb != parent->_valueChangeCallbacks.end(); ++cb) {
-			if (std::get<0>(*cb) == cbIndex) {
-				parent->_valueChangeCallbacks.erase(cb);
-				console->debug("IInput::__CallbackToken_lambda : callback {} removed "
-					"from input {}", cbIndex, parent->_id.c_str());
-				return;
-			}
-		}
-	});
+	console->debug("IInput::addProgrammedEvent : programmed event {} added to input {}.", 
+		progEvent->getID().c_str(), _id.c_str());
 }
 
-void IInput::valueChangeCallbacks(int newValue)
+void IInput::removeProgrammedEvent(const std::string& programmedEventId)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_valueChangeCBList);
+	std::unique_lock<std::shared_mutex> lock(_valueEventPairsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
-	for (auto& cbTuple : _valueChangeCallbacks) {
+	for (auto it = _valueEventPairs.begin(); it != _valueEventPairs.end(); ++it) {
+		if (it->second.expired() || it->second.lock()->getID() == programmedEventId) {
+			_valueEventPairs.erase(it);
+			console->debug("IInput::removeProgrammedEvent : programmed event {} "
+				"removed from input {}.", programmedEventId.c_str(), _id.c_str());
+		}
+	}
+}
+
+void IInput::valueChanged(int newValue)
+{
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::shared_lock<std::shared_mutex> lock(_valueEventPairsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+	for (auto& valueEvent : _valueEventPairs) {
 		try {
-			std::get<1>(cbTuple)(newValue);
+			if (valueEvent.first == newValue && !valueEvent.second.expired()) {
+				valueEvent.second.lock()->triggerEvent();
+			}
 		}
 		catch (std::exception& e) {
-			console->warn("IInput::valueChangeCallbacks : exception during value "
-				"change callback call from input {} : {}", _id.c_str(), e.what());
+			console->warn("IInput::valueChanged : exception during programmed "
+				"event {} call from input {} : {}", 
+				valueEvent.second.expired() ? "'removed event'" : valueEvent.second.lock()->getID().c_str(), 
+				_id.c_str(), e.what());
 		}
 	}
 }

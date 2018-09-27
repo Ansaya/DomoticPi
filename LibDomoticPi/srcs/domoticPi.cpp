@@ -61,16 +61,16 @@ int domotic_pi::json::SchemaProvider::load()
 	_schemas["pinNumber.json"] = 
 		std::make_shared<rapidjson::SchemaDocument>(pinNumberDoc);
 
-	const char * ioBinding =
-#include "../json-schema/ioBinding.json"
+	const char * ProgrammedEvent =
+#include "../json-schema/ProgrammedEvent.json"
 		;
-	rapidjson::Document ioBindingDoc;
-	if (ioBindingDoc.Parse(ioBinding).HasParseError()) {
+	rapidjson::Document ProgrammedEventDoc;
+	if (ProgrammedEventDoc.Parse(ProgrammedEvent).HasParseError()) {
 		console->error("json::SchemaProvider::load : error found while loading json "
-			"schema 'ioBinding.json' : {}", rapidjson::GetParseError_En(ioBindingDoc.GetParseError()));
+			"schema 'ProgrammedEvent.json' : {}", rapidjson::GetParseError_En(ProgrammedEventDoc.GetParseError()));
 		return -1;
 	}
-	_schemas["ioBinding.json"] = std::make_shared<rapidjson::SchemaDocument>(ioBindingDoc);
+	_schemas["ProgrammedEvent.json"] = std::make_shared<rapidjson::SchemaDocument>(ProgrammedEventDoc);
 
 	domotic_pi::json::SchemaProvider provider;
 

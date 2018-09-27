@@ -30,7 +30,7 @@ namespace domotic_pi {
 
 		void setName(const std::string& name);
 
-		const std::string & getName() const;
+		std::string getName() const;
 
 		rapidjson::Document to_json() const;
 
@@ -130,6 +130,18 @@ namespace domotic_pi {
 
 #pragma endregion
 
+#pragma region ProgrammedEvents
+
+		ProgrammedEvent_ptr getProgrammedEvent(const std::string& id) const;
+
+		const std::vector<ProgrammedEvent_ptr> &getProgrammedEvents() const;
+
+		bool addProgrammedEvent(ProgrammedEvent_ptr programmedEvent);
+
+		void removeProgrammedEvent(const std::string& id);
+
+#pragma endregion
+
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
 		/**
 		 *	@brief Enable Apple HomeKit service for this node with given password and name
@@ -154,12 +166,14 @@ namespace domotic_pi {
 		std::vector<Input_ptr> _inputs;
 		std::vector<Output_ptr> _outputs;
 		std::vector<Comm_ptr> _comms;
+		std::vector<ProgrammedEvent_ptr> _programmedEvents;
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
-		std::mutex _nameLock;
-		std::mutex _inputsLock;
-		std::mutex _outputsLock;
-		std::mutex _commsLock;
+		mutable std::mutex _nameLock;
+		mutable std::mutex _inputsLock;
+		mutable std::mutex _outputsLock;
+		mutable std::mutex _commsLock;
+		mutable std::mutex _programmedEventsLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
