@@ -55,7 +55,7 @@ void IInput::removeProgrammedEvent(const std::string& programmedEventId)
 	}
 }
 
-void IInput::valueChanged(int newValue)
+void IInput::valueChanged(int newValue) const
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
 	std::shared_lock<std::shared_mutex> lock(_valueEventPairsLock);
@@ -63,7 +63,8 @@ void IInput::valueChanged(int newValue)
 
 	for (auto& valueEvent : _valueEventPairs) {
 		try {
-			if (valueEvent.first == newValue && !valueEvent.second.expired()) {
+			if ((valueEvent.first == std::numeric_limits<int>::max() || valueEvent.first == newValue) 
+				&& !valueEvent.second.expired()) {
 				valueEvent.second.lock()->triggerEvent();
 			}
 		}
@@ -74,4 +75,39 @@ void IInput::valueChanged(int newValue)
 				_id.c_str(), e.what());
 		}
 	}
+}
+
+rapidjson::Document IInput::to_json() const
+{
+	rapidjson::Document input = IModule::to_json();
+
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::shared_lock<std::shared_mutex> lock(_valueEventPairsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
+
+	rapidjson::Value triggerEvents(rapidjson::kArrayType);
+
+	// Set not expired event triggers
+	for (auto& it : _valueEventPairs) {
+
+		if (!it.second.expired()) {
+			rapidjson::Value valueEventPair(rapidjson::kObjectType);
+
+			rapidjson::Value eventId;
+			eventId.SetString(it.second.lock()->getID().c_str(), input.GetAllocator());
+			input.AddMember("eventId", eventId, input.GetAllocator());
+
+			if (it.first != std::numeric_limits<int>::max()) {
+				rapidjson::Value triggerValue;
+				triggerValue.SetInt(it.first);
+				input.AddMember("triggerValue", triggerValue, input.GetAllocator());
+			}
+
+			triggerEvents.PushBack(valueEventPair, input.GetAllocator());
+		}
+	}
+
+	input.AddMember("triggerEvents", triggerEvents, input.GetAllocator());
+
+	return input;
 }

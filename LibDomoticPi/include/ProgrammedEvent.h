@@ -2,7 +2,6 @@
 #define DOMOTIC_PI_PROGRAMMED_EVENT
 
 #include "domoticPiDefine.h"
-#include "IOutput.h"
 #include "Serializable.h"
 
 #include <functional>
@@ -53,7 +52,7 @@ namespace domotic_pi {
 		 *		  substituted by the new one
 		 * 
 		 *	@param outputModule output module to change value of
-		 *	@param newValue new value to set the output module to
+		 *	@param newValue new value to set the output module to (use max_int to toggle output)
 		 */
 		void addOutputAction(Output_ptr outputModule, int newValue);
 

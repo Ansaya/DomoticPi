@@ -115,7 +115,7 @@ const std::string& DomoticNode::getID() const
 void DomoticNode::setName(const std::string & name)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_nameLock);
+	std::unique_lock<std::shared_mutex> lock(_nameLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	_name = name;
@@ -129,7 +129,7 @@ std::string DomoticNode::getName() const
 Input_ptr DomoticNode::getInput(const std::string& id) const
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_inputsLock);
+	std::shared_lock<std::shared_mutex> lock(_inputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	// Search for required id in present inputs
@@ -151,11 +151,15 @@ const std::vector<Input_ptr>& DomoticNode::getInputs() const
 bool DomoticNode::addInput(Input_ptr input)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_inputsLock);
+	std::unique_lock<std::shared_mutex> lock(_inputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	// Search for conflicting id in present inputs
+	auto it = std::find_if(_inputs.begin(), _inputs.end(),
+		[input](const Input_ptr& i) { return input->getID() == i->getID(); });
+
 	// If conflict exists return immediately
-	if (getInput(input->getID()) != nullptr)
+	if (it != _inputs.end())
 		return false;
 
 	_inputs.push_back(input);
@@ -172,7 +176,7 @@ bool DomoticNode::addInput(Input_ptr input)
 void DomoticNode::removeInput(const std::string & inputId)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_inputsLock);
+	std::unique_lock<std::shared_mutex> lock(_inputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	auto input = std::find_if(_inputs.begin(), _inputs.end(),
@@ -192,7 +196,7 @@ void DomoticNode::removeInput(const std::string & inputId)
 Output_ptr DomoticNode::getOutput(const std::string& id) const
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_outputsLock);
+	std::shared_lock<std::shared_mutex> lock(_outputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 
@@ -215,11 +219,15 @@ const std::vector<Output_ptr>& DomoticNode::getOutputs() const
 bool DomoticNode::addOutput(Output_ptr output)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_outputsLock);
+	std::unique_lock<std::shared_mutex> lock(_outputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	// Search for conflicting id in present outputs
+	auto it = std::find_if(_outputs.begin(), _outputs.end(),
+		[output](const Output_ptr& o) { return output->getID() == o->getID(); });
+
 	// If conflict exists return immediately
-	if (getOutput(output->getID()) != nullptr)
+	if (it != _outputs.end())
 		return false;
 
 	_outputs.push_back(output);
@@ -236,7 +244,7 @@ bool DomoticNode::addOutput(Output_ptr output)
 void DomoticNode::removeOutput(const std::string & outputId)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_outputsLock);
+	std::unique_lock<std::shared_mutex> lock(_outputsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	auto output = std::find_if(_outputs.begin(), _outputs.end(),
@@ -255,9 +263,8 @@ void DomoticNode::removeOutput(const std::string & outputId)
 Comm_ptr DomoticNode::getComm(const std::string& id) const
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_commsLock);
+	std::shared_lock<std::shared_mutex> lock(_commsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
-
 
 	// Search for port name in already present serial interfaces
 	auto it = std::find_if(_comms.begin(), _comms.end(),
@@ -280,11 +287,17 @@ const std::vector<Comm_ptr>& DomoticNode::getComms() const
 bool DomoticNode::addComm(Comm_ptr comm)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_commsLock);
+	std::unique_lock<std::shared_mutex> lock(_commsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	// Search for port name in already present serial interfaces
+	auto it = std::find_if(_comms.begin(), _comms.end(),
+		[comm](const Comm_ptr& si) {
+		return comm->getID() == si->getID();
+	});
+
 	// If conflict exists return immediately
-	if (getComm(comm->getID()) != nullptr)
+	if (it != _comms.end())
 		return false;
 
 	_comms.push_back(comm);
@@ -295,7 +308,7 @@ bool DomoticNode::addComm(Comm_ptr comm)
 void DomoticNode::removeComm(const std::string & id)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_commsLock);
+	std::unique_lock<std::shared_mutex> lock(_commsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 	std::remove_if(_comms.begin(), _comms.end(), 
@@ -307,9 +320,10 @@ void DomoticNode::removeComm(const std::string & id)
 ProgrammedEvent_ptr DomoticNode::getProgrammedEvent(const std::string& id) const
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_programmedEventsLock);
+	std::shared_lock<std::shared_mutex> lock(_programmedEventsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	// Search for event id in already present programmed events
 	auto it = std::find_if(_programmedEvents.begin(), _programmedEvents.end(), 
 		[&](const ProgrammedEvent_ptr &evt) {
 			return evt->getID() == id;
@@ -330,18 +344,35 @@ const std::vector<ProgrammedEvent_ptr> &DomoticNode::getProgrammedEvents() const
 bool DomoticNode::addProgrammedEvent(ProgrammedEvent_ptr programmedEvent)
 {
 #ifdef DOMOTIC_PI_THREAD_SAFE
-	std::unique_lock<std::mutex> lock(_programmedEventsLock);
+	std::unique_lock<std::shared_mutex> lock(_programmedEventsLock);
 #endif // DOMOTIC_PI_THREAD_SAFE
 
+	// Search for event id in already present programmed events
 	auto it = std::find_if(_programmedEvents.begin(), _programmedEvents.end(),
 		[&](const ProgrammedEvent_ptr &evt) {
 		return evt->getID() == programmedEvent->getID();
 	});
+
+	// If conflict exists return immediately
+	if (it != _programmedEvents.end()) {
+		return false;
+	}
+
+	_programmedEvents.push_back(programmedEvent);
+
+	return true;
 }
 
 void DomoticNode::removeProgrammedEvent(const std::string& id)
 {
+#ifdef DOMOTIC_PI_THREAD_SAFE
+	std::unique_lock<std::shared_mutex> lock(_programmedEventsLock);
+#endif // DOMOTIC_PI_THREAD_SAFE
 
+	auto it = std::remove_if(_programmedEvents.begin(), _programmedEvents.end(),
+		[&](const ProgrammedEvent_ptr &evt) {
+		return evt->getID().compare(id) == 0;
+	});
 }
 
 rapidjson::Document DomoticNode::to_json() const
@@ -372,11 +403,33 @@ rapidjson::Document DomoticNode::to_json() const
 		outputs.PushBack(it->to_json(), domoticNode.GetAllocator());
 	domoticNode.AddMember("outputs", outputs, domoticNode.GetAllocator());
 
-	// Populate and set node serial interfaces
-	rapidjson::Value serialInterfaces(rapidjson::kArrayType);
+	// Populate and set node comm interfaces
+	rapidjson::Value comms(rapidjson::kArrayType);
 	for (auto& it : _comms)
-		serialInterfaces.PushBack(it->to_json(), domoticNode.GetAllocator());
-	domoticNode.AddMember("comms", serialInterfaces, domoticNode.GetAllocator());
+		comms.PushBack(it->to_json(), domoticNode.GetAllocator());
+	domoticNode.AddMember("comms", comms, domoticNode.GetAllocator());
+
+	// Populate and set node programmed events
+	rapidjson::Value programmedEvents(rapidjson::kArrayType);
+	for (auto& it : _programmedEvents) {
+		programmedEvents.PushBack(it->to_json(), domoticNode.GetAllocator());
+	}
+	domoticNode.AddMember("programmedEvents", programmedEvents, domoticNode.GetAllocator());
+
+#ifdef DOMOTIC_PI_APPLE_HOMEKIT
+	// Set node homekit information
+	rapidjson::Value homekit(rapidjson::kObjectType);
+
+	rapidjson::Value homekitName;
+	homekitName.SetString(hap::net::HAPService::getInstance().getServiceName().c_str(), domoticNode.GetAllocator());
+	homekit.AddMember("name", homekitName, domoticNode.GetAllocator());
+
+	rapidjson::Value homekitPassword;
+	homekitPassword.SetString(hap::net::HAPService::getInstance().getServicePassword().c_str(), domoticNode.GetAllocator());
+	homekit.AddMember("password", homekitPassword, domoticNode.GetAllocator());
+
+	domoticNode.AddMember("homekit", homekit, domoticNode.GetAllocator());
+#endif // DOMOTIC_PI_APPLE_HOMEKIT
 
 	return domoticNode;
 }

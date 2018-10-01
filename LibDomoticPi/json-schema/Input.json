@@ -26,7 +26,7 @@ R"(
               "type": "string"
             },
             "triggerValue": {
-              "description": "Value of parent module for which the programmed event should be triggered. (Any value if not specified)",
+              "description": "Value of parent module for which the programmed event should be triggered. Any value if not specified.",
               "type": "integer"
             }
           },
@@ -35,7 +35,7 @@ R"(
           "additionalItems": false
         }
       ]
-    }
+    },
     "isr_mode": {
       "description": "When ISR actions should be triggered on this module.\n1 - Rising edge\n2 - Falling edge\n3 - Both edges\n4 - ISR disabled",
       "type": "integer",

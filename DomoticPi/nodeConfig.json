@@ -6,18 +6,17 @@
       "id": "002",
       "name": "Test button",
       "type": "MqttButton",
+      "triggerEvents": [
+        {
+          "eventId": "TestEvent"
+        }
+      ],
       "comm": "domoticMqtt",
-      "mqttTopic": "test/POWER1",
+      "mqttTopic": "test/POWER",
       "doublePressDuration": 250
     }
   ],
   "outputs": [
-    {
-      "id": "001",
-      "name": "testOut",
-      "type": "DigitalSwitch",
-      "pin": 1
-    },
     {
       "id": "002",
       "name": "Gruppo TV",
@@ -50,12 +49,18 @@
       "mqttPassword": "ipcitomod"
     }
   ],
-  "bindings": [
+  "programmedEvents": [
     {
-      "inputId": "002",
-      "outputId": "001",
-      "inputState": 2,
-      "outputAction": 2
+      "id": "TestEvent",
+      "outputActions": [
+        {
+          "outputId": "004"
+        },
+        {
+          "outputId": "002",
+          "outputValue": "1"
+        }
+      ]
     }
   ],
   "homekit": {

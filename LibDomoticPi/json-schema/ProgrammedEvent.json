@@ -22,11 +22,11 @@ R"(
               "type": "string"
             },
             "outputValue": {
-              "description": "Value to set the output to.",
-              "type": "string"
+              "description": "Value to set the output to. If attribute is not added, the output will be toggled.",
+              "type": "integer"
             }
           },
-          "required": [ "outputId", "outputValue" ],
+          "required": [ "outputId" ],
           "type": "object",
           "additionalItems": false
         }

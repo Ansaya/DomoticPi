@@ -2,6 +2,7 @@
 #define DOMOTIC_PI_DOMOTIC_NODE
 
 #include "domoticPiDefine.h"
+#include "ProgrammedEvent.h"
 
 #include <memory>
 #ifdef DOMOTIC_PI_THREAD_SAFE
@@ -169,11 +170,11 @@ namespace domotic_pi {
 		std::vector<ProgrammedEvent_ptr> _programmedEvents;
 
 #ifdef DOMOTIC_PI_THREAD_SAFE
-		mutable std::mutex _nameLock;
-		mutable std::mutex _inputsLock;
-		mutable std::mutex _outputsLock;
-		mutable std::mutex _commsLock;
-		mutable std::mutex _programmedEventsLock;
+		mutable std::shared_mutex _nameLock;
+		mutable std::shared_mutex _inputsLock;
+		mutable std::shared_mutex _outputsLock;
+		mutable std::shared_mutex _commsLock;
+		mutable std::shared_mutex _programmedEventsLock;
 #endif // DOMOTIC_PI_THREAD_SAFE
 
 #ifdef DOMOTIC_PI_APPLE_HOMEKIT
