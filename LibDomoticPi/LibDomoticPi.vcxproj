@@ -200,6 +200,7 @@
       <CppAdditionalWarning>no-psabi;no-unknown-pragmas;%(CppAdditionalWarning)</CppAdditionalWarning>
       <PreprocessorDefinitions>SPDLOG_FMT_PRINTF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CppLanguageStandard>c++17</CppLanguageStandard>
+      <LinkTimeOptimization>true</LinkTimeOptimization>
     </ClCompile>
     <Link>
       <LibraryDependencies>hap;wiringPi;pthread;mosquitto</LibraryDependencies>

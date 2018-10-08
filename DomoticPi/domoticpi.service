@@ -5,7 +5,7 @@
 	[Service]
 	Type=notify
 	WorkingDirectory=/usr/local/etc/domoticPi
-	ExecStart=+/usr/local/etc/domoticPi/domoticPi nodeConfig.json
+	ExecStart=+/usr/local/etc/domoticPi/domoticPi
 	RestartSec=5
 	Restart=always
 

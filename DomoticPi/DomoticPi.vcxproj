@@ -79,6 +79,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\install.sh" />
     <None Include="domoticpi.service" />
     <None Include="nodeConfig.json" />
   </ItemGroup>

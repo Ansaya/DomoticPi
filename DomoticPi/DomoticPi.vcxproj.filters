@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Include="nodeConfig.json" />
     <None Include="domoticpi.service" />
+    <None Include="..\install.sh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

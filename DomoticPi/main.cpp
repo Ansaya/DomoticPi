@@ -10,29 +10,35 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <unistd.h>
 
 using namespace domotic_pi;
 
 int main(int argc, char** argv)
 {
-	if (argc < 2) {
-		printf("usage: %s <node_config_json>\n", argv[0]);
-		return -1;
-	}
-
-	const std::string nodeConfigPath(argv[1]);
-
 	auto console = spdlog::stdout_color_mt("main");
 
 	domotic_pi::console->set_level(spdlog::level::level_enum::debug);
 
-	console->info("Hello from domotic pi main.");
+	console->info("Hello from domotic pi service.");
 
 	int retval = domoticPiInit();
 	if (retval) {
 		console->critical("DomoticPi setup went wrong.");
 		return -1;
 	}
+
+	console->info("Loading configuration file...");
+
+	char workingDir[PATH_MAX];
+	if (getcwd(workingDir, sizeof(workingDir)) == NULL) {
+		printf("getcwd error");
+		sd_notifyf(0, "STATUS=Failed to get current working directory");
+		return -1;
+	}
+
+	std::string nodeConfigPath(workingDir);
+	nodeConfigPath.append("/nodeConfig.json");
 
 	FILE* nodeConfigFile = fopen(nodeConfigPath.c_str(), "r");
 	if (nodeConfigFile == nullptr) {
@@ -68,13 +74,6 @@ int main(int argc, char** argv)
 
 	// Notify systemd for initialization completed
 	sd_notify(0, "READY=1");
-
-	/*rapidjson::StringBuffer sb;
-	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
-	rapidjson::Document localNodeJson = localNode->to_json();
-	localNodeJson.Accept(writer);
-
-	console->info("Loaded domotic node json configuration: \n{}", sb.GetString());*/
 
 	std::mutex mWake;
 	bool wake = false;
