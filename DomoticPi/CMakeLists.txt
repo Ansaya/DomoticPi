@@ -5,11 +5,11 @@ add_definitions("-DSPDLOG_FMT_PRINTF")
 add_compile_options("-Wall" "-Wno-unknown-pragmas" "-Wno-psabi" "-fexceptions" "-std=c++17")
 
 set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g2 -gdwarf-2" )
-set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -flto -fomit-frame-pointer" )
+set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer" )
 
-include_directories("include")
+include_directories("include" "../include")
 
-link_libraries(wiringPi domoticPi hap pthread mosquitto systemd)
+link_libraries(pthread wiringPi hap mosquitto systemd domoticPi)
 
 add_executable(domoticPiService main.cpp)
 set_target_properties(domoticPiService PROPERTIES OUTPUT_NAME domoticPi)

@@ -10,11 +10,11 @@ add_definitions("-DSPDLOG_FMT_PRINTF")
 add_compile_options("-Wall" "-Wno-unknown-pragmas" "-Wno-psabi" "-fexceptions" "-std=c++17")
 
 set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g2 -gdwarf-2" )
-set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -flto -fomit-frame-pointer" )
+set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer" )
 
-include_directories("include")
+include_directories("include" "../include")
 
-link_libraries(wiringPi pthread mosquitto hap)
+link_libraries(pthread wiringPi mosquitto hap)
 
 add_library(${LIB_NAME}_static STATIC ${LIB_SRCS})
 set_target_properties(${LIB_NAME}_static PROPERTIES OUTPUT_NAME ${LIB_NAME})
