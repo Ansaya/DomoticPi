@@ -11,6 +11,7 @@ if [ $1 -eq "clean" ]; then
 fi
 
 echo 'Checking DomoticPi dependencies'
+git submodule update --init --recursive
 
 if ldconfig -p | grep libmosquitto >/dev/null; then
 	echo '  - Mosquitto MQTT library ... installed'
@@ -23,30 +24,20 @@ if ls /usr/local/lib | grep wiringPi.so.2.47-ansaya >/dev/null; then
 	echo '  - WiringPi by Ansaya ... installed'
 else
 	echo '  - WiringPi by Ansaya ... installation needed'
-	if [ -d "wiringpi-ansaya" ]; then
-		sudo rm -r wiringpi-ansaya
-	fi
-	git clone https://github.com/Ansaya/wiringPi.git wiringpi-ansaya
-	cd wiringpi-ansaya
+	cd wiringpi
 	chmod +x build
 	./build
 	cd ..
-	sudo rm -r wiringpi-ansaya
 fi
 
 if ls /usr/local/lib | grep libhap >/dev/null; then
 	echo '  - HAP library by Ansaya ... installed'
 else
 	echo '  - HAP library by Ansaya ... installation needed'
-	if [ -d "hap-ansaya" ]; then
-		sudo rm -r hap-ansaya
-	fi
-	git clone https://github.com/Ansaya/Personal-HomeKit-HAP.git hap-ansaya
-	cd hap-ansaya
+	cd libhap
 	chmod +x install.sh
 	./install.sh
 	cd ..
-	sudo rm -r hap-ansaya
 fi
 
 echo 'Dependencies ready'
@@ -66,6 +57,7 @@ cd release
 cmake -DCMAKE_BUILD_TYPE=RELEASE ..
 make -j4
 sudo make install
+sudo systemctl daemon-reload
 
 echo ''
 echo 'DomoticPi service succesfully installed!'

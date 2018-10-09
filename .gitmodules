@@ -1,0 +1,6 @@
+[submodule "wiringPi"]
+	path = wiringPi
+	url = https://github.com/Ansaya/wiringPi
+[submodule "libhap"]
+	path = libhap
+	url = https://github.com/Ansaya/Personal-HomeKit-HAP
