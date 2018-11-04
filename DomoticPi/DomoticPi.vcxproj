@@ -37,7 +37,7 @@
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>../include;$(IncludePath)</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">

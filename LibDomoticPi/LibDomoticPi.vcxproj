@@ -82,7 +82,7 @@
     <RemoteCleanCommandLine>cd $(Configuration); make clean</RemoteCleanCommandLine>
     <RemoteBuildOutputs>$(Configuration)/libdomoticPi.so</RemoteBuildOutputs>
     <NMakeIncludeSearchPath>$(VisualStudioDir)\Projects\wiringPi\wiringPi;$(DevEnvDir)VC\Linux\armv8-pi\usr\include;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\arm-linux-gnueabihf\c++\6;$(DevEnvDir)VC\Linux\armv8-pi\usr\include\c++\6;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>include;$(IncludePath)</IncludePath>
+    <IncludePath>../include;include;$(IncludePath)</IncludePath>
     <MultiProcNumber>4</MultiProcNumber>
   </PropertyGroup>
   <ItemGroup>

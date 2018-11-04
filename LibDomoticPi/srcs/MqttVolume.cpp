@@ -35,13 +35,19 @@ MqttVolume::MqttVolume(
 	_ahkAccessory->addInfoService(getName(), DOMOTIC_PI_APPLE_HOMEKIT_MANUFACTURER,
 		typeid(MqttVolume).name(), _id, "0.8.0", [](bool oldValue, bool newValue, void* sender) {});
 
-	_ahkAccessory->addSwitchService(&_stateInfo, &_nameInfo);
+	_ahkAccessory->addLightBulbService(&_stateInfo, &_volumeInfo, nullptr, &_nameInfo);
 
 	_nameInfo->setValue(getName());
 
 	_stateInfo->setValueChangeCB([this](bool oldValue, bool newValue, void* sender) {
 		if (oldValue != newValue) {
 			setState((OutState)newValue);
+		}
+	});
+
+	_volumeInfo->setValueChangeCB([this](int oldValue, int newValue, void* sender) {
+		if (oldValue != newValue) {
+			setValue(newValue);
 		}
 	});
 #endif // DOMOTIC_PI_APPLE_HOMEKIT

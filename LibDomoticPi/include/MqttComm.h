@@ -37,14 +37,14 @@ public:
 	const std::string &getPassword() const;
 
 	/**
-	 *	@brief Publish given message to specified topic (with retain flag if needed)
+	 *	@brief Publish given message to specified topic (with retain flag)
 	 *
 	 *	@param topic topic to publish the message to
 	 *	@param message message to be published
-	 *	@param retain retian flag
+	 *	@param retain retian flag value
 	 *
 	 */
-	void publish(const std::string& topic, const std::string& message, bool retain = false);
+	void publish(const std::string& topic, const std::string& message, bool retain = true);
 
 	/**
 	 *	@brief Subscribe to a topic and set a callback for received messages
