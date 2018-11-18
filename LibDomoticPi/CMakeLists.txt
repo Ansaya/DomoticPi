@@ -1,35 +1,31 @@
-project(libDomoticPi)
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.5)
+project(libDomotic)
 
-set(LIB_NAME "domoticPi")
+set(LIB_NAME "domotic")
 
-file(GLOB_RECURSE LIB_SRCS "srcs/*.cpp")
-file(GLOB_RECURSE LIB_HEADERS "include/*.h")
+#########################################################################################
+#	Global compiler options
+#########################################################################################
 
-add_definitions("-DSPDLOG_FMT_PRINTF")
-add_compile_options("-Wall" "-Wno-unknown-pragmas" "-Wno-psabi" "-fexceptions" "-std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+add_compile_options("-fexceptions")
+add_compile_options("-Wall")
+add_compile_options("-Wno-unknown-pragmas")
+add_compile_options("-Wno-psabi")
 
 set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g2 -gdwarf-2" )
 set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer" )
 
-include_directories("include" "../include")
+#########################################################################################
+#	Include directories
+#########################################################################################
 
-link_libraries(pthread wiringPi mosquitto hap)
+include_directories( "include" )
 
-add_library(${LIB_NAME}_static STATIC ${LIB_SRCS})
-set_target_properties(${LIB_NAME}_static PROPERTIES OUTPUT_NAME ${LIB_NAME})
+add_subdirectory(src)
 
-add_library(${LIB_NAME} SHARED ${LIB_SRCS})
+add_subdirectory(test)
 
-### Installation
-install(TARGETS ${LIB_NAME}
-        LIBRARY DESTINATION /usr/local/lib
-)
-
-install(TARGETS ${LIB_NAME}_static
-        ARCHIVE DESTINATION /usr/local/lib
-)
-
-install(FILES ${LIB_HEADERS}
-        DESTINATION /usr/local/include/${LIB_NAME}
-)
+#########################################################################################
+#
+#########################################################################################

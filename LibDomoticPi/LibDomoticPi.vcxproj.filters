@@ -7,104 +7,69 @@
     <Filter Include="include">
       <UniqueIdentifier>{094ff56c-7732-46f6-8483-474ee936b946}</UniqueIdentifier>
     </Filter>
-    <Filter Include="srcs">
+    <Filter Include="include\IComm">
+      <UniqueIdentifier>{34ea1fdb-3957-4c56-bb21-6f57f7432a33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IComm\IDigital">
+      <UniqueIdentifier>{6a8ffa21-9ef9-4b24-9c06-7a187201c7d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
       <UniqueIdentifier>{3a535da5-1806-43bb-ac49-96b8f51431ec}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\DomoticNode.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\domoticPi.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\domoticPiDefine.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\exceptions.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Pin.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SerialInterface.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Serializable.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SerialOutput.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\libDomoticPi.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IAHKAccessory.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttSubscription.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttLib.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttVolume.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OutputFactory.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IOutput.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OutState.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IModule.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IInput.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\InputFactory.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IComm.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttComm.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CommFactory.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ButtonState.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CallbackToken.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IButtonStateGenerator.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttButton.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttSwitch.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DigitalSwitch.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DigitalButton.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ProgrammedEvent.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MqttAwning.h">
-      <Filter>include</Filter>
-    </ClInclude>
+    <Filter Include="src\IComm">
+      <UniqueIdentifier>{834f2f21-2d0c-4012-9579-fb10a881beb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IComm\IDigital">
+      <UniqueIdentifier>{9d6d1e06-5c07-4df1-b8bc-478952f39ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{4585913a-24fb-462f-a40d-3ff8c6344b2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src">
+      <UniqueIdentifier>{90320ede-68f0-4dfe-9c70-5cba1ab109de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IComm">
+      <UniqueIdentifier>{f1a64f13-250b-4ea1-ab44-ea66695676e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IComm\IDigital">
+      <UniqueIdentifier>{bd2dcfeb-b07c-4ef5-b1a7-c14e4aaafa02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IModule">
+      <UniqueIdentifier>{e7b32a6f-228b-4c88-8ef0-5caccc94cc5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IModule\IComposite">
+      <UniqueIdentifier>{a9f8f9ea-06e9-46f8-acda-58170d0d6e78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IModule\IOutput">
+      <UniqueIdentifier>{0f9375a5-a749-4cf1-9cf7-aa519cb0d492}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IModule\IInput">
+      <UniqueIdentifier>{3a88d323-7290-4c6c-a7bb-5faca7b4443b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IModule">
+      <UniqueIdentifier>{bcb00f12-f99b-4e54-806b-dbeee344743f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IModule\IComposite">
+      <UniqueIdentifier>{56551714-4178-41ec-8ede-1af8e38791c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IModule\IOutput">
+      <UniqueIdentifier>{c3427fe5-1fd8-4178-ae72-d0817df6e95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\IModule\IInput">
+      <UniqueIdentifier>{87c8117c-54c7-49a9-83b3-a93ebb5b526f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IModule">
+      <UniqueIdentifier>{84574ab2-bf95-4edc-83fd-8711b29672d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IModule\IComposite">
+      <UniqueIdentifier>{02902e34-e9be-471d-b146-e00dcb726b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IModule\IOutput">
+      <UniqueIdentifier>{721e8f2f-6701-4fc8-a61e-d53152adf21d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\src\IModule\IInput">
+      <UniqueIdentifier>{4937e6df-2f41-4387-9e86-08ec9369ec3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="json-schema\Input.json">
@@ -131,82 +96,42 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
+    <Text Include="test\CMakeLists.txt">
+      <Filter>test</Filter>
+    </Text>
+    <Text Include="test\src\CMakeLists.txt">
+      <Filter>test\src</Filter>
+    </Text>
+    <Text Include="src\CMakeLists.txt">
+      <Filter>src</Filter>
+    </Text>
+    <Text Include="src\IModule\CMakeLists.txt">
+      <Filter>src\IModule</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="srcs\DomoticNode.cpp">
-      <Filter>srcs</Filter>
+    <ClInclude Include="include\IModule\IModule.h">
+      <Filter>include\IModule</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IModule\IAHKAccessory.h">
+      <Filter>include\IModule</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IModule\ModuleType.h">
+      <Filter>include\IModule</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test\src\IModule\ModuleType.cpp">
+      <Filter>test\src\IModule</Filter>
     </ClCompile>
-    <ClCompile Include="srcs\domoticPi.cpp">
-      <Filter>srcs</Filter>
+    <ClCompile Include="test\src\test.cpp">
+      <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="srcs\Pin.cpp">
-      <Filter>srcs</Filter>
+    <ClCompile Include="src\IModule\ModuleType.cpp">
+      <Filter>src\IModule</Filter>
     </ClCompile>
-    <ClCompile Include="srcs\SerialInterface.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\SerialOutput.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttSubscription.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttLib.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\InputFactory.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IInput.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IModule.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IOutput.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\OutputFactory.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IAHKAccessory.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IComm.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttVolume.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttComm.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\CommFactory.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\IButtonStateGenerator.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\CallbackToken.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\DigitalSwitch.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\DigitalButton.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttButton.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttSwitch.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\ProgrammedEvent.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
-    <ClCompile Include="srcs\MqttAwning.cpp">
-      <Filter>srcs</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="compile.sh" />
   </ItemGroup>
 </Project>

@@ -1,12 +1,12 @@
-#ifndef DOMOTIC_PI_HAS_HAP_ACCESSORY
-#define DOMOTIC_PI_HAS_HAP_ACCESSORY
-
-#include "DomoticNode.h"
+#ifndef DOMOTIC_IAHKACCESSORY
+#define DOMOTIC_IAHKACCESSORY
 
 #include <hap/libHAP.h>
 #include <memory>
 
-namespace domotic_pi {
+// TODO: fix this interface
+
+namespace domotic {
 
 	class IAHKAccessory {
 
@@ -27,8 +27,6 @@ namespace domotic_pi {
 
 	private:
 		const hap::Accessory_ptr getAHKAccessory() const;
-
-		friend class DomoticNode;
 	};
 
 }
